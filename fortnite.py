@@ -51,6 +51,14 @@ async def event_friend_message(message):
         )
 
         await message.reply('Emote set to' + message.content + '!')
+        
+    if "!stop" in message.content:
+        await client.user.party.me.set_emote(
+            # This seems like a broken way of doing it, but it works I guess. ¯\_(ツ)_/¯
+            asset=StopEmote
+        )
+
+        await message.reply('Stopped emoting.')
 
     if "BID" in message.content:
         await client.user.party.me.set_backbling(
@@ -61,3 +69,4 @@ async def event_friend_message(message):
 
 
 client.run()
+
