@@ -38,14 +38,14 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Purple Skull Trooper!')
 
-    if "CID" in message.content:
+    if "CID_" in message.content:
         await client.user.party.me.set_outfit(
             asset=message.content
         )
 
         await message.reply('Skin set to' + message.content + '!')
 
-    if "EID" in message.content:
+    if "EID_" in message.content:
         await client.user.party.me.set_emote(
             asset=message.content
         )
@@ -54,19 +54,24 @@ async def event_friend_message(message):
         
     if "!stop" in message.content:
         await client.user.party.me.set_emote(
-            # This seems like a broken way of doing it, but it works I guess. ¯\_(ツ)_/¯
-            asset=StopEmote
+            asset="StopEmote"
         )
 
         await message.reply('Stopped emoting.')
 
-    if "BID" in message.content:
-        await client.user.party.me.set_backbling(
+    if "BID_" in message.content:
+        await client.user.party.me.set_backpack(
             asset=message.content
         )
 
         await message.reply('Backbling set to' + message.content + '!')
 
+    if "!help" in message.content:
+        await client.user.party.me.set_backpack(
+            asset=message.content
+        )
+
+        await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
+
 
 client.run()
-
