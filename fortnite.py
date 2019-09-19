@@ -2,7 +2,7 @@ import fortnitepy
 
 client = fortnitepy.Client(
     email='',
-    password='r',
+    password='',
     net_cl='8371706',
 )
 
