@@ -52,5 +52,12 @@ async def event_friend_message(message):
 
         await message.reply('Emote set to' + message.content + '!')
 
+    if "BID" in message.content:
+        await client.user.party.me.set_backbling(
+            asset=message.content
+        )
+
+        await message.reply('Backbling set to' + message.content + '!')
+
 
 client.run()
