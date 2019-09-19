@@ -2,7 +2,7 @@ import fortnitepy
 
 client = fortnitepy.Client(
     email='',
-    password='',
+    password='r',
     net_cl='8371706',
 )
 
@@ -26,7 +26,7 @@ async def event_friend_message(message):
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if message.content == "!purpleskull":
-
+r
         variants = client.user.party.me.create_variants(
            clothing_color=1
         )
@@ -56,7 +56,7 @@ async def event_friend_message(message):
         await client.user.party.me.set_emote(
             asset="StopEmote"
         )
-
+r
         await message.reply('Stopped emoting.')
 
     if "BID_" in message.content:
@@ -72,6 +72,13 @@ async def event_friend_message(message):
         )
 
         await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
+r
 
+    if "PICKAXE_ID_" in message.content:
+        await client.user.party.me.set_pickaxe(
+            asset=message.content
+        )
+
+        await message.reply('Pickaxe set to' + message.content + '!')
 
 client.run()
