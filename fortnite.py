@@ -26,7 +26,6 @@ async def event_friend_message(message):
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if message.content == "!purpleskull":
-r
         variants = client.user.party.me.create_variants(
            clothing_color=1
         )
@@ -72,7 +71,6 @@ r
         )
 
         await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
-r
 
     if "PICKAXE_ID_" in message.content:
         await client.user.party.me.set_pickaxe(
