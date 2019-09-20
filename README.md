@@ -9,3 +9,4 @@ After that just add your bots login details to the fortnite.py client and run it
 ## Discord Support
 <a href="https://discord.gg/9y9Sqt2"><img src="https://i.imgur.com/wWTDpdl.png"></a>
 
+webhook test
