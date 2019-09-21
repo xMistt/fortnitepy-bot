@@ -43,6 +43,17 @@ async def event_friend_message(message):
             asset=message.content
         )
 
+    if message.content == "!checkeredrenegade":
+
+        variants = client.user.party.me.create_variants(
+           material=2
+        )
+
+        await client.user.party.me.set_outfit(
+            asset='CID_028_Athena_Commando_F',
+            variants=variants
+        )
+
         await message.reply('Skin set to' + message.content + '!')
 
     if "EID_" in message.content:
