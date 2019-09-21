@@ -89,6 +89,12 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to' + message.content + '!')
 
+    if "!ready" in message.content:
+        await client.user.party.me.set_ready(True)
+
+    if "!unready" in message.content:
+        await client.user.party.me.set_ready(False)
+
 @client.event
 async def event_party_message(message):
     # only type these if you're alone in your lobby + you're on console.
@@ -156,5 +162,11 @@ async def event_party_message(message):
         )
 
         await message.reply('Pickaxe set to' + message.content + '!')
+
+    if "!ready" in message.content:
+        await client.user.party.me.set_ready(True)
+
+    if "!unready" in message.content:
+        await client.user.party.me.set_ready(False)
 
 client.run()
