@@ -1,10 +1,13 @@
 import fortnitepy
+import json
+
 
 client = fortnitepy.Client(
     email='',
     password='',
     net_cl='8371706',
 )
+
 
 print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
 
@@ -28,7 +31,7 @@ async def event_friend_message(message):
 
     if message.content == "!purpleskull":
         variants = client.user.party.me.create_variants(
-           clothing_color=1
+            clothing_color=1
         )
 
         await client.user.party.me.set_outfit(
@@ -37,6 +40,18 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to Purple Skull Trooper!')
+
+    #if "!variants" in args[0]:
+    #    variants = client.user.party.me.create_variants(
+    #        args[2]=args[3]
+    #)
+    #
+    #   await client.user.party.me.set_outfit(
+    #       asset=args[1],
+    #       variants=variants
+    #  )
+    #
+    #   await message.reply(args[1] + "set to" + args[2] + " " + args[3])
 
     if "CID_" in message.content:
         await client.user.party.me.set_outfit(
