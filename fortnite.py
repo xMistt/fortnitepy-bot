@@ -35,7 +35,7 @@ async def event_friend_message(message):
     args = message.content.split()
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
-    if message.content == "!purpleskull":
+    if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
            clothing_color=1
         )
@@ -50,12 +50,12 @@ async def event_friend_message(message):
     if "!banner" in args[0]:
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=None)
 
-    if "CID_" in message.content:
+    if "CID_" in args[0]:
         await client.user.party.me.set_outfit(
-            asset=message.content
+            asset=args[0]
         )
 
-    if message.content == "!checkeredrenegade":
+    if "!renegaderaider" in args[0]:
 
         variants = client.user.party.me.create_variants(
            material=2
@@ -66,47 +66,44 @@ async def event_friend_message(message):
             variants=variants
         )
 
-        await message.reply('Skin set to' + message.content + '!')
+        await message.reply('Skin set to' + args[0] + '!')
 
-    if "EID_" in message.content:
+    if "EID_" in args[0]:
         await client.user.party.me.set_emote(
-            asset=message.content
+            asset=EID_
         )
-        await message.reply('Emote set to' + message.content + '!')
+        await message.reply('Emote set to' + args[0] + '!')
         
-    if "!stop" in message.content:
+    if "!stop" in args[0]:
         await client.user.party.me.set_emote(
             asset="StopEmote"
         )
         await message.reply('Stopped emoting.')
 
-    if "BID_" in message.content:
+    if "BID_" in args[0]:
         await client.user.party.me.set_backpack(
-            asset=message.content
+            asset=args[0]
         )
 
         await message.reply('Backbling set to' + message.content + '!')
 
-    if "!help" in message.content:
-        await client.user.party.me.set_backpack(
-            asset=message.content
-        )
-
+    if "!help" in args[0]:
         await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
 
-    if "PICKAXE_ID_" in message.content:
+        if "PICKAXE_ID_" in args[0]:
         await client.user.party.me.set_pickaxe(
-            asset=message.content
+            asset=args[0]
         )
 
-        await message.reply('Pickaxe set to' + message.content + '!')
+        await message.reply('Pickaxe set to' + args[0] + '!')
 
 @client.event
 async def event_party_message(message):
     # only type these if you're alone in your lobby + you're on console.
+    args = message.content.split()
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
-    if message.content == "!purpleskull":
+    if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
            clothing_color=1
         )
@@ -118,12 +115,15 @@ async def event_party_message(message):
 
         await message.reply('Skin set to Purple Skull Trooper!')
 
-    if "CID_" in message.content:
+    if "!banner" in args[0]:
+        await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=None)
+
+    if "CID_" in args[0]:
         await client.user.party.me.set_outfit(
-            asset=message.content
+            asset=args[0]
         )
 
-    if message.content == "!checkeredrenegade":
+    if "!renegaderaider" in args[0]:
 
         variants = client.user.party.me.create_variants(
            material=2
@@ -134,39 +134,35 @@ async def event_party_message(message):
             variants=variants
         )
 
-        await message.reply('Skin set to' + message.content + '!')
+        await message.reply('Skin set to' + args[0] + '!')
 
-    if "EID_" in message.content:
+    if "EID_" in args[0]:
         await client.user.party.me.set_emote(
-            asset=message.content
+            asset=EID_
         )
-        await message.reply('Emote set to' + message.content + '!')
+        await message.reply('Emote set to' + args[0] + '!')
         
-    if "!stop" in message.content:
+    if "!stop" in args[0]:
         await client.user.party.me.set_emote(
             asset="StopEmote"
         )
         await message.reply('Stopped emoting.')
 
-    if "BID_" in message.content:
+    if "BID_" in args[0]:
         await client.user.party.me.set_backpack(
-            asset=message.content
+            asset=args[0]
         )
 
         await message.reply('Backbling set to' + message.content + '!')
 
-    if "!help" in message.content:
-        await client.user.party.me.set_backpack(
-            asset=message.content
-        )
-
+    if "!help" in args[0]:
         await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
 
-    if "PICKAXE_ID_" in message.content:
+        if "PICKAXE_ID_" in args[0]:
         await client.user.party.me.set_pickaxe(
-            asset=message.content
+            asset=args[0]
         )
 
-        await message.reply('Pickaxe set to' + message.content + '!')
+        await message.reply('Pickaxe set to' + args[0] + '!')
 
 client.run()
