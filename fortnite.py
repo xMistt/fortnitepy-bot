@@ -32,6 +32,7 @@ async def event_friend_request(request):
 
 @client.event
 async def event_friend_message(message):
+    args = message.content.split()
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if message.content == "!purpleskull":
@@ -45,6 +46,9 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to Purple Skull Trooper!')
+
+    if "!banner" in args[0]:
+        await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=None)
 
     if "CID_" in message.content:
         await client.user.party.me.set_outfit(
