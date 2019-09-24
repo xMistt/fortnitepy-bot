@@ -101,12 +101,12 @@ async def event_friend_message(message):
     if "!help" in args[0]:
         await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
 
-        if "PICKAXE_ID_" in args[0]:
-            await client.user.party.me.set_pickaxe(
+    if "PICKAXE_ID_" in args[0]:
+        await client.user.party.me.set_pickaxe(
                 asset=args[0]
-            )
+        )
 
-            await message.reply('Pickaxe set to' + args[0] + '!')
+        await message.reply('Pickaxe set to' + args[0] + '!')
 
 @client.event
 async def event_party_message(message):
