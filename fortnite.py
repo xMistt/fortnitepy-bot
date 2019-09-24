@@ -55,6 +55,17 @@ async def event_friend_message(message):
             asset=args[0]
         )
 
+    if "!variants" in args[0]:
+        args3 = int(args[3])
+        variants = client.user.party.me.create_variants(**{args[2]: args3})
+
+        await client.user.party.me.set_outfit(
+            asset=args[1],
+            variants=variants
+        )
+
+        await message.reply('Skin set to' + args[1])
+
     if "!renegaderaider" in args[0]:
 
         variants = client.user.party.me.create_variants(
@@ -70,7 +81,7 @@ async def event_friend_message(message):
 
     if "EID_" in args[0]:
         await client.user.party.me.set_emote(
-            asset=EID_
+            asset=args[0]
         )
         await message.reply('Emote set to' + args[0] + '!')
         
@@ -91,11 +102,11 @@ async def event_friend_message(message):
         await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
 
         if "PICKAXE_ID_" in args[0]:
-        await client.user.party.me.set_pickaxe(
-            asset=args[0]
-        )
+            await client.user.party.me.set_pickaxe(
+                asset=args[0]
+            )
 
-        await message.reply('Pickaxe set to' + args[0] + '!')
+            await message.reply('Pickaxe set to' + args[0] + '!')
 
 @client.event
 async def event_party_message(message):
@@ -123,6 +134,15 @@ async def event_party_message(message):
             asset=args[0]
         )
 
+    if "!variants" in args[0]:
+        args3 = int(args[3])
+        variants = client.user.party.me.create_variants(**{args[2]: args3})
+
+        await client.user.party.me.set_outfit(
+            asset=args[1],
+            variants=variants
+        )
+
     if "!renegaderaider" in args[0]:
 
         variants = client.user.party.me.create_variants(
@@ -138,7 +158,7 @@ async def event_party_message(message):
 
     if "EID_" in args[0]:
         await client.user.party.me.set_emote(
-            asset=EID_
+            asset=args[0]
         )
         await message.reply('Emote set to' + args[0] + '!')
         
@@ -159,10 +179,10 @@ async def event_party_message(message):
         await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
 
         if "PICKAXE_ID_" in args[0]:
-        await client.user.party.me.set_pickaxe(
-            asset=args[0]
-        )
+            await client.user.party.me.set_pickaxe(
+                asset=args[0]
+            )
 
-        await message.reply('Pickaxe set to' + args[0] + '!')
+            await message.reply('Pickaxe set to' + args[0] + '!')
 
 client.run()
