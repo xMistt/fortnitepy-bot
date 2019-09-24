@@ -18,4 +18,6 @@ After that just add your bots login details to the fortnite.py client and run it
 * !variants - Sets the skin variant.                                  Usage: ``!variants <CID> <variant_type> <integer>``
 * !renegaderaider - Shortcut for the checkered renegade.              Usage: ``!renegaderaider``
 * !banner - Set's the accounts banner, colour & level.                Usage: ``!banner <banner> <color> <level>``
+* !stop - Stops the bot's emote if it's emoting.                      Usage: ``!stop``
+* !help - Shows a list of commands (list this one, but worse).        Usage: ``!help``
 
