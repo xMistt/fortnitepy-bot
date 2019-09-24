@@ -143,6 +143,8 @@ async def event_party_message(message):
             variants=variants
         )
 
+        await message.reply('Skin set to' + args[1])
+
     if "!renegaderaider" in args[0]:
 
         variants = client.user.party.me.create_variants(
@@ -176,13 +178,13 @@ async def event_party_message(message):
         await message.reply('Backbling set to' + message.content + '!')
 
     if "!help" in args[0]:
-        await message.reply('My commands are; !purpleskull, CID_, EID_, BID_ !stop & !help')
+        await message.reply('My commands are; !purpleskull, !renegaderaider, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop & !help')
 
-        if "PICKAXE_ID_" in args[0]:
-            await client.user.party.me.set_pickaxe(
+    if "PICKAXE_ID_" in args[0]:
+        await client.user.party.me.set_pickaxe(
                 asset=args[0]
-            )
+        )
 
-            await message.reply('Pickaxe set to' + args[0] + '!')
+        await message.reply('Pickaxe set to' + args[0] + '!')
 
 client.run()
