@@ -1,5 +1,7 @@
 import fortnitepy
 import json
+import aiohttp
+import asyncio
 
 with open('config.json', 'r') as f:
     data = json.load(f)
@@ -14,6 +16,9 @@ client = fortnitepy.Client(
 )
 
 print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
+
+global displayName
+displayName = "ghoul"
 
 @client.event
 async def event_ready():
@@ -33,6 +38,8 @@ async def event_friend_request(request):
 @client.event
 async def event_friend_message(message):
     args = message.content.split()
+    arguments = args[1:]
+    displayName = arguments
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if "!purpleskull" in args[0]:
@@ -106,7 +113,29 @@ async def event_friend_message(message):
                 asset=args[0]
         )
 
-        await message.reply('Pickaxe set to' + args[0] + '!')
+    URL = "http://benbotfn.tk:8080/api/cosmetics/search/multiple"
+
+    if args[0] == "!skin":
+        await benbot()
+
+URL = "http://benbotfn.tk:8080/api/cosmetics/search/multiple"
+async def benbot():
+    idint = 0
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(URL, params={"displayName": displayName}) as r:
+                json_data = await r.json()
+                list_type = json_data[idint]["type"]
+                print(idint)
+
+            if list_type == "Outift":
+                list_id = json_data[idint]["id"]
+                await client.user.party.me.set_outfit(asset=list_id)
+                print(list_id)
+                break
+            else:
+                print(f"{list_type} did not == Outfit")
+                idint += 1
 
 @client.event
 async def event_party_message(message):
