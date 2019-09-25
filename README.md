@@ -21,6 +21,8 @@ After that just add your bots login details to the fortnite.py client and run it
 * !stop - Stops the bot's emote if it's emoting.                      Usage: ``!stop``
 * !help - Shows a list of commands (list this one, but worse).        Usage: ``!help``
 
+If you need help with ``!variants``, check out the variants wiki page: https://github.com/xMistt/fortnitepy-bot/wiki/Variants Any further help you need, feel free to join our discord support server.
+
 ## How can I contribute?
 // add this later
 
