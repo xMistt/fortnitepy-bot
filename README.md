@@ -24,5 +24,5 @@ After that just add your bots login details to the fortnite.py client and run it
 If you need help with ``!variants``, check out the variants wiki page: https://github.com/xMistt/fortnitepy-bot/wiki/Variants Any further help you need, feel free to join our discord support server.
 
 ## How can I contribute?
-// add this later
+Fork this repo, add/fix what you want to do and then submit a pull request back.
 
