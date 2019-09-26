@@ -15,10 +15,10 @@ client = fortnitepy.Client(
     net_cl=netcljson,
 )
 
-print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
-
 global displayName
-displayName = "ghoul"
+displayName = None
+
+print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
 
 @client.event
 async def event_ready():
@@ -39,7 +39,7 @@ async def event_friend_request(request):
 async def event_friend_message(message):
     args = message.content.split()
     arguments = args[1:]
-    displayName = arguments
+    displayName = " ".join(arguments)
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if "!purpleskull" in args[0]:
@@ -134,14 +134,16 @@ async def benbot():
                 json_data = await r.json()
                 list_type = json_data[idint]["type"]
                 print(idint)
+                print(displayName)
 
-            if list_type == "Outift":
+            if list_type == "Outfit":
                 list_id = json_data[idint]["id"]
                 await client.user.party.me.set_outfit(asset=list_id)
                 print(list_id)
                 break
             else:
                 print(f"{list_type} did not == Outfit")
+                print(json_data)
                 idint += 1
 
 @client.event
