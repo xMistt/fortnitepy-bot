@@ -105,6 +105,11 @@ async def event_friend_message(message):
 
         await message.reply('Backbling set to' + message.content + '!')
 
+    if "!echo" in args[0]:
+        await event_party_message.reply(arguments)
+
+    await message.reply('Backbling set to' + message.content + '!')
+
     if "!help" in args[0]:
         await message.reply('My commands are; !purpleskull, !renegaderaider, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop & !help')
 
@@ -115,9 +120,11 @@ async def event_friend_message(message):
 
     URL = "http://benbotfn.tk:8080/api/cosmetics/search/multiple"
 
+    # // ignore this it doesn't work rn
     if args[0] == "!skin":
         await benbot()
 
+# // ignore this it doesn't work rn
 URL = "http://benbotfn.tk:8080/api/cosmetics/search/multiple"
 async def benbot():
     idint = 0
