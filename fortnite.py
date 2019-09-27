@@ -108,6 +108,13 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to' + args[0] + '!')
 
+    if "!legacypickaxe" in args[0]:
+        await client.user.party.me.set_pickaxe(
+                asset=args[1]
+        )
+
+        await message.reply('Pickaxe set to' + args[1] + '!')
+
 @client.event
 async def event_party_message(message):
     # only type these if you're alone in your lobby + you're on console.
@@ -186,5 +193,12 @@ async def event_party_message(message):
         )
 
         await message.reply('Pickaxe set to' + args[0] + '!')
+
+    if "!legacypickaxe" in args[0]:
+        await client.user.party.me.set_pickaxe(
+                asset=args[1]
+        )
+
+        await message.reply('Pickaxe set to' + args[1] + '!')
 
 client.run()
