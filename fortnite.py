@@ -14,7 +14,7 @@ client = fortnitepy.Client(
     net_cl=netcljson,
 )
 
-BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search'
+BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
 
 print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
 
@@ -38,14 +38,15 @@ async def event_friend_request(request):
 async def fetch_cosmetic_id(display_name):
     idint = 0
     async with aiohttp.ClientSession() as session:
-        async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-            data = await r.json()
-            type = data[idint]["type"]
-            return data.get('id')
-
-    if type == "Outfit":
-                id = data[idint]["id"]
-                return id
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                data = await r.json()
+                type = data[idint]["type"]
+                if type == "Outfit":
+                            id = data[idint]["id"]
+                            return id
+                else:
+                    idint += 1
 
 @client.event
 async def event_friend_message(message):
@@ -148,12 +149,9 @@ async def event_party_message(message):
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if "!skin" in args[0]:
-        cid = await fetch_cosmetic_id(' '.join(split))
-        if cid is None:
-            return await message.reply('Could not find the requested outfit.')
-
+        id = await fetch_cosmetic_id(' '.join(split))
         await client.user.party.me.set_outfit(
-            asset=cid
+            asset=id
         )
 
     if "!purpleskull" in args[0]:
