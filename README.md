@@ -24,16 +24,18 @@ After that just add your bots login details to the fortnite.py client and run it
 ```
 
 ## Commands:
-* CID_ - Makes the account wear the CID specified.                    Usage: ``<CID>``
-* EID_ - Makes the account do the emote specified.                    Usage: ``<EID>``
-* BID_ - Makes the account wear the BID specified.                    Usage: ``<BID>``
-* PICKAXE_ID_ - Makes the account wear use the pickaxe specified.     Usage: ``<PICKAXE_ID>``
-* !purpleskull - Shortcut for purple skull trooper.                   Usage: ``!purpleskull``
-* !variants - Sets the skin variant.                                  Usage: ``!variants <CID> <variant_type> <integer>``
-* !renegaderaider - Shortcut for the checkered renegade.              Usage: ``!renegaderaider``
-* !banner - Set's the accounts banner, colour & level.                Usage: ``!banner <banner> <color> <level>``
-* !stop - Stops the bot's emote if it's emoting.                      Usage: ``!stop``
-* !help - Shows a list of commands (list this one, but worse).        Usage: ``!help``
+```
+* CID_ - Makes the account wear the CID specified.                    Usage: <CID>
+* EID_ - Makes the account do the emote specified.                    Usage: <EID>
+* BID_ - Makes the account wear the BID specified.                    Usage: <BID>
+* PICKAXE_ID_ - Makes the account wear use the pickaxe specified.     Usage: <PICKAXE_ID>
+* !purpleskull - Shortcut for purple skull trooper.                   Usage: !purpleskull
+* !variants - Sets the skin variant.                                  Usage: !variants <CID> <variant_type> <integer>
+* !renegaderaider - Shortcut for the checkered renegade.              Usage: !renegaderaider
+* !banner - Set's the accounts banner, colour & level.                Usage: !banner <banner> <color> <level>
+* !stop - Stops the bot's emote if it's emoting.                      Usage: !stop
+* !help - Shows a list of commands (list this one, but worse).        Usage: !help
+```
 
 If you need help with ``!variants``, check out the variants wiki page: https://github.com/xMistt/fortnitepy-bot/wiki/Variants Any further help you need, feel free to join our discord support server.
 
