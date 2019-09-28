@@ -11,19 +11,19 @@ After that just add your bots login details to the fortnite.py client and run it
 
 ## Config Documentation
 ```
-"email": "",                                         - The bot account's email.
-"password": "",                                      - The bot account's password.
-"netcl": "8371783",                                  - Fortnite party netcl.
-"cid": "CID_313_Athena_Commando_M_KpopFashion",      - The skin that the bot wears when it joins.
-"bid": "BID_138_Celestial",                          - The backpack that the bot wears when it joins.
-"eid": "EID_DeepDab",                                - The emote that the bot does when it joins.
-"banner": "otherbanner28",                           - The banner icon the bot uses.
-"banner_colour": "defaultcolor15",                   - The colour of the banner icon.
-"level": "100",                                      - Bot's level. (seen on it's banner)
-"friendaccept": "true"                               - If the bot will accept every friend request.
+"email": "",                                                - The bot account's email.
+"password": "",                                             - The bot account's password.
+"netcl": "8371783",                                         - Fortnite party netcl.
+"cid": "CID_313_Athena_Commando_M_KpopFashion",             - The skin that the bot wears when it joins.
+"bid": "BID_138_Celestial",                                 - The backpack that the bot wears when it joins.
+"eid": "EID_DeepDab",                                       - The emote that the bot does when it joins.
+"banner": "otherbanner28",                                  - The banner icon the bot uses.
+"banner_colour": "defaultcolor15",                          - The colour of the banner icon.
+"level": "100",                                             - Bot's level. (seen on it's banner)
+"friendaccept": "true"                                      - If the bot will accept every friend request.
 ```
 
-## Commands:
+## Commands
 ```
 * CID_ - Makes the account wear the CID specified.          Usage: <CID>
 * EID_ - Makes the account do the emote specified.          Usage: <EID>
