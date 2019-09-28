@@ -163,6 +163,18 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to ' + args[1] + '!')
 
+    if "!ready" in args[0]:
+        await client.user.party.me.set_ready(True)
+        await message.reply('Ready!')
+
+    if "!unready" in args[0]:
+        await client.user.party.me.set_ready(False)
+        await message.reply('Unready!')
+
+    if "!bp" in args[0]:
+        await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp=args[2], friend_boost_xp=args[3])
+
+
 @client.event
 async def event_party_message(message):
     # only type these if you're alone in your lobby + you're on console.
