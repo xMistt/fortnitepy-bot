@@ -7,6 +7,7 @@ with open('config.json', 'r') as f:
     emailjson = data[0]['email']
     passwordjson = data[0]['password']
     netcljson = data[0]['netcl']
+    acceptfriend = data[0]['acceptfriend']
 
 client = fortnitepy.Client(
     email=emailjson,
@@ -21,8 +22,6 @@ print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.
 @client.event
 async def event_ready():
     print('Client ready as {0.user.display_name}'.format(client))
-    friend = client.get_friend("6c2ce028998a4b35a5ebf0ba655d1236")
-    await friend.join_party()
 
 @client.event
 async def event_party_invite(invitation):
@@ -32,8 +31,10 @@ async def event_party_invite(invitation):
 
 @client.event
 async def event_friend_request(request):
-    # await request.accept() // If you want the bot to acccept all friend requests.
-    await request.decline()
+    if acceptfriend == "true":
+        await request.accept()
+    else:
+        await request.decline()
 
 async def fetch_cosmetic_id(display_name):
     idint = 0
@@ -51,9 +52,15 @@ async def fetch_cosmetic_id(display_name):
 @client.event
 async def event_friend_message(message):
     args = message.content.split()
-    arguments = args[1:]
-    joinedArguments = " ".join(arguments)
+    split = args[1:]
+    joinedArguments = " ".join(split)
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
+
+    if "!skin" in args[0]:
+        id = await fetch_cosmetic_id(' '.join(split))
+        await client.user.party.me.set_outfit(
+            asset=id
+        )
 
     if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
@@ -66,9 +73,6 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to Purple Skull Trooper!')
-
-    if "!customtext" in args[0]:
-        await message.reply('<color="#ff00ff"><u>HELLO&nbsp;</u></font>')
 
     if "!banner" in args[0]:
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=None)
@@ -137,9 +141,6 @@ async def event_friend_message(message):
         )
 
         await message.reply('Pickaxe set to' + args[1] + '!')
-
-    if "!status" in args[0]:
-        await client.send_status(joinedArguments)
 
 @client.event
 async def event_party_message(message):
