@@ -1,13 +1,20 @@
 import fortnitepy
 import json
 import aiohttp
+import time
 
 with open('config.json', 'r') as f:
     data = json.load(f)
     emailjson = data[0]['email']
     passwordjson = data[0]['password']
     netcljson = data[0]['netcl']
-    acceptfriend = data[0]['acceptfriend']
+    cid = data[0]['cid']
+    bid = data[0]['bid']
+    eid = data[0]['eid']
+    banner = data[0]['banner']
+    banner_colour = data[0]['banner_colour']
+    level = data[0]['level']
+    friendaccept = data[0]['friendaccept']
 
 client = fortnitepy.Client(
     email=emailjson,
@@ -31,10 +38,19 @@ async def event_party_invite(invitation):
 
 @client.event
 async def event_friend_request(request):
-    if acceptfriend == "true":
+    if friendaccept == "true":
         await request.accept()
     else:
         await request.decline()
+
+@client.event
+async def event_party_member_join(member):
+    await client.user.party.me.set_outfit(asset=cid)
+    await client.user.party.me.set_backpack(asset=bid)
+    await client.user.party.me.set_banner(icon=banner, color=banner_colour, season_level=level)
+    time.sleep(2)
+    await client.user.party.me.set_emote(asset=eid)
+    #await client.user.party.me.set_battlepass_info(self_boost_xp=999999, friend_boost_xp=999999):
 
 async def fetch_cosmetic_id(display_name):
     idint = 0
@@ -75,12 +91,14 @@ async def event_friend_message(message):
         await message.reply('Skin set to Purple Skull Trooper!')
 
     if "!banner" in args[0]:
-        await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=None)
+        await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
     if "CID_" in args[0]:
         await client.user.party.me.set_outfit(
             asset=args[0]
         )
+
+        await message.reply('Skin set to ' + args[0])
 
     if "!variants" in args[0]:
         args3 = int(args[3])
@@ -91,9 +109,9 @@ async def event_friend_message(message):
             variants=variants
         )
 
-        await message.reply('Skin set to' + args[1])
+        await message.reply('Skin set to checkered Renegade Raider!')
 
-    if "!renegaderaider" in args[0]:
+    if "!checkeredrenegade" in args[0]:
 
         variants = client.user.party.me.create_variants(
            material=2
@@ -104,13 +122,13 @@ async def event_friend_message(message):
             variants=variants
         )
 
-        await message.reply('Skin set to' + args[0] + '!')
+        await message.reply('Skin set to ' + args[0] + '!')
 
     if "EID_" in args[0]:
         await client.user.party.me.set_emote(
             asset=args[0]
         )
-        await message.reply('Emote set to' + args[0] + '!')
+        await message.reply('Emote set to ' + args[0] + '!')
         
     if "!stop" in args[0]:
         await client.user.party.me.set_emote(
@@ -123,7 +141,7 @@ async def event_friend_message(message):
             asset=args[0]
         )
 
-        await message.reply('Backbling set to' + message.content + '!')
+        await message.reply('Backbling set to ' + message.content + '!')
 
     if "!help" in args[0]:
         await message.reply('My commands are; !purpleskull, !renegaderaider, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop & !help')
@@ -133,14 +151,14 @@ async def event_friend_message(message):
                 asset=args[0]
         )
 
-        await message.reply('Pickaxe set to' + args[0] + '!')
+        await message.reply('Pickaxe set to ' + args[0] + '!')
 
     if "!legacypickaxe" in args[0]:
         await client.user.party.me.set_pickaxe(
                 asset=args[1]
         )
 
-        await message.reply('Pickaxe set to' + args[1] + '!')
+        await message.reply('Pickaxe set to ' + args[1] + '!')
 
 @client.event
 async def event_party_message(message):
