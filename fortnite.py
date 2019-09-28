@@ -14,6 +14,9 @@ with open('config.json', 'r') as f:
     banner = data[0]['banner']
     banner_colour = data[0]['banner_colour']
     level = data[0]['level']
+    bp_tier = data[0]['bp_tier']
+    self_xp_boost = data[0]['self_xp_boost']
+    friend_xp_boost = data[0]['friend_xp_boost']
     friendaccept = data[0]['friendaccept']
 
 client = fortnitepy.Client(
@@ -50,7 +53,7 @@ async def event_party_member_join(member):
     await client.user.party.me.set_banner(icon=banner, color=banner_colour, season_level=level)
     time.sleep(2)
     await client.user.party.me.set_emote(asset=eid)
-    #await client.user.party.me.set_battlepass_info(self_boost_xp=999999, friend_boost_xp=999999):
+    await client.user.party.me.set_battlepass_info(has_purchased=True, level=bp_tier, self_boost_xp=self_xp_boost, friend_boost_xp=friend_xp_boost)
 
 async def fetch_cosmetic_id(display_name):
     idint = 0

@@ -9,6 +9,9 @@
 		"banner": "otherbanner28",
 		"banner_colour": "defaultcolor15",
 		"level": "100",
+		"bp_tier": 999999999,
+		"self_xp_boost": 999999999,
+		"friend_xp_boost": 999999999,
 		"friendaccept": "true"
 	}
 ]
