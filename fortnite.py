@@ -1,5 +1,6 @@
 import fortnitepy
 import json
+import aiohttp
 
 with open('config.json', 'r') as f:
     data = json.load(f)
@@ -13,11 +14,15 @@ client = fortnitepy.Client(
     net_cl=netcljson,
 )
 
+BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
+
 print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
 
 @client.event
 async def event_ready():
     print('Client ready as {0.user.display_name}'.format(client))
+    friend = client.get_friend("6c2ce028998a4b35a5ebf0ba655d1236")
+    await friend.join_party()
 
 @client.event
 async def event_party_invite(invitation):
@@ -30,9 +35,24 @@ async def event_friend_request(request):
     # await request.accept() // If you want the bot to acccept all friend requests.
     await request.decline()
 
+async def fetch_cosmetic_id(display_name):
+    idint = 0
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                data = await r.json()
+                type = data[idint]["type"]
+                if type == "Outfit":
+                            id = data[idint]["id"]
+                            return id
+                else:
+                    idint += 1
+
 @client.event
 async def event_friend_message(message):
     args = message.content.split()
+    arguments = args[1:]
+    joinedArguments = " ".join(arguments)
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if "!purpleskull" in args[0]:
@@ -46,6 +66,9 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to Purple Skull Trooper!')
+
+    if "!customtext" in args[0]:
+        await message.reply('<color="#ff00ff"><u>HELLO&nbsp;</u></font>')
 
     if "!banner" in args[0]:
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=None)
@@ -115,11 +138,21 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to' + args[1] + '!')
 
+    if "!status" in args[0]:
+        await client.send_status(joinedArguments)
+
 @client.event
 async def event_party_message(message):
     # only type these if you're alone in your lobby + you're on console.
     args = message.content.split()
+    split = args[1:]
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
+
+    if "!skin" in args[0]:
+        id = await fetch_cosmetic_id(' '.join(split))
+        await client.user.party.me.set_outfit(
+            asset=id
+        )
 
     if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
