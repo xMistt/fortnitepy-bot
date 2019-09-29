@@ -48,11 +48,11 @@ async def set_pickaxe(self, asset, key=None, variants=None):
 async def set_backpack(self, asset, key=None, variants=None):
     member = self.user.party.me
     if '.' not in asset:
-        asset = "AthenaPickaxeItemDefinition'/Game/Athena/Items/Cosmetics/Backpacks/" \
+        asset = "AthenaBackpackItemDefinition'/Game/Athena/Items/Cosmetics/Backpacks/" \
                 "{0}.{0}'".format(asset)
 
     if variants is not None:
-        variants = [x for x in member.outfit_variants if x['item']!= 'AthenaBackpack'] + variants
+        variants = [x for x in member.outfit_variants if x['item'] != 'AthenaBackpack'] + variants
 
     prop = member.meta.set_cosmetic_loadout(
         backpack=asset,
