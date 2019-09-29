@@ -87,7 +87,7 @@ async def event_party_member_join(member):
     await client.user.party.me.set_emote(asset=eid)
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=bp_tier, self_boost_xp=self_xp_boost, friend_boost_xp=friend_xp_boost)
 
-async def fetch_cosmetic_id(display_name):
+async def fetch_cosmetic_cid(display_name):
     idint = 0
     async with aiohttp.ClientSession() as session:
         while True:
@@ -96,14 +96,23 @@ async def fetch_cosmetic_id(display_name):
                 type = data[idint]["type"]
                 if type == "Outfit":
                             id = data[idint]["id"]
-                            displayName = data[idint]["displayName"]
-                            return id, displayName
+                            return id
                 else:
                     idint += 1
 
-tup = await fetch_cosmetic_id()
-id = tup[0]
-displayName = tup[1]
+async def fetch_cosmetic_eid(display_name):
+    idint = 0
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                data = await r.json()
+                type = data[idint]["type"]
+                if type == "Emote":
+                            id = data[idint]["id"]
+                            return id
+                else:
+                    idint += 1
+
 
 @client.event
 async def event_friend_message(message):
@@ -113,12 +122,20 @@ async def event_friend_message(message):
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
     if "!skin" in args[0]:
-        id = await fetch_cosmetic_id(' '.join(split))
+        id = await fetch_cosmetic_cid(' '.join(split))
         await client.user.party.me.set_outfit(
             asset=id
         )
 
-        await message.reply('Skin set to ' + displayName)
+        await message.reply('Skin set to ' + id)
+
+    if "!emote" in args[0]:
+        id = await fetch_cosmetic_eid(' '.join(split))
+        await client.user.party.me.set_outfit(
+            asset=id
+        )
+
+        await message.reply('Skin set to ' + id)
 
     if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
