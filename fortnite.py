@@ -113,6 +113,19 @@ async def fetch_cosmetic_eid(display_name):
                 else:
                     idint += 1
 
+async def fetch_cosmetic_pid(display_name):
+    idint = 0
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                data = await r.json()
+                type = data[idint]["type"]
+                if type == "Harvesting Tool":
+                            id = data[idint]["id"]
+                            return id
+                else:
+                    idint += 1
+
 
 @client.event
 async def event_friend_message(message):
@@ -136,6 +149,14 @@ async def event_friend_message(message):
         )
 
         await message.reply('Emote set to ' + id)
+
+    if "!pickaxe" in args[0]:
+        id = await fetch_cosmetic_pid(' '.join(split))
+        await client.user.party.me.set_pickaxe(
+            asset=id
+        )
+
+        await message.reply('Pickaxe set to ' + id)
 
     if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
