@@ -29,6 +29,38 @@ BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
 
 print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
 
+async def set_pickaxe(self, asset, key=None, variants=None):
+    member = self.user.party.me
+    if '.' not in asset:
+        asset = "AthenaPickaxeItemDefinition'/Game/Athena/Items/Cosmetics/Pickaxes/" \
+                "{0}.{0}'".format(asset)
+
+    if variants is not None:
+        variants = [x for x in member.outfit_variants if x['item']!= 'AthenaPickaxe'] + variants
+
+    prop = member.meta.set_cosmetic_loadout(
+        pickaxe=asset,
+        pickaxe_ekey=key,
+        variants=variants
+    )
+    await member.patch(updated=prop)
+
+async def set_backpack(self, asset, key=None, variants=None):
+    member = self.user.party.me
+    if '.' not in asset:
+        asset = "AthenaPickaxeItemDefinition'/Game/Athena/Items/Cosmetics/Backpacks/" \
+                "{0}.{0}'".format(asset)
+
+    if variants is not None:
+        variants = [x for x in member.outfit_variants if x['item']!= 'AthenaBackpack'] + variants
+
+    prop = member.meta.set_cosmetic_loadout(
+        backpack=asset,
+        backpack_ekey=key,
+        variants=variants
+    )
+    await member.patch(updated=prop)
+
 @client.event
 async def event_ready():
     print('Client ready as {0.user.display_name}'.format(client))
@@ -64,9 +96,14 @@ async def fetch_cosmetic_id(display_name):
                 type = data[idint]["type"]
                 if type == "Outfit":
                             id = data[idint]["id"]
-                            return id
+                            displayName = data[idint]["displayName"]
+                            return id, displayName
                 else:
                     idint += 1
+
+tup = await fetch_cosmetic_id()
+id = tup[0]
+displayName = tup[1]
 
 @client.event
 async def event_friend_message(message):
@@ -80,6 +117,8 @@ async def event_friend_message(message):
         await client.user.party.me.set_outfit(
             asset=id
         )
+
+        await message.reply('Skin set to ' + displayName)
 
     if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
@@ -128,6 +167,7 @@ async def event_friend_message(message):
         await message.reply('Skin set to ' + args[0] + '!')
 
     if "EID_" in args[0]:
+        await client.user.party.me.set_emote(asset="StopEmote")
         await client.user.party.me.set_emote(
             asset=args[0]
         )
@@ -173,6 +213,12 @@ async def event_friend_message(message):
 
     if "!bp" in args[0]:
         await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp=args[2], friend_boost_xp=args[3])
+
+    if "!point" in args[0]:
+        await client.user.party.me.set_pickaxe(asset=args[1])
+        await client.user.party.me.set_emote(asset='EID_IceKing')
+
+        await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
 
 
 @client.event
