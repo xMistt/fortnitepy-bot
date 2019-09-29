@@ -131,11 +131,11 @@ async def event_friend_message(message):
 
     if "!emote" in args[0]:
         id = await fetch_cosmetic_eid(' '.join(split))
-        await client.user.party.me.set_outfit(
+        await client.user.party.me.set_emote(
             asset=id
         )
 
-        await message.reply('Skin set to ' + id)
+        await message.reply('Emote set to ' + id)
 
     if "!purpleskull" in args[0]:
         variants = client.user.party.me.create_variants(
