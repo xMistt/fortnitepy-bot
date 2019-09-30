@@ -225,7 +225,7 @@ async def event_friend_message(message):
         await message.reply('Backbling set to ' + message.content + '!')
 
     if "!help" in args[0]:
-        await message.reply('My commands are; !purpleskull, !renegaderaider, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop & !help')
+        await message.reply('My commands are; !purpleskull, !renegaderaider, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop, !update & !help')
 
     if "PICKAXE_ID_" in args[0]:
         await client.user.party.me.set_pickaxe(
@@ -258,6 +258,30 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
 
+    if "!searchpoint" in args[0]:
+        id = await fetch_cosmetic_pid(' '.join(split))
+        await client.user.party.me.set_pickaxe(asset=id)
+        await client.user.party.me.set_emote(asset='EID_IceKing')
+
+        await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
+
+    if "!update" in args[0]:
+        with open('config.json', 'r') as f:
+            data = json.load(f)
+            emailjson = data[0]['email']
+            passwordjson = data[0]['password']
+            netcljson = data[0]['netcl']
+            cid = data[0]['cid']
+            bid = data[0]['bid']
+            eid = data[0]['eid']
+            banner = data[0]['banner']
+            banner_colour = data[0]['banner_colour']
+            level = data[0]['level']
+            bp_tier = data[0]['bp_tier']
+            self_xp_boost = data[0]['self_xp_boost']
+            friend_xp_boost = data[0]['friend_xp_boost']
+            friendaccept = data[0]['friendaccept']
+        await message.reply('Updated config.json!')
 
 @client.event
 async def event_party_message(message):
