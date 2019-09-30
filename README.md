@@ -42,6 +42,7 @@ Then fill out ``config.json`` with your configuration & run the fortnite.py file
 ## Commands
 ```
 * !skin - Makes the account wear the skin specified.        Usage: !skin <skin name>
+* !emote - Makes the account do the emote specified.        Usage: !emote <skin name>
 * CID_ - Makes the account wear the CID specified.          Usage: <CID>
 * EID_ - Makes the account do the emote specified.          Usage: <EID>
 * BID_ - Makes the account wear the BID specified.          Usage: <BID>
@@ -54,6 +55,9 @@ Then fill out ``config.json`` with your configuration & run the fortnite.py file
 * !ready - Makes the bot ready up.                          Usage: !ready
 * !unready - Makes the bot unready.                         Usage: !unready
 * !bp - Changes the bot's battlepass & xp boosts.           Usage: !bp <TIER> <XP BOOST> <FRIEND XP BOOST>
+* !point - Equips specified pickaxe & does Point it Out.    Usage: !point <PICKAXE_ID_>
+* !searchpoint - Searches pickaxe & does Point it Out.      Usage: !point <PICKAXE NAME>
+* !update - Refreshes the config file.                      Usage: !update
 * !help - Shows a list of commands. (like this)             Usage: !help
 ```
 
