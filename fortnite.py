@@ -225,7 +225,7 @@ async def event_friend_message(message):
         await message.reply('Backbling set to ' + message.content + '!')
 
     if "!help" in args[0]:
-        await message.reply('My commands are; !purpleskull, !renegaderaider, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop, !update & !help')
+        await message.reply('My commands are; !purpleskull, !checkeredrenegade, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop, !skin, !emote, !pickaxe, !searchpoint, !point, !ready, !unready, !update & !help')
 
     if "PICKAXE_ID_" in args[0]:
         await client.user.party.me.set_pickaxe(
