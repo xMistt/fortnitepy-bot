@@ -68,8 +68,6 @@ async def event_ready():
 @client.event
 async def event_party_invite(invitation):
     await invitation.accept()
-    # if you want the bot to join with stuff on, put in here.
-    # await invite(user_id) (Invite other bots/people to your lobby when the main bot joins.)
 
 @client.event
 async def event_friend_request(request):
