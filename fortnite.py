@@ -29,38 +29,6 @@ BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
 
 print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
 
-async def set_pickaxe(self, asset, key=None, variants=None):
-    member = self.user.party.me
-    if '.' not in asset:
-        asset = "AthenaPickaxeItemDefinition'/Game/Athena/Items/Cosmetics/Pickaxes/" \
-                "{0}.{0}'".format(asset)
-
-    if variants is not None:
-        variants = [x for x in member.outfit_variants if x['item']!= 'AthenaPickaxe'] + variants
-
-    prop = member.meta.set_cosmetic_loadout(
-        pickaxe=asset,
-        pickaxe_ekey=key,
-        variants=variants
-    )
-    await member.patch(updated=prop)
-
-async def set_backpack(self, asset, key=None, variants=None):
-    member = self.user.party.me
-    if '.' not in asset:
-        asset = "AthenaBackpackItemDefinition'/Game/Athena/Items/Cosmetics/Backpacks/" \
-                "{0}.{0}'".format(asset)
-
-    if variants is not None:
-        variants = [x for x in member.outfit_variants if x['item'] != 'AthenaBackpack'] + variants
-
-    prop = member.meta.set_cosmetic_loadout(
-        backpack=asset,
-        backpack_ekey=key,
-        variants=variants
-    )
-    await member.patch(updated=prop)
-
 @client.event
 async def event_ready():
     print('Client ready as {0.user.display_name}'.format(client))
@@ -225,14 +193,18 @@ async def event_friend_message(message):
         await message.reply('Backbling set to ' + message.content + '!')
 
     if "!help" in args[0]:
-        await message.reply('My commands are; !purpleskull, !checkeredrenegade, !variants, CID_, EID_, BID_, PICKAXE_ID_ !banner, !stop, !skin, !emote, !pickaxe, !searchpoint, !point, !ready, !unready, !update & !help')
-
+        await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot')
     if "PICKAXE_ID_" in args[0]:
         await client.user.party.me.set_pickaxe(
                 asset=args[0]
         )
 
         await message.reply('Pickaxe set to ' + args[0] + '!')
+
+    if "!pettest" in args[0]:
+        await client.user.party.me.set_backpack(
+                asset='PetCarrier_001_Dog'
+        )
 
     if "!legacypickaxe" in args[0]:
         await client.user.party.me.set_pickaxe(
@@ -282,6 +254,9 @@ async def event_friend_message(message):
             friend_xp_boost = data[0]['friend_xp_boost']
             friendaccept = data[0]['friendaccept']
         await message.reply('Updated config.json!')
+
+    if "!echo" in args[0]:
+        await client.user.party.send(joinedArguments)
 
 @client.event
 async def event_party_message(message):
