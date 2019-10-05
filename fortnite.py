@@ -1,7 +1,9 @@
 import fortnitepy
+from fortnitepy.errors import *
 import json
 import aiohttp
 import time
+from colorama import Fore, Back, Style
 
 with open('config.json', 'r') as f:
     data = json.load(f)
@@ -35,7 +37,11 @@ async def event_ready():
 
 @client.event
 async def event_party_invite(invitation):
-    await invitation.accept()
+    try:
+        await invitation.accept()
+        print('[CLIENT] Accepted party invite.')
+    except fortnitepy.errors.PartyError:
+        print(Fore.RED + "[ERROR] Couldn't accept invitation, incompatible net_cl.")
 
 @client.event
 async def event_friend_request(request):
