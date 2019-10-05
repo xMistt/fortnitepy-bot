@@ -97,6 +97,19 @@ async def fetch_cosmetic_pid(display_name):
                             return id
                 else:
                     idint += 1
+                    
+async def fetch_cosmetic_bid(display_name):
+    idint = 0
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                data = await r.json()
+                type = data[idint]["type"]
+                if type == "Back Bling":
+                            id = data[idint]["id"]
+                            return id
+                else:
+                    idint += 1
 
 
 @client.event
@@ -113,6 +126,14 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to ' + id)
+        
+    if "!backpack" in args[0]:
+        id = await fetch_cosmetic_bid(' '.join(split))
+        await client.user.party.me.set_backpack(
+            asset=id
+        )
+
+        await message.reply('Backpack set to ' + id)
 
     if "!emote" in args[0]:
         id = await fetch_cosmetic_eid(' '.join(split))
