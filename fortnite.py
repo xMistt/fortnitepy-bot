@@ -9,7 +9,6 @@ with open('config.json') as f:
     data = json.load(f)[0]
 
 client = fortnitepy.Client(
-    net_cl=netcljson,
     email=data['email'],
     password=data['password'],
     net_cl=data['netcl'],
