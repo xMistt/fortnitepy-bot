@@ -13,10 +13,12 @@ A fortnite XAMPP bot coded in Python with party capabilites.
 # windows
 py -3 -m pip install -U fortnitepy
 py -3 -m pip install -U aiohttp
+py -3 -m pip install -U colorama
 
 # linux / macOS
 python3 -m pip install -U fortnitepy
 python3 -m pip install -U aiohttp
+python3 -m pip install -U colorama
 ```
 
 Then fill out ``config.json`` with your configuration & run the fortnite.py file!
@@ -58,6 +60,7 @@ Then fill out ``config.json`` with your configuration & run the fortnite.py file
 * !point - Equips specified pickaxe & does Point it Out.    Usage: !point <PICKAXE_ID_>
 * !searchpoint - Searches pickaxe & does Point it Out.      Usage: !point <PICKAXE NAME>
 * !update - Refreshes the config file.                      Usage: !update
+* !echo - Repeats what you whisper in party chat.           Usage: !echo <MESSAGE>
 * !help - Shows a list of commands. (like this)             Usage: !help
 ```
 
