@@ -57,7 +57,6 @@ async def fetch_cosmetic_id(display_name):
             async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
                 data = await r.json()
                 type = data[idint]["type"]
-                print(typeSpecified)
                 if type == typeSpecified:
                             id = data[idint]["id"]
                             return id
