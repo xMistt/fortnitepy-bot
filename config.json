@@ -12,6 +12,8 @@
 		"bp_tier": 999999999,
 		"self_xp_boost": 999999999,
 		"friend_xp_boost": 999999999,
-		"friendaccept": "true"
+		"platform": "WIN",
+		"status": "Created by xMistt, enjoy! <3",
+		"friendaccept": "false"
 	}
 ]

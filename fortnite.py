@@ -20,11 +20,15 @@ with open('config.json', 'r') as f:
     self_xp_boost = data[0]['self_xp_boost']
     friend_xp_boost = data[0]['friend_xp_boost']
     friendaccept = data[0]['friendaccept']
+    platform = data[0]['platform']
+    status = data[0]['status']
 
 client = fortnitepy.Client(
     email=emailjson,
     password=passwordjson,
     net_cl=netcljson,
+    status=status,
+    platform=platform
 )
 
 BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
