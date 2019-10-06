@@ -203,6 +203,7 @@ async def event_friend_message(message):
     if "!purpleportal" in args[0]:
         variants = client.user.party.me.create_variants(
             item='AthenaBackpack',
+            particle_config='Particle',
             particle=1
         )
 
