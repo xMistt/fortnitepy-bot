@@ -36,6 +36,9 @@ Then fill out ``config.json`` with your configuration & run the fortnite.py file
 "bp_tier": 999999999,                                       - Sets the clients battle pass tier.
 "self_xp_boost": 999999999,                                 - Sets the clients xp boost. 
 "friend_xp_boost": 999999999,                               - Sets the clients friend xp boost.
+"status": "Created by xMistt, enjoy! <3",                   - Sets the clients presence.
+"platform": "ANDROID",                                      - Sets the clients platform seen in the lobby.
+"debug": "False",                                           - If you don't know what this means, ignore it.
 "friendaccept": "true"                                      - If the bot will accept every friend request.
 ```
 
