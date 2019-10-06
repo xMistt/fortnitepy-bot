@@ -12,8 +12,9 @@
 		"bp_tier": 999999999,
 		"self_xp_boost": 999999999,
 		"friend_xp_boost": 999999999,
-		"platform": "WIN",
 		"status": "Created by xMistt, enjoy! <3",
+		"platform": "ANDROID",
+		"debug": "False",
 		"friendaccept": "false"
 	}
 ]

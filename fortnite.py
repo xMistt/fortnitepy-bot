@@ -27,21 +27,36 @@ from fortnitepy.errors import *
 import json
 import aiohttp
 import time
+import logging
+import sys
+
+print('[FORTNITEPY] [INFO] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+
+def debugOn():
+    logger = logging.getLogger('fortnitepy.xmpp')
+    logger.setLevel(level=logging.DEBUG)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+    logger.addHandler(handler)
 
 with open('config.json') as f:
     data = json.load(f)[0]
+
+if data['debug'] == 'True':
+    print('[FORTNITEPY] [DEBUG] Logging is on, prepare for a shitstorm.')
+    debugOn()
+else:
+    print('[FORTNITEPY] [DEBUG] Logging is off.')
 
 client = fortnitepy.Client(
     email=data['email'],
     password=data['password'],
     net_cl=data['netcl'],
     status=data['status'],
-    platform=data['platform']
+    platform=fortnitepy.Platform.XBOX
 )
 
 BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
-
-print('fortnitepy-bot made by xMistt. credit to Terbau for creating the library.'.format(client))
 
 @client.event
 async def event_ready():
@@ -136,7 +151,6 @@ async def event_friend_message(message):
         await client.user.party.me.set_outfit(
             asset=id
         )
-
         await message.reply('Skin set to ' + id)
         
     if "!backpack" in args[0]:
@@ -144,7 +158,6 @@ async def event_friend_message(message):
         await client.user.party.me.set_backpack(
             asset=id
         )
-
         await message.reply('Backpack set to ' + id)
 
     if "!emote" in args[0]:
@@ -154,6 +167,18 @@ async def event_friend_message(message):
         )
 
         await message.reply('Emote set to ' + id)
+
+    if "!cidFinder" in args[0]:
+        i = 1
+        cidnumber = 10
+        while i == 1:
+            print(cidnumber)
+            await client.user.party.me.set_outfit(asset='CID_3' + str(cidnumber) + '_Athena_Commando_M_DummyS11BotAMammt')
+            cidnumber += 1
+
+    if "!rawbackpack" in args[0]:
+        rawBackpack = await client.user.party.me.backpack_variants('6c2ce028998a4b35a5ebf0ba655d1236')
+        print(rawBackpack)
 
     if "!pickaxe" in args[0]:
         id = await fetch_cosmetic_pid(' '.join(split))
@@ -175,6 +200,19 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Purple Skull Trooper!')
 
+    if "!purpleportal" in args[0]:
+        variants = client.user.party.me.create_variants(
+            item='AthenaBackpack',
+            particle=1
+        )
+
+        await client.user.party.me.set_backpack(
+            asset='BID_105_GhostPortal',
+            variants=variants
+        )
+
+        await message.reply('Skin set to Purple Skull Trooper!')
+
     if "!banner" in args[0]:
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
@@ -189,7 +227,7 @@ async def event_friend_message(message):
         args3 = int(args[3])
         variants = client.user.party.me.create_variants(**{args[2]: args3})
 
-        await client.user.party.me.set_outfit(
+        await client.user.party.me.set_backpack(
             asset=args[1],
             variants=variants
         )
