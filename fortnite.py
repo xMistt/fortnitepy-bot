@@ -1,33 +1,42 @@
+"""
+MIT License
+
+Copyright (c) 2019 Oli
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
 import fortnitepy
 from fortnitepy.errors import *
 import json
 import aiohttp
 import time
 
-with open('config.json', 'r') as f:
-    data = json.load(f)
-    emailjson = data[0]['email']
-    passwordjson = data[0]['password']
-    netcljson = data[0]['netcl']
-    cid = data[0]['cid']
-    bid = data[0]['bid']
-    eid = data[0]['eid']
-    banner = data[0]['banner']
-    banner_colour = data[0]['banner_colour']
-    level = data[0]['level']
-    bp_tier = data[0]['bp_tier']
-    self_xp_boost = data[0]['self_xp_boost']
-    friend_xp_boost = data[0]['friend_xp_boost']
-    friendaccept = data[0]['friendaccept']
-    platform = data[0]['platform']
-    status = data[0]['status']
+with open('config.json') as f:
+    data = json.load(f)[0]
 
 client = fortnitepy.Client(
-    email=emailjson,
-    password=passwordjson,
-    net_cl=netcljson,
-    status=status,
-    platform=platform
+    email=data['email'],
+    password=data['password'],
+    net_cl=data['netcl'],
+    status=data['status'],
+    platform=data['platform']
 )
 
 BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
@@ -48,19 +57,19 @@ async def event_party_invite(invitation):
 
 @client.event
 async def event_friend_request(request):
-    if friendaccept == "true":
+    if data['friendaccept'] == "true":
         await request.accept()
     else:
         await request.decline()
 
 @client.event
 async def event_party_member_join(member):
-    await client.user.party.me.set_outfit(asset=cid)
-    await client.user.party.me.set_backpack(asset=bid)
-    await client.user.party.me.set_banner(icon=banner, color=banner_colour, season_level=level)
+    await client.user.party.me.set_outfit(asset=data['cid'])
+    await client.user.party.me.set_backpack(asset=data['bid'])
+    await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
     time.sleep(2)
-    await client.user.party.me.set_emote(asset=eid)
-    await client.user.party.me.set_battlepass_info(has_purchased=True, level=bp_tier, self_boost_xp=self_xp_boost, friend_boost_xp=friend_xp_boost)
+    await client.user.party.me.set_emote(asset=data['eid'])
+    await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp=data['self_xp_boost'], friend_boost_xp=data['friend_xp_boost'])
 
 async def fetch_cosmetic_cid(display_name):
     idint = 0
