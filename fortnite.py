@@ -24,13 +24,16 @@ SOFTWARE.
 
 import fortnitepy
 from fortnitepy.errors import *
+import time as delay
+import datetime
 import json
 import aiohttp
 import time
 import logging
 import sys
 
-print('[FORTNITEPY] [INFO] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+time = datetime.datetime.now().strftime('%H:%M:%S')
+print(f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
 
 def debugOn():
     logger = logging.getLogger('fortnitepy.xmpp')
@@ -43,10 +46,12 @@ with open('config.json') as f:
     data = json.load(f)[0]
 
 if data['debug'] == 'True':
-    print('[FORTNITEPY] [DEBUG] Logging is on, prepare for a shitstorm.')
+    time = datetime.datetime.now().strftime('%H:%M:%S')
+    print(f'[FORTNITEPY] [{time}] Debug logging is on, prepare for a shitstorm.')
     debugOn()
 else:
-    print('[FORTNITEPY] [DEBUG] Logging is off.')
+    time = datetime.datetime.now().strftime('%H:%M:%S')
+    print(f'[FORTNITEPY] [{time}] Debug logging is off.')
 
 client = fortnitepy.Client(
     email=data['email'],
@@ -60,15 +65,18 @@ BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
 
 @client.event
 async def event_ready():
-    print('Client ready as {0.user.display_name}'.format(client))
+    time = datetime.datetime.now().strftime('%H:%M:%S')
+    print('[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
 
 @client.event
 async def event_party_invite(invitation):
     try:
         await invitation.accept()
-        print('[CLIENT] Accepted party invite.')
+        time = datetime.datetime.now().strftime('%H:%M:%S')
+        print(f'[FORTNITEPY] [{time}] Accepted party invite.')
     except fortnitepy.errors.PartyError:
-        print("[ERROR] Couldn't accept invitation, incompatible net_cl.")
+        time = datetime.datetime.now().strftime('%H:%M:%S')
+        print(f"[FORTNITEPY] [{time}] Couldn't accept invitation, incompatible net_cl.")
 
 @client.event
 async def event_friend_request(request):
@@ -82,7 +90,7 @@ async def event_party_member_join(member):
     await client.user.party.me.set_outfit(asset=data['cid'])
     await client.user.party.me.set_backpack(asset=data['bid'])
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
-    time.sleep(2)
+    delay.sleep(2)
     await client.user.party.me.set_emote(asset=data['eid'])
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp=data['self_xp_boost'], friend_boost_xp=data['friend_xp_boost'])
 
@@ -141,19 +149,23 @@ async def fetch_cosmetic_bid(display_name):
 
 @client.event
 async def event_friend_message(message):
+    time = datetime.datetime.now().strftime('%H:%M:%S')
     args = message.content.split()
     split = args[1:]
     joinedArguments = " ".join(split)
-    print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
+    print('[FORTNITEPY] [' + time + '] {0.author.display_name}: "{0.content}"'.format(message))
 
     if "!skin" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_cid(' '.join(split))
         await client.user.party.me.set_outfit(
             asset=id
         )
         await message.reply('Skin set to ' + id)
+        print(f"[FORTNITEPY] [{time}] Client's CID set to: " + id)
         
     if "!backpack" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_bid(' '.join(split))
         await client.user.party.me.set_backpack(
             asset=id
@@ -161,6 +173,7 @@ async def event_friend_message(message):
         await message.reply('Backpack set to ' + id)
 
     if "!emote" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_eid(' '.join(split))
         await client.user.party.me.set_emote(
             asset=id
@@ -181,6 +194,7 @@ async def event_friend_message(message):
         print(rawBackpack)
 
     if "!pickaxe" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_pid(' '.join(split))
         await client.user.party.me.set_pickaxe(
             asset=id
@@ -189,6 +203,7 @@ async def event_friend_message(message):
         await message.reply('Pickaxe set to ' + id)
 
     if "!purpleskull" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         variants = client.user.party.me.create_variants(
            clothing_color=1
         )
@@ -201,6 +216,7 @@ async def event_friend_message(message):
         await message.reply('Skin set to Purple Skull Trooper!')
 
     if "!purpleportal" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         variants = client.user.party.me.create_variants(
             item='AthenaBackpack',
             particle_config='Particle',
@@ -215,9 +231,11 @@ async def event_friend_message(message):
         await message.reply('Skin set to Purple Skull Trooper!')
 
     if "!banner" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
     if "CID_" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_outfit(
             asset=args[0]
         )
@@ -225,6 +243,7 @@ async def event_friend_message(message):
         await message.reply('Skin set to ' + args[0])
 
     if "!variants" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         args3 = int(args[3])
         variants = client.user.party.me.create_variants(**{args[2]: args3})
 
@@ -236,6 +255,7 @@ async def event_friend_message(message):
         await message.reply('Skin set to checkered Renegade Raider!')
 
     if "!checkeredrenegade" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
 
         variants = client.user.party.me.create_variants(
            material=2
@@ -249,6 +269,7 @@ async def event_friend_message(message):
         await message.reply('Skin set to ' + args[0] + '!')
 
     if "EID_" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_emote(asset="StopEmote")
         await client.user.party.me.set_emote(
             asset=args[0]
@@ -256,12 +277,14 @@ async def event_friend_message(message):
         await message.reply('Emote set to ' + args[0] + '!')
         
     if "!stop" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_emote(
             asset="StopEmote"
         )
         await message.reply('Stopped emoting.')
 
     if "BID_" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_backpack(
             asset=args[0]
         )
@@ -270,7 +293,9 @@ async def event_friend_message(message):
 
     if "!help" in args[0]:
         await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot')
+
     if "PICKAXE_ID_" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_pickaxe(
                 asset=args[0]
         )
