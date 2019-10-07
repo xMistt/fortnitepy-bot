@@ -43,7 +43,12 @@ def debugOn():
     logger.addHandler(handler)
 
 with open('config.json') as f:
+    time = datetime.datetime.now().strftime('%H:%M:%S')
+    print(f'[FORTNITEPY] [{time}] Loading config.')
     data = json.load(f)[0]
+    print(f'[FORTNITEPY] [{time}] Config loaded.')
+    
+    
 
 if data['debug'] == 'True':
     time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -68,10 +73,20 @@ async def event_ready():
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print('[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
 
+async def event_friend_presence(presence):
+    if presence.party is None:
+        return
+
+    NEW_NET_CL = presence.party.net_cl
+    client.net_cl =  NEW_NET_CL
+    print(client.net_cl)
+    client.party_build_id = "1:1:" + NEW_NET_CL
+    await client.user.party.me.leave()
+
 @client.event
-async def event_party_invite(invitation):
+async def event_party_invite(invite):
     try:
-        await invitation.accept()
+        await invite.accept()
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f'[FORTNITEPY] [{time}] Accepted party invite.')
     except fortnitepy.errors.PartyError:
@@ -95,17 +110,20 @@ async def event_party_member_join(member):
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp=data['self_xp_boost'], friend_boost_xp=data['friend_xp_boost'])
 
 async def fetch_cosmetic_cid(display_name):
-    idint = 0
-    async with aiohttp.ClientSession() as session:
-        while True:
-            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                data = await r.json()
-                type = data[idint]["type"]
-                if type == "Outfit":
-                            id = data[idint]["id"]
-                            return id
-                else:
-                    idint += 1
+    try:
+        idint = 0
+        async with aiohttp.ClientSession() as session:
+            while True:
+                async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                    data = await r.json()
+                    type = data[idint]["type"]
+                    if type == "Outfit":
+                                id = data[idint]["id"]
+                                return id
+                    else:
+                        idint += 1
+    except IndexError:
+        print('Failed to find' + display_name)
 
 async def fetch_cosmetic_eid(display_name):
     idint = 0
@@ -153,7 +171,7 @@ async def event_friend_message(message):
     args = message.content.split()
     split = args[1:]
     joinedArguments = " ".join(split)
-    print('[FORTNITEPY] [' + time + '] {0.author.display_name}: "{0.content}"'.format(message))
+    print('[FORTNITEPY] [' + time + '] {0.author.display_name}: {0.content}'.format(message))
 
     if "!skin" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -363,5 +381,6 @@ async def event_friend_message(message):
 async def event_party_message(message):
     ### NO LONGER REQUIRED! ###
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
+
 
 client.run()
