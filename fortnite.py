@@ -74,9 +74,6 @@ async def event_ready():
     print('[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
 
 async def event_friend_presence(presence):
-    if presence.party is None:
-        return
-
     NEW_NET_CL = presence.party.net_cl
     client.net_cl =  NEW_NET_CL
     print(client.net_cl)
@@ -95,13 +92,22 @@ async def event_party_invite(invite):
 
 @client.event
 async def event_friend_request(request):
+    time = datetime.datetime.now().strftime('%H:%M:%S')
+    print(f"[FORTNITEPY] [{time}] Recieved friend request from: {request.display_name}.")
+
     if data['friendaccept'] == "true":
         await request.accept()
+        print(f"[FORTNITEPY] [{time}] Accepted friend request from: {request.display_name}.")
     else:
         await request.decline()
+        print(f"[FORTNITEPY] [{time}] Declined friend request from: {request.display_name}.")
 
 @client.event
 async def event_party_member_join(member):
+    time = datetime.datetime.now().strftime('%H:%M:%S')
+    if member.display_name != 'mistxbot':
+        print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
+
     await client.user.party.me.set_outfit(asset=data['cid'])
     await client.user.party.me.set_backpack(asset=data['bid'])
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
@@ -164,7 +170,6 @@ async def fetch_cosmetic_bid(display_name):
                 else:
                     idint += 1
 
-
 @client.event
 async def event_friend_message(message):
     time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -189,6 +194,7 @@ async def event_friend_message(message):
             asset=id
         )
         await message.reply('Backpack set to ' + id)
+        print(f"[FORTNITEPY] [{time}] Client's BID set to: " + id)
 
     if "!emote" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -198,6 +204,7 @@ async def event_friend_message(message):
         )
 
         await message.reply('Emote set to ' + id)
+        print(f"[FORTNITEPY] [{time}] Client's EID set to: " + id)
 
     if "!cidFinder" in args[0]:
         i = 1
@@ -219,6 +226,7 @@ async def event_friend_message(message):
         )
 
         await message.reply('Pickaxe set to ' + id)
+        print(f"[FORTNITEPY] [{time}] Client's PICKAXE_ID set to: " + id)
 
     if "!purpleskull" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
