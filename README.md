@@ -2,7 +2,7 @@
 A fortnite XAMPP bot coded in Python with party capabilites.
 
 ## Discord Support
-<a href="https://discord.gg/9y9Sqt2"><img src="https://i.imgur.com/wWTDpdl.png"></a>
+<a href="https://discord.gg/9y9Sqt2"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
 
 ## How do I get started?
 
@@ -21,6 +21,8 @@ python3 -m pip install -U aiohttp
 
 Then fill out ``config.json`` with your configuration & run the fortnite.py file!
 
+## Commands
+For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/Commands">click here.</a>
 
 ## Config Documentation
 ```
@@ -40,28 +42,6 @@ Then fill out ``config.json`` with your configuration & run the fortnite.py file
 "platform": "ANDROID",                                      - Sets the clients platform seen in the lobby.
 "debug": "False",                                           - If you don't know what this means, ignore it.
 "friendaccept": "true"                                      - If the bot will accept every friend request.
-```
-
-## Commands
-```
-* !skin - Makes the account wear the skin specified.        Usage: !skin <skin name>
-* !emote - Makes the account do the emote specified.        Usage: !emote <skin name>
-* CID_ - Makes the account wear the CID specified.          Usage: <CID>
-* EID_ - Makes the account do the emote specified.          Usage: <EID>
-* BID_ - Makes the account wear the BID specified.          Usage: <BID>
-* PICKAXE_ID_ - Equips the pickaxe specified.               Usage: <PICKAXE_ID>
-* !purpleskull - Shortcut for purple skull trooper.         Usage: !purpleskull
-* !variants - Sets the skin variant.                        Usage: !variants <CID> <variant_type> <integer>
-* !checkeredrenegade - Shortcut for the checkered renegade. Usage: !checkeredrenegade
-* !banner - Set's the accounts banner, colour & level.      Usage: !banner <banner> <color> <level>
-* !stop - Stops the bot's emote if it's emoting.            Usage: !stop
-* !ready - Makes the bot ready up.                          Usage: !ready
-* !unready - Makes the bot unready.                         Usage: !unready
-* !bp - Changes the bot's battlepass & xp boosts.           Usage: !bp <TIER> <XP BOOST> <FRIEND XP BOOST>
-* !point - Equips specified pickaxe & does Point it Out.    Usage: !point <PICKAXE_ID_>
-* !searchpoint - Searches pickaxe & does Point it Out.      Usage: !point <PICKAXE NAME>
-* !update - Refreshes the config file.                      Usage: !update
-* !help - Shows a list of commands. (like this)             Usage: !help
 ```
 
 If you need help with ``!variants``, check out the variants wiki page: https://github.com/xMistt/fortnitepy-bot/wiki/Variants Any further help you need, feel free to join our discord support server.
