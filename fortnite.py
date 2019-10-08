@@ -311,7 +311,8 @@ async def event_friend_message(message):
             variants=variants
         )
 
-        await message.reply(f'[FORTNITEPY] [{time}] Set variants of {args[1]} to {args[2]} {args[3]}.')
+        await message.reply(f'Set variants of {args[1]} to {args[2]} {args[3]}.')
+        print(f'[FORTNITEPY] [{time}] Set variants of {args[1]} to {args[2]} {args[3]}.')
 
     if "!checkeredrenegade" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
