@@ -61,7 +61,7 @@ client = fortnitepy.Client(
     password=data['password'],
     net_cl=data['netcl'],
     status=data['status'],
-    platform=fortnitepy.Platform.ANDROID
+    platform=fortnitepy.Platform(data['platform'])
 )
 
 BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
@@ -103,8 +103,7 @@ async def event_friend_request(request):
 @client.event
 async def event_party_member_join(member):
     time = datetime.datetime.now().strftime('%H:%M:%S')
-    if member.display_name != client.display_name:
-        print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
+    print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
 
     await client.user.party.me.set_outfit(asset=data['cid'])
     await client.user.party.me.set_backpack(asset=data['bid'])
