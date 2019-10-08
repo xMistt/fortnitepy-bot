@@ -48,8 +48,6 @@ with open('config.json') as f:
     data = json.load(f)[0]
     print(f'[FORTNITEPY] [{time}] Config loaded.')
     
-    
-
 if data['debug'] == 'True':
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(f'[FORTNITEPY] [{time}] Debug logging is on, prepare for a shitstorm.')
@@ -63,7 +61,7 @@ client = fortnitepy.Client(
     password=data['password'],
     net_cl=data['netcl'],
     status=data['status'],
-    platform=fortnitepy.Platform.XBOX
+    platform=fortnitepy.Platform.ANDROID
 )
 
 BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
@@ -115,6 +113,8 @@ async def event_party_member_join(member):
     await client.user.party.me.set_emote(asset=data['eid'])
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp=data['self_xp_boost'], friend_boost_xp=data['friend_xp_boost'])
 
+
+## I PLAN ON MAKING THESE ALL 1 FUNCTION BUT I CBA RN ##
 async def fetch_cosmetic_cid(display_name):
     try:
         idint = 0
@@ -152,6 +152,32 @@ async def fetch_cosmetic_pid(display_name):
                 data = await r.json()
                 type = data[idint]["type"]
                 if type == "Harvesting Tool":
+                            id = data[idint]["id"]
+                            return id
+                else:
+                    idint += 1
+
+async def fetch_cosmetic_pcid(display_name):
+    idint = 0
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                data = await r.json()
+                backendType = data[idint]["backendType"]
+                if backendType == "AthenaPetCarrier":
+                            id = data[idint]["id"]
+                            return id
+                else:
+                    idint += 1
+
+async def fetch_cosmetic_emoji(display_name):
+    idint = 0
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                data = await r.json()
+                type = data[idint]["type"]
+                if type == "Emoticon":
                             id = data[idint]["id"]
                             return id
                 else:
@@ -199,24 +225,13 @@ async def event_friend_message(message):
     if "!emote" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_eid(' '.join(split))
+        await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
             asset=id
         )
 
         await message.reply('Emote set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's EID set to: " + id)
-
-    if "!cidFinder" in args[0]:
-        i = 1
-        cidnumber = 10
-        while i == 1:
-            print(cidnumber)
-            await client.user.party.me.set_outfit(asset='CID_3' + str(cidnumber) + '_Athena_Commando_M_DummyS11BotAMammt')
-            cidnumber += 1
-
-    if "!rawbackpack" in args[0]:
-        rawBackpack = await client.user.party.me.backpack_variants('6c2ce028998a4b35a5ebf0ba655d1236')
-        print(rawBackpack)
 
     if "!pickaxe" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -227,6 +242,24 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's PICKAXE_ID set to: " + id)
+
+    if "!pet" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
+        id = await fetch_cosmetic_pcid(' '.join(split))
+        await client.user.party.me.set_backpack(
+                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
+        )
+
+        await message.reply('Pet set to ' + id)
+        print(f"[FORTNITEPY] [{time}] Client's PetCarrier set to: " + id)
+
+    if "!emoji" in args[0]:
+        time = datetime.datetime.now().strftime('%H:%M:%S')
+        id = await fetch_cosmetic_emoji(' '.join(split))
+        await client.user.party.me.set_emote(asset='EID_ClearEmote')
+        await client.user.party.me.set_emote(
+                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
+        )
 
     if "!purpleskull" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -328,9 +361,15 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to ' + args[0] + '!')
 
-    if "!pettest" in args[0]:
+    if "PetCarrier_" in args[0]:
         await client.user.party.me.set_backpack(
-                asset='PetCarrier_001_Dog'
+                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + args[0] + "." + args[0]
+        )
+
+    if "Emoji_" in args[0]:
+        await client.user.party.me.set_emote(asset='EID_ClearEmote')
+        await client.user.party.me.set_emote(
+                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + args[0] + "." + args[0]
         )
 
     if "!legacypickaxe" in args[0]:
@@ -363,24 +402,6 @@ async def event_friend_message(message):
         await client.user.party.me.set_emote(asset='EID_IceKing')
 
         await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
-
-    if "!update" in args[0]:
-        with open('config.json', 'r') as f:
-            data = json.load(f)
-            emailjson = data[0]['email']
-            passwordjson = data[0]['password']
-            netcljson = data[0]['netcl']
-            cid = data[0]['cid']
-            bid = data[0]['bid']
-            eid = data[0]['eid']
-            banner = data[0]['banner']
-            banner_colour = data[0]['banner_colour']
-            level = data[0]['level']
-            bp_tier = data[0]['bp_tier']
-            self_xp_boost = data[0]['self_xp_boost']
-            friend_xp_boost = data[0]['friend_xp_boost']
-            friendaccept = data[0]['friendaccept']
-        await message.reply('Updated config.json!')
 
     if "!echo" in args[0]:
         await client.user.party.send(joinedArguments)
