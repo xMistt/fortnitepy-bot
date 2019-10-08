@@ -103,7 +103,7 @@ async def event_friend_request(request):
 @client.event
 async def event_party_member_join(member):
     time = datetime.datetime.now().strftime('%H:%M:%S')
-    if member.display_name != 'mistxbot':
+    if member.display_name != client.display_name:
         print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
 
     await client.user.party.me.set_outfit(asset=data['cid'])
