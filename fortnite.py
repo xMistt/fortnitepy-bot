@@ -406,6 +406,12 @@ async def event_friend_message(message):
     if "!echo" in args[0]:
         await client.user.party.send(joinedArguments)
 
+    if "!status" in args[0]:
+        await client.set_status(joinedArguments)
+
+        await message.reply(f'Status set to {joinedArguments}')
+        print(f'[FORTNITEPY] [{time}] Status set to {joinedArguments}.')
+
 @client.event
 async def event_party_message(message):
     ### NO LONGER REQUIRED! ###
