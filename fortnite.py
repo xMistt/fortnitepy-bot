@@ -306,12 +306,12 @@ async def event_friend_message(message):
         args3 = int(args[3])
         variants = client.user.party.me.create_variants(**{args[2]: args3})
 
-        await client.user.party.me.set_backpack(
+        await client.user.party.me.set_outfit(
             asset=args[1],
             variants=variants
         )
 
-        await message.reply('Skin set to checkered Renegade Raider!')
+        await message.reply(f'[FORTNITEPY] [{time}] Set variants of {args[1]} to {args[2]} {args[3]}.')
 
     if "!checkeredrenegade" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
