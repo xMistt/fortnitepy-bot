@@ -24,6 +24,7 @@ SOFTWARE.
 
 import fortnitepy
 from fortnitepy.errors import *
+import asyncio
 import time as delay
 import datetime
 import json
@@ -70,13 +71,6 @@ BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
 async def event_ready():
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print('[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
-
-async def event_friend_presence(presence):
-    NEW_NET_CL = presence.party.net_cl
-    client.net_cl =  NEW_NET_CL
-    print(client.net_cl)
-    client.party_build_id = "1:1:" + NEW_NET_CL
-    await client.user.party.me.leave()
 
 @client.event
 async def event_party_invite(invite):
@@ -207,7 +201,8 @@ async def event_friend_message(message):
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_cid(' '.join(split))
         await client.user.party.me.set_outfit(
-            asset=id
+            asset=id,
+            variants=None
         )
         await message.reply('Skin set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's CID set to: " + id)
@@ -303,12 +298,25 @@ async def event_friend_message(message):
     if "!variants" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
         args3 = int(args[3])
-        variants = client.user.party.me.create_variants(**{args[2]: args3})
 
-        await client.user.party.me.set_outfit(
-            asset=args[1],
-            variants=variants
-        )
+        if 'CID' in args[1]:
+            variants = client.user.party.me.create_variants(**{args[2]: args3})
+            await client.user.party.me.set_outfit(
+                asset=args[1],
+                variants=variants
+            )
+        elif 'BID' in args[1]:
+            variants = client.user.party.me.create_variants(item='AthenaBackpack', **{args[2]: args3})
+            await client.user.party.me.set_backpack(
+                asset=args[1],
+                variants=variants
+            )
+        elif 'PICKAXE_ID' in args[1]:
+            variants = client.user.party.me.create_variants(item='AthenaPickaxe', **{args[2]: args3})
+            await client.user.party.me.set_pickaxe(
+                asset=args[1],
+                variants=variants
+            )
 
         await message.reply(f'Set variants of {args[1]} to {args[2]} {args[3]}.')
         print(f'[FORTNITEPY] [{time}] Set variants of {args[1]} to {args[2]} {args[3]}.')
@@ -411,6 +419,13 @@ async def event_friend_message(message):
 
         await message.reply(f'Status set to {joinedArguments}')
         print(f'[FORTNITEPY] [{time}] Status set to {joinedArguments}.')
+
+    if "!leave" in args[0]:
+        await client.user.party.me.set_emote('EID_Wave')
+        delay.sleep(2)
+        await client.user.party.me.leave()
+        await message.reply('Bye!')
+        print(f'[FORTNITEPY] [{time}] Left the party as I was requested.')
 
 @client.event
 async def event_party_message(message):
