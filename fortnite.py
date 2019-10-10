@@ -197,7 +197,7 @@ async def event_friend_message(message):
     joinedArguments = " ".join(split)
     print('[FORTNITEPY] [' + time + '] {0.author.display_name}: {0.content}'.format(message))
 
-    if "!skin" in args[0]:
+    if "!skin" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_cid(' '.join(split))
         await client.user.party.me.set_outfit(
@@ -207,7 +207,7 @@ async def event_friend_message(message):
         await message.reply('Skin set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's CID set to: " + id)
         
-    if "!backpack" in args[0]:
+    if "!backpack" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_bid(' '.join(split))
         await client.user.party.me.set_backpack(
@@ -216,7 +216,7 @@ async def event_friend_message(message):
         await message.reply('Backpack set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's BID set to: " + id)
 
-    if "!emote" in args[0]:
+    if "!emote" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_eid(' '.join(split))
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
@@ -227,7 +227,7 @@ async def event_friend_message(message):
         await message.reply('Emote set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's EID set to: " + id)
 
-    if "!pickaxe" in args[0]:
+    if "!pickaxe" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_pid(' '.join(split))
         await client.user.party.me.set_pickaxe(
@@ -237,7 +237,7 @@ async def event_friend_message(message):
         await message.reply('Pickaxe set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's PICKAXE_ID set to: " + id)
 
-    if "!pet" in args[0]:
+    if "!pet" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_pcid(' '.join(split))
         await client.user.party.me.set_backpack(
@@ -247,7 +247,7 @@ async def event_friend_message(message):
         await message.reply('Pet set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's PetCarrier set to: " + id)
 
-    if "!emoji" in args[0]:
+    if "!emoji" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         id = await fetch_cosmetic_emoji(' '.join(split))
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
@@ -255,7 +255,9 @@ async def event_friend_message(message):
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
         )
 
-    if "!purpleskull" in args[0]:
+        print(f"[FORTNITEPY] [{time}] Client's Emoji set to" + id)
+
+    if "!purpleskull" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         variants = client.user.party.me.create_variants(
            clothing_color=1
@@ -268,7 +270,7 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Purple Skull Trooper!')
 
-    if "!purpleportal" in args[0]:
+    if "!purpleportal" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         variants = client.user.party.me.create_variants(
             item='AthenaBackpack',
@@ -281,21 +283,25 @@ async def event_friend_message(message):
             variants=variants
         )
 
-        await message.reply('Skin set to Purple Skull Trooper!')
+        await message.reply('Backpack set to Purple Ghost Portal!')
 
-    if "!banner" in args[0]:
+    if "!banner" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
-    if "CID_" in args[0]:
+        await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
+        print(f"[FORTNITEPY] [{time}] Banner set to; " + args[1] + args[2] + args[3])
+
+    if "CID_" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_outfit(
             asset=args[0]
         )
 
-        await message.reply('Skin set to ' + args[0])
+        await message.reply(f'Skin set to {args[0]}')
+        await print(f'[FORTNITEPY] [{time}] Skin set to ' + args[0])
 
-    if "!variants" in args[0]:
+    if "!variants" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         args3 = int(args[3])
 
@@ -321,7 +327,7 @@ async def event_friend_message(message):
         await message.reply(f'Set variants of {args[1]} to {args[2]} {args[3]}.')
         print(f'[FORTNITEPY] [{time}] Set variants of {args[1]} to {args[2]} {args[3]}.')
 
-    if "!checkeredrenegade" in args[0]:
+    if "!checkeredrenegade" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
 
         variants = client.user.party.me.create_variants(
@@ -333,9 +339,9 @@ async def event_friend_message(message):
             variants=variants
         )
 
-        await message.reply('Skin set to ' + args[0] + '!')
+        await message.reply('Skin set to Checkered Renegade!')
 
-    if "EID_" in args[0]:
+    if "EID_" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_emote(asset="StopEmote")
         await client.user.party.me.set_emote(
@@ -343,14 +349,14 @@ async def event_friend_message(message):
         )
         await message.reply('Emote set to ' + args[0] + '!')
         
-    if "!stop" in args[0]:
+    if "!stop" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_emote(
             asset="StopEmote"
         )
         await message.reply('Stopped emoting.')
 
-    if "BID_" in args[0]:
+    if "BID_" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_backpack(
             asset=args[0]
@@ -358,10 +364,10 @@ async def event_friend_message(message):
 
         await message.reply('Backbling set to ' + message.content + '!')
 
-    if "!help" in args[0]:
+    if "!help" in args[0].lower():
         await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot')
 
-    if "PICKAXE_ID_" in args[0]:
+    if "PICKAXE_ID_" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_pickaxe(
                 asset=args[0]
@@ -369,63 +375,95 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to ' + args[0] + '!')
 
-    if "PetCarrier_" in args[0]:
+    if "PetCarrier_" in args[0].lower():
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + args[0] + "." + args[0]
         )
 
-    if "Emoji_" in args[0]:
+    if "Emoji_" in args[0].lower():
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + args[0] + "." + args[0]
         )
 
-    if "!legacypickaxe" in args[0]:
+    if "!legacypickaxe" in args[0].lower():
         await client.user.party.me.set_pickaxe(
                 asset=args[1]
         )
 
         await message.reply('Pickaxe set to ' + args[1] + '!')
 
-    if "!ready" in args[0]:
+    if "!ready" in args[0].lower():
         await client.user.party.me.set_ready(True)
         await message.reply('Ready!')
 
-    if "!unready" in args[0]:
+    if ("!unready" in args[0].lower()) or ("!sitin" in args[0].lower()):
         await client.user.party.me.set_ready(False)
         await message.reply('Unready!')
 
-    if "!bp" in args[0]:
+    if "!sitout" in args[0].lower():
+        await client.user.party.me.set_ready('SittingOut')
+        await message.reply('Sitting Out!')
+
+    if "!bp" in args[0].lower():
         await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp=args[2], friend_boost_xp=args[3])
 
-    if "!point" in args[0]:
+    if "!point" in args[0].lower():
         await client.user.party.me.set_pickaxe(asset=args[1])
         await client.user.party.me.set_emote(asset='EID_IceKing')
 
         await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
 
-    if "!searchpoint" in args[0]:
+    if "!searchpoint" in args[0].lower():
         id = await fetch_cosmetic_pid(' '.join(split))
         await client.user.party.me.set_pickaxe(asset=id)
         await client.user.party.me.set_emote(asset='EID_IceKing')
 
         await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
 
-    if "!echo" in args[0]:
+    if "!echo" in args[0].lower():
         await client.user.party.send(joinedArguments)
 
-    if "!status" in args[0]:
+    if "!status" in args[0].lower():
         await client.set_status(joinedArguments)
 
         await message.reply(f'Status set to {joinedArguments}')
         print(f'[FORTNITEPY] [{time}] Status set to {joinedArguments}.')
 
-    if "!leave" in args[0]:
+    if "!leave" in args[0].lower():
         await client.user.party.me.set_emote('EID_Wave')
         delay.sleep(2)
         await client.user.party.me.leave()
         await message.reply('Bye!')
         print(f'[FORTNITEPY] [{time}] Left the party as I was requested.')
+
+    if "!kick" in args[0].lower():
+        user = await client.fetch_profile(args[1])
+        member = client.user.party.members.get(user.id)
+        if member is None:
+            await message.reply("Couldn't find that user, are you sure they're in the party?")
+        else:
+            try:
+                await member.kick()
+                await message.reply(f"Kicked user: {member.display_name}.")
+                print(f"[FORTNITEPY] [{time}] Kicked user: {member.display_name}")
+            except fortnitepy.PartyPermissionError:
+                await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
+                print(f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as I don't have the required permissions.")
+
+    if "!promote" in args[0].lower():
+        user = await client.fetch_profile(args[1])
+        member = client.user.party.members.get(user.id)
+        if member is None:
+            await message.reply("Couldn't find that user, are you sure they're in the party?")
+        else:
+            try:
+                await member.promote()
+                await message.reply(f"Promoted user: {member.display_name}.")
+                print(f"[FORTNITEPY] [{time}] Promoted user: {member.display_name}")
+            except fortnitepy.PartyPermissionError:
+                await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
+                print(f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions.")
 
 @client.event
 async def event_party_message(message):
