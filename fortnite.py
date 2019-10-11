@@ -311,7 +311,7 @@ async def event_friend_message(message):
         await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
         print(f"[FORTNITEPY] [{time}] Banner set to; " + args[1] + args[2] + args[3])
 
-    if "CID_" in args[0].lower():
+    if "CID_" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_outfit(
             asset=args[0]
@@ -320,7 +320,7 @@ async def event_friend_message(message):
         await message.reply(f'Skin set to {args[0]}')
         await print(f'[FORTNITEPY] [{time}] Skin set to ' + args[0])
 
-    if "!variants" in args[0].lower():
+    if "!variants" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
         args3 = int(args[3])
 
@@ -360,7 +360,7 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Checkered Renegade!')
 
-    if "EID_" in args[0].lower():
+    if "EID_" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_emote(asset="StopEmote")
         await client.user.party.me.set_emote(
@@ -373,7 +373,7 @@ async def event_friend_message(message):
         await client.user.party.me.clear_emote()
         await message.reply('Stopped emoting.')
 
-    if "BID_" in args[0].lower():
+    if "BID_" in args[0]:
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await client.user.party.me.set_backpack(
             asset=args[0]
@@ -392,12 +392,12 @@ async def event_friend_message(message):
 
         await message.reply('Pickaxe set to ' + args[0] + '!')
 
-    if "PetCarrier_" in args[0].lower():
+    if "PetCarrier_" in args[0]:
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + args[0] + "." + args[0]
         )
 
-    if "Emoji_" in args[0].lower():
+    if "Emoji_" in args[0]:
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + args[0] + "." + args[0]
