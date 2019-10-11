@@ -22,22 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import fortnitepy
-from fortnitepy.errors import *
-import asyncio
-import time as delay
-import datetime
-import json
-import aiohttp
-import time
-import logging
-import sys
-
-from colorama import init
-init(autoreset=True)
-
-from colorama import Fore, Back, Style
-
 class color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
@@ -50,7 +34,25 @@ class color:
    UNDERLINE = '\033[4m'
    END = '\033[0m'
 
-time = datetime.datetime.now().strftime('%H:%M:%S')
+try:
+    import fortnitepy
+    from fortnitepy.errors import *
+    import asyncio
+    import time as delay
+    import datetime
+    import json
+    import aiohttp
+    import time
+    import logging
+    import sys
+    from colorama import init
+    init(autoreset=True)
+    from colorama import Fore, Back, Style
+
+except ModuleNotFoundError:
+    print(color.RED + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".' + color.END)
+    exit()
+
 print(color.BOLD + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
 
 def debugOn():
@@ -481,6 +483,14 @@ async def event_friend_message(message):
             except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
+
+    if "!gamemode" in args[0].lower():
+        try:
+            await client.user.party.set_playlist(playlist=args[1])
+        except fortnitepy.PartyPermissionError:
+                await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
+                print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
+
 
 @client.event
 async def event_party_message(message):
