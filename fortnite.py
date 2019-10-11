@@ -46,7 +46,7 @@ try:
     import logging
     import sys
     from colorama import init
-    init(autoreset=True)
+    init(autoreset=True, convert=True)
     from colorama import Fore, Back, Style
 
 except ModuleNotFoundError:
