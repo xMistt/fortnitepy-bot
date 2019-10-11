@@ -87,7 +87,7 @@ BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
 @client.event
 async def event_ready():
     time = datetime.datetime.now().strftime('%H:%M:%S')
-    print('[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
+    print(Fore.GREEN + '[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
 
 @client.event
 async def event_party_invite(invite):
@@ -114,7 +114,6 @@ async def event_friend_request(request):
 @client.event
 async def event_party_member_join(member):
     time = datetime.datetime.now().strftime('%H:%M:%S')
-    print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
 
     await client.user.party.me.set_outfit(asset=data['cid'])
     await client.user.party.me.set_backpack(asset=data['bid'])
@@ -122,6 +121,9 @@ async def event_party_member_join(member):
     delay.sleep(2)
     await client.user.party.me.set_emote(asset=data['eid'])
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp=data['self_xp_boost'], friend_boost_xp=data['friend_xp_boost'])
+    
+    if client.user.display_name != member.display_name:
+        print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
 
 
 ## I PLAN ON MAKING THESE ALL 1 FUNCTION BUT I CBA RN ##
@@ -453,7 +455,7 @@ async def event_friend_message(message):
         print(f'[FORTNITEPY] [{time}] Left the party as I was requested.')
 
     if "!kick" in args[0].lower():
-        user = await client.fetch_profile(args[1])
+        user = await client.fetch_profile(joinedArguments)
         member = client.user.party.members.get(user.id)
         if member is None:
             await message.reply("Couldn't find that user, are you sure they're in the party?")
@@ -467,7 +469,7 @@ async def event_friend_message(message):
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
 
     if "!promote" in args[0].lower():
-        user = await client.fetch_profile(args[1])
+        user = await client.fetch_profile(joinedArguments)
         member = client.user.party.members.get(user.id)
         if member is None:
             await message.reply("Couldn't find that user, are you sure they're in the party?")
@@ -486,4 +488,7 @@ async def event_party_message(message):
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
 
-client.run()
+try:
+    client.run()
+except fortnitepy.AuthException:
+    print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Couldn't log into the account, is config.json filled out?")
