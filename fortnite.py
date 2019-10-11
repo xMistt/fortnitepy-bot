@@ -33,8 +33,25 @@ import time
 import logging
 import sys
 
+from colorama import init
+init(autoreset=True)
+
+from colorama import Fore, Back, Style
+
+class color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+
 time = datetime.datetime.now().strftime('%H:%M:%S')
-print(f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+print(color.BOLD + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
 
 def debugOn():
     logger = logging.getLogger('fortnitepy.xmpp')
@@ -78,9 +95,9 @@ async def event_party_invite(invite):
         await invite.accept()
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f'[FORTNITEPY] [{time}] Accepted party invite.')
-    except fortnitepy.errors.PartyError:
+    except fortnitepy.PartyError:
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        print(f"[FORTNITEPY] [{time}] Couldn't accept invitation, incompatible net_cl.")
+        print(Fore.RED + f"[FORTNITEPY] [{time}] Couldn't accept invitation, incompatible net_cl." + Fore.WHITE)
 
 @client.event
 async def event_friend_request(request):
@@ -351,9 +368,7 @@ async def event_friend_message(message):
         
     if "!stop" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        await client.user.party.me.set_emote(
-            asset="StopEmote"
-        )
+        await client.user.party.me.clear_emote()
         await message.reply('Stopped emoting.')
 
     if "BID_" in args[0].lower():
@@ -449,7 +464,7 @@ async def event_friend_message(message):
                 print(f"[FORTNITEPY] [{time}] Kicked user: {member.display_name}")
             except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
-                print(f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as I don't have the required permissions.")
+                print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
 
     if "!promote" in args[0].lower():
         user = await client.fetch_profile(args[1])
@@ -463,7 +478,7 @@ async def event_friend_message(message):
                 print(f"[FORTNITEPY] [{time}] Promoted user: {member.display_name}")
             except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
-                print(f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions.")
+                print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
 
 @client.event
 async def event_party_message(message):
