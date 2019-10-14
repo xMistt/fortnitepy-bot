@@ -46,7 +46,7 @@ try:
     import logging
     import sys
     from colorama import init
-    init(autoreset=True, convert=True)
+    init(autoreset=True)
     from colorama import Fore, Back, Style
 
 except ModuleNotFoundError:
@@ -86,6 +86,22 @@ client = fortnitepy.Client(
 
 BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
 
+async def fetch_cosmetic_id(display_name, cosmeticType):
+    try:
+        idint = 0
+        async with aiohttp.ClientSession() as session:
+            while True:
+                async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
+                    data = await r.json()
+                    backendType = data[idint]["backendType"]
+                    if backendType == cosmeticType:
+                                id = data[idint]["id"]
+                                return id
+                    else:
+                        idint += 1
+    except IndexError:
+        print('Failed to find' + display_name)
+
 @client.event
 async def event_ready():
     time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -106,7 +122,7 @@ async def event_friend_request(request):
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(f"[FORTNITEPY] [{time}] Recieved friend request from: {request.display_name}.")
 
-    if data['friendaccept'] == "true":
+    if (data['friendaccept'] == "true") or (data['friendaccept'] == "True"):
         await request.accept()
         print(f"[FORTNITEPY] [{time}] Accepted friend request from: {request.display_name}.")
     else:
@@ -127,89 +143,6 @@ async def event_party_member_join(member):
     if client.user.display_name != member.display_name:
         print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
 
-
-## I PLAN ON MAKING THESE ALL 1 FUNCTION BUT I CBA RN ##
-async def fetch_cosmetic_cid(display_name):
-    try:
-        idint = 0
-        async with aiohttp.ClientSession() as session:
-            while True:
-                async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                    data = await r.json()
-                    type = data[idint]["type"]
-                    if type == "Outfit":
-                                id = data[idint]["id"]
-                                return id
-                    else:
-                        idint += 1
-    except IndexError:
-        print('Failed to find' + display_name)
-
-async def fetch_cosmetic_eid(display_name):
-    idint = 0
-    async with aiohttp.ClientSession() as session:
-        while True:
-            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                data = await r.json()
-                type = data[idint]["type"]
-                if type == "Emote":
-                            id = data[idint]["id"]
-                            return id
-                else:
-                    idint += 1
-
-async def fetch_cosmetic_pid(display_name):
-    idint = 0
-    async with aiohttp.ClientSession() as session:
-        while True:
-            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                data = await r.json()
-                type = data[idint]["type"]
-                if type == "Harvesting Tool":
-                            id = data[idint]["id"]
-                            return id
-                else:
-                    idint += 1
-
-async def fetch_cosmetic_pcid(display_name):
-    idint = 0
-    async with aiohttp.ClientSession() as session:
-        while True:
-            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                data = await r.json()
-                backendType = data[idint]["backendType"]
-                if backendType == "AthenaPetCarrier":
-                            id = data[idint]["id"]
-                            return id
-                else:
-                    idint += 1
-
-async def fetch_cosmetic_emoji(display_name):
-    idint = 0
-    async with aiohttp.ClientSession() as session:
-        while True:
-            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                data = await r.json()
-                type = data[idint]["type"]
-                if type == "Emoticon":
-                            id = data[idint]["id"]
-                            return id
-                else:
-                    idint += 1
-                    
-async def fetch_cosmetic_bid(display_name):
-    idint = 0
-    async with aiohttp.ClientSession() as session:
-        while True:
-            async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                data = await r.json()
-                type = data[idint]["type"]
-                if type == "Back Bling":
-                            id = data[idint]["id"]
-                            return id
-                else:
-                    idint += 1
-
 @client.event
 async def event_friend_message(message):
     time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -220,7 +153,7 @@ async def event_friend_message(message):
 
     if "!skin" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        id = await fetch_cosmetic_cid(' '.join(split))
+        id = await fetch_cosmetic_id(' '.join(split), 'AthenaCharacter')
         await client.user.party.me.set_outfit(
             asset=id,
             variants=None
@@ -230,7 +163,7 @@ async def event_friend_message(message):
         
     if "!backpack" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        id = await fetch_cosmetic_bid(' '.join(split))
+        id = await fetch_cosmetic_id(' '.join(split), 'AthenaBackpack')
         await client.user.party.me.set_backpack(
             asset=id
         )
@@ -239,7 +172,7 @@ async def event_friend_message(message):
 
     if "!emote" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        id = await fetch_cosmetic_eid(' '.join(split))
+        id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
             asset=id
@@ -250,7 +183,7 @@ async def event_friend_message(message):
 
     if "!pickaxe" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        id = await fetch_cosmetic_pid(' '.join(split))
+        id = await fetch_cosmetic_id(' '.join(split), 'AthenaPickaxe')
         await client.user.party.me.set_pickaxe(
             asset=id
         )
@@ -260,7 +193,7 @@ async def event_friend_message(message):
 
     if "!pet" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        id = await fetch_cosmetic_pcid(' '.join(split))
+        id = await fetch_cosmetic_id(' '.join(split), 'AthenaPetCarrier')
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
         )
@@ -270,13 +203,14 @@ async def event_friend_message(message):
 
     if "!emoji" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
-        id = await fetch_cosmetic_emoji(' '.join(split))
+        id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
         )
 
-        print(f"[FORTNITEPY] [{time}] Client's Emoji set to" + id)
+        await message.reply('Emoji set to ' + id)
+        print(f"[FORTNITEPY] [{time}] Client's Emoji set to " + id)
 
     if "!purpleskull" in args[0].lower():
         time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -427,19 +361,6 @@ async def event_friend_message(message):
     if "!bp" in args[0].lower():
         await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp=args[2], friend_boost_xp=args[3])
 
-    if "!point" in args[0].lower():
-        await client.user.party.me.set_pickaxe(asset=args[1])
-        await client.user.party.me.set_emote(asset='EID_IceKing')
-
-        await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
-
-    if "!searchpoint" in args[0].lower():
-        id = await fetch_cosmetic_pid(' '.join(split))
-        await client.user.party.me.set_pickaxe(asset=id)
-        await client.user.party.me.set_emote(asset='EID_IceKing')
-
-        await message.reply('Pickaxe set to ' + args[1] + ' & Point It Out played.')
-
     if "!echo" in args[0].lower():
         await client.user.party.send(joinedArguments)
 
@@ -484,19 +405,17 @@ async def event_friend_message(message):
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
 
-    if "!gamemode" in args[0].lower():
+    if "Playlist_" in args[0]:
         try:
-            await client.user.party.set_playlist(playlist=args[1])
+            await client.user.party.set_playlist(playlist=args[0])
         except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
-
 
 @client.event
 async def event_party_message(message):
     ### NO LONGER REQUIRED! ###
     print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
-
 
 try:
     client.run()
