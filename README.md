@@ -2,7 +2,7 @@
 A fortnite XAMPP bot coded in Python with party capabilites.
 
 ## Discord Support
-<a href="https://discord.gg/9y9Sqt2"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
+<a href="https://discord.gg/Aqvz5Xj"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
 
 ## How do I get started?
 
