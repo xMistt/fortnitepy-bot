@@ -2,19 +2,17 @@
 	{
 		"email": "",
 		"password": "",
-		"netcl": "8371783",
-		"cid": "CID_313_Athena_Commando_M_KpopFashion",
-		"bid": "BID_138_Celestial",
-		"eid": "EID_DeepDab",
+		"netcl": "9403777",
+		"cid": "CID_565_Athena_Commando_F_RockClimber",
+		"bid": "BID_023_Pinkbear",
+		"eid": "EID_FingerGunsV2",
 		"banner": "otherbanner28",
 		"banner_colour": "defaultcolor15",
-		"level": "100",
+		"level": "999",
 		"bp_tier": 999999999,
-		"self_xp_boost": 999999999,
-		"friend_xp_boost": 999999999,
 		"status": "Created by xMistt, enjoy! <3",
 		"platform": "AND",
 		"debug": "False",
-		"friendaccept": "false"
+		"friendaccept": "True"
 	}
 ]
