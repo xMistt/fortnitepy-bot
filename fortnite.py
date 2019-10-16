@@ -97,7 +97,7 @@ async def fetch_cosmetic_id(display_name, cosmeticType):
                     else:
                         idint += 1
     except IndexError:
-        print('Failed to find' + display_name)
+        return 'None'
 
 @client.event
 async def event_ready():
@@ -164,13 +164,13 @@ async def event_friend_message(message):
 
     if "!emote" in args[0].lower():
         id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
-        await client.user.party.me.set_emote(asset='EID_ClearEmote')
-        await client.user.party.me.set_emote(
-            asset=id
-        )
-
-        await message.reply('Emote set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Client's EID set to: " + id)
+        if id == 'None':
+            await message.reply(f'Failed to find an emote by the name: {joinedArguments}')
+        else:
+            await client.user.party.me.clear_emote()
+            await client.user.party.me.set_emote(asset=id)
+            await message.reply('Emote set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Client's EID set to: " + id)
 
     if "!pickaxe" in args[0].lower():
         id = await fetch_cosmetic_id(' '.join(split), 'AthenaPickaxe')
@@ -192,7 +192,7 @@ async def event_friend_message(message):
 
     if "!emoji" in args[0].lower():
         id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
-        await client.user.party.me.set_emote(asset='EID_ClearEmote')
+        await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
         )
@@ -278,7 +278,7 @@ async def event_friend_message(message):
         await message.reply('Skin set to Checkered Renegade!')
 
     if "EID_" in args[0]:
-        await client.user.party.me.set_emote(asset="StopEmote")
+        await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
             asset=args[0]
         )
@@ -391,6 +391,14 @@ async def event_friend_message(message):
         except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
+
+    if "!platform" in args[0]:
+        await message.reply('Setting platform to ' + args[1])
+        party_id = client.user.party.id
+        await client.user.party.me.leave()
+        client.platform = fortnitepy.Platform(args[1])
+        await message.reply('Platform set to ' + str(client.platform))
+        await client.join_to_party(party_id)
 
 @client.event
 async def event_party_message(message):
