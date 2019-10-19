@@ -76,7 +76,6 @@ else:
 client = fortnitepy.Client(
     email=data['email'],
     password=data['password'],
-    net_cl=data['netcl'],
     status=data['status'],
     platform=fortnitepy.Platform(data['platform'])
 )
@@ -227,10 +226,17 @@ async def event_friend_message(message):
         await message.reply('Backpack set to Purple Ghost Portal!')
 
     if "!banner" in args[0].lower():
-        await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
+        if len(args) == 1:
+            await message.reply('You need to specify which banner, color & level you want to set the banner as.')
+        if len(args) == 2:
+            await client.user.party.me.set_banner(icon=args[1], color=data['banner_colour'], season_level=data['level'])
+        if len(args) == 3:
+            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
+        if len(args) == 4:
+            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
         await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
-        print(f"[FORTNITEPY] [{time}] Banner set to; " + args[1] + args[2] + args[3])
+        print(f"[FORTNITEPY] [{time}] Banner set to; {args[1]} {args[2]} {args[3]}")
 
     if "CID_" in args[0]:
         await client.user.party.me.set_outfit(
@@ -332,14 +338,14 @@ async def event_friend_message(message):
         await message.reply('Unready!')
 
     if "!sitout" in args[0].lower():
-        await client.user.party.me.set_ready('SittingOut')
+        await client.user.party.me.set_ready(None)
         await message.reply('Sitting Out!')
 
     if "!bp" in args[0].lower():
         await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
 
     if "!level" in args[0].lower():
-        await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=args[1])
+        await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
 
     if "!echo" in args[0].lower():
         await client.user.party.send(joinedArguments)
@@ -393,12 +399,15 @@ async def event_friend_message(message):
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
 
     if "!platform" in args[0]:
-        await message.reply('Setting platform to ' + args[1])
+        await message.reply('Setting platform to ' + args[1] + '.')
         party_id = client.user.party.id
         await client.user.party.me.leave()
         client.platform = fortnitepy.Platform(args[1])
-        await message.reply('Platform set to ' + str(client.platform))
-        await client.join_to_party(party_id)
+        await message.reply('Platform set to ' + str(client.platform) + '.')
+        try:
+            await client.join_to_party(party_id, check_private=True)
+        except fortnitepy.Forbidden:
+            await message.reply('Failed to join back as party is set to private.')
 
 @client.event
 async def event_party_message(message):
