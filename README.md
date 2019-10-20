@@ -13,13 +13,9 @@ A fortnite XAMPP bot coded in Python with party capabilites.
 # windows
 py -3 -m pip install -U fortnitepy
 py -3 -m pip install -U aiohttp
-py -3 -m pip install -U colorama
-
 # linux / macOS
 python3 -m pip install -U fortnitepy
-python3 -m pip install -U aiohttp
-python3 -m pip install -U colorama
-```
+python3 -m pip install -U aiohttp```
 
 Then fill out ``config.json`` with your configuration & run the fortnite.py file!
 
@@ -30,13 +26,12 @@ For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/C
 ```
 "email": "",                                                - The bot accounts email.
 "password": "",                                             - The bot accounts password.
-"netcl": "9403777",                                         - Fortnite party netcl.
 "cid": "CID_313_Athena_Commando_M_KpopFashion",             - The skin that the bot wears when it joins.
 "bid": "BID_138_Celestial",                                 - The backpack that the bot wears when it joins.
 "eid": "EID_DeepDab",                                       - The emote that the bot does when it joins.
 "banner": "otherbanner28",                                  - The banner icon the bot uses.
 "banner_colour": "defaultcolor15",                          - The colour of the banner icon.
-"level": "100",                                             - Sets the clients level. (seen on its banner)
+"level": "100",                                             - Sets the clients level.
 "bp_tier": 999999999,                                       - Sets the clients battle pass tier.
 "status": "Created by xMistt, enjoy! <3",                   - Sets the clients presence.
 "platform": "ANDROID",                                      - Sets the clients platform seen in the lobby.
