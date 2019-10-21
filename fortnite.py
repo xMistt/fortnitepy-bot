@@ -45,6 +45,7 @@ try:
     import time
     import logging
     import sys
+    import random
     from colorama import init
     init(autoreset=True)
     from colorama import Fore, Back, Style
@@ -97,6 +98,25 @@ async def fetch_cosmetic_id(display_name, cosmeticType):
                         idint += 1
     except IndexError:
         return 'None'
+
+async def fetch_random_cosmetic(cosmeticType):
+    if cosmeticType == 'emote':
+        idint = random.randint(1,283)
+    if cosmeticType == 'backpack':
+        idint = random.randint(1,366)
+        cosmeticType = 'Back Bling'
+    if cosmeticType == 'outfit':
+        idint = random.randint(1,555)
+    if cosmeticType == 'pickaxe':
+        idint = random.randint(1,295)
+        cosmeticType = 'Harvesting Tool'
+
+    async with aiohttp.ClientSession() as session:
+        while True:
+            async with session.get(BEN_BOT_BASE, params={'type': cosmeticType}) as r:
+                data = await r.json()
+                id = data[idint]["id"]
+                return id
 
 @client.event
 async def event_ready():
@@ -152,6 +172,34 @@ async def event_friend_message(message):
         )
         await message.reply('Skin set to ' + id)
         print(f"[FORTNITEPY] [{time}] Client's CID set to: " + id)
+
+    if "!random" in args[0].lower():
+        id = await fetch_random_cosmetic(args[1])
+        if 'EID' in id:
+            await client.user.party.me.clear_emote()
+            await client.user.party.me.set_emote(
+                asset=id,
+            )
+            await message.reply('Emote set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Client's EID set to: " + id)
+        if 'CID' in id:
+            await client.user.party.me.set_outfit(
+                asset=id,
+            )
+            await message.reply('Skin set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Client's CID set to: " + id)
+        if 'PICKAXE_ID' in id:
+            await client.user.party.me.set_pickaxe(
+                asset=id,
+            )
+            await message.reply('Pickaxe set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Client's PICKAXE_ID set to: " + id)
+        if 'BID' in id:
+            await client.user.party.me.set_backpack(
+                asset=id,
+            )
+            await message.reply('Backpack set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Client's BID set to: " + id)
         
     if "!backpack" in args[0].lower():
         id = await fetch_cosmetic_id(' '.join(split), 'AthenaBackpack')
