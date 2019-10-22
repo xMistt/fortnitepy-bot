@@ -217,7 +217,7 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Pink Ghoul Trooper!')
 
-    if "!braniacghoul" in args[0].lower():
+    if "!brainiacghoul" in args[0].lower():
         variants = client.user.party.me.create_variants(
            material=2
         )
@@ -227,7 +227,7 @@ async def event_friend_message(message):
             variants=variants
         )
 
-        await message.reply('Skin set to Braniac Ghoul Trooper!')
+        await message.reply('Skin set to Brainiac Ghoul Trooper!')
 
     if "!purpleportal" in args[0].lower():
         variants = client.user.party.me.create_variants(
