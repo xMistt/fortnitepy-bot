@@ -205,6 +205,30 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Purple Skull Trooper!')
 
+    if "!pinkghoul" in args[0].lower():
+        variants = client.user.party.me.create_variants(
+           material=3
+        )
+
+        await client.user.party.me.set_outfit(
+            asset='CID_029_Athena_Commando_F_Halloween',
+            variants=variants
+        )
+
+        await message.reply('Skin set to Pink Ghoul Trooper!')
+
+    if "!braniacghoul" in args[0].lower():
+        variants = client.user.party.me.create_variants(
+           material=2
+        )
+
+        await client.user.party.me.set_outfit(
+            asset='CID_029_Athena_Commando_F_Halloween',
+            variants=variants
+        )
+
+        await message.reply('Skin set to Braniac Ghoul Trooper!')
+
     if "!purpleportal" in args[0].lower():
         variants = client.user.party.me.create_variants(
             item='AthenaBackpack',
