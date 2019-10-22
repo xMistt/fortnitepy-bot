@@ -15,7 +15,8 @@ py -3 -m pip install -U fortnitepy
 py -3 -m pip install -U aiohttp
 # linux / macOS
 python3 -m pip install -U fortnitepy
-python3 -m pip install -U aiohttp```
+python3 -m pip install -U aiohttp
+```
 
 Then fill out ``config.json`` with your configuration & run the fortnite.py file!
 
