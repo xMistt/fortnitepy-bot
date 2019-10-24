@@ -8,12 +8,8 @@ A fortnite XAMPP bot coded in Python with party capabilites.
 
 * Install [Python 3.6](https://www.python.org/downloads/release/python-360/ "Python 3.6 Download") (suggested, any 3.x version *should* work)
 
-* Then open command prompt/terminal and enter these commands:
+* Then run ``INSTALL PACKAGES.bat`` if you're on Windows or type these commands into console if you're on macOS / linux:
 ```
-# windows
-py -3 -m pip install -U fortnitepy
-py -3 -m pip install -U aiohttp
-# linux / macOS
 python3 -m pip install -U fortnitepy
 python3 -m pip install -U aiohttp
 ```
