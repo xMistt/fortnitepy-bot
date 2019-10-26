@@ -37,6 +37,7 @@ class color:
 try:
     import fortnitepy
     from fortnitepy.errors import *
+    import AsyncBenBot
     import asyncio
     import time as delay
     import datetime
@@ -81,24 +82,6 @@ client = fortnitepy.Client(
     platform=fortnitepy.Platform(data['platform'])
 )
 
-BEN_BOT_BASE = 'http://benbotfn.tk:8080/api/cosmetics/search/multiple'
-
-async def fetch_cosmetic_id(display_name, cosmeticType):
-    try:
-        idint = 0
-        async with aiohttp.ClientSession() as session:
-            while True:
-                async with session.get(BEN_BOT_BASE, params={'displayName': display_name}) as r:
-                    data = await r.json()
-                    backendType = data[idint]["backendType"]
-                    if backendType == cosmeticType:
-                                id = data[idint]["id"]
-                                return id
-                    else:
-                        idint += 1
-    except IndexError:
-        return 'None'
-
 @client.event
 async def event_ready():
     print(Fore.GREEN + '[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
@@ -139,40 +122,45 @@ async def event_friend_message(message):
     print('[FORTNITEPY] [' + time + '] {0.author.display_name}: {0.content}'.format(message))
 
     if "!skin" in args[0].lower():
-        id = await fetch_cosmetic_id(' '.join(split), 'AthenaCharacter')
-        await client.user.party.me.set_outfit(
-            asset=id,
-            variants=None
-        )
+        id = await AsyncBenBot.getSkinId(joinedArguments)
+        if id == None:
+            await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
+        else:
+            await client.user.party.me.set_outfit(asset=id,variants=None)
+
         await message.reply('Skin set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Client's CID set to: " + id)
+        print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
         
     if "!backpack" in args[0].lower():
-        id = await fetch_cosmetic_id(' '.join(split), 'AthenaBackpack')
-        await client.user.party.me.set_backpack(
-            asset=id
-        )
+        id = await AsyncBenBot.getBackpackId(joinedArguments)
+        if id == None:
+            await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
+        else:
+            await client.user.party.me.set_outfit(asset=id,variants=None)
+            
         await message.reply('Backpack set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Client's BID set to: " + id)
+        print(f"[FORTNITEPY] [{time}] Set Backpack to: " + id)
 
     if "!emote" in args[0].lower():
-        id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
-        if id == 'None':
-            await message.reply(f'Failed to find an emote by the name: {joinedArguments}')
+        await client.user.party.me.clear_emote()
+        id = await AsyncBenBot.getEmoteId(joinedArguments)
+        if id == None:
+            await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
-            await client.user.party.me.clear_emote()
-            await client.user.party.me.set_emote(asset=id)
-            await message.reply('Emote set to ' + id)
-            print(f"[FORTNITEPY] [{time}] Client's EID set to: " + id)
+            await client.user.party.me.set_outfit(asset=id,variants=None)
+            
+        await message.reply('Skin set to ' + id)
+        print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
 
     if "!pickaxe" in args[0].lower():
-        id = await fetch_cosmetic_id(' '.join(split), 'AthenaPickaxe')
-        await client.user.party.me.set_pickaxe(
-            asset=id
-        )
-
+        id = await AsyncBenBot.getPickaxeId(joinedArguments)
+        if id == None:
+            await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
+        else:
+            await client.user.party.me.set_outfit(asset=id,variants=None)
+            
         await message.reply('Pickaxe set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Client's PICKAXE_ID set to: " + id)
+        print(f"[FORTNITEPY] [{time}] Set Pickaxe to: " + id)
 
     if "!pet" in args[0].lower():
         id = await fetch_cosmetic_id(' '.join(split), 'AthenaPetCarrier')
@@ -435,4 +423,4 @@ async def event_party_message(message):
 try:
     client.run()
 except fortnitepy.AuthException:
-    print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Couldn't log into the account, is config.json filled out?")
+    print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Invalid account credentials.")
