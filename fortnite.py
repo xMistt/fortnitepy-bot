@@ -114,20 +114,18 @@ async def event_friend_message(message):
         if id == None:
             await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
-            await client.user.party.me.set_outfit(asset=id,variants=None)
-
-        await message.reply('Skin set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
+            await client.user.party.me.set_outfit(asset=id)
+            await message.reply('Skin set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
         
     if "!backpack" in args[0].lower():
         id = await AsyncBenBot.getBackpackId(joinedArguments)
         if id == None:
             await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
         else:
-            await client.user.party.me.set_backpack(asset=id,variants=None)
-            
-        await message.reply('Backpack set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Set Backpack to: " + id)
+            await client.user.party.me.set_backpack(asset=id)
+            await message.reply('Backpack set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Set Backpack to: " + id)
 
     if "!emote" in args[0].lower():
         await client.user.party.me.clear_emote()
@@ -135,23 +133,21 @@ async def event_friend_message(message):
         if id == None:
             await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
-            await client.user.party.me.set_emote(asset=id,variants=None)
-            
-        await message.reply('Skin set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
+            await client.user.party.me.set_emote(asset=id)
+            await message.reply('Skin set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
 
     if "!pickaxe" in args[0].lower():
         id = await AsyncBenBot.getPickaxeId(joinedArguments)
         if id == None:
             await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
         else:
-            await client.user.party.me.set_pickaxe(asset=id,variants=None)
-            
-        await message.reply('Pickaxe set to ' + id)
-        print(f"[FORTNITEPY] [{time}] Set Pickaxe to: " + id)
+            await client.user.party.me.set_pickaxe(asset=id)
+            await message.reply('Pickaxe set to ' + id)
+            print(f"[FORTNITEPY] [{time}] Set Pickaxe to: " + id)
 
     if "!pet" in args[0].lower():
-        id = await fetch_cosmetic_id(' '.join(split), 'AthenaPetCarrier')
+        id = await AsyncBenBot.getPetId(joinedArguments)
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
         )
