@@ -22,18 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-class color:
-   PURPLE = '\033[95m'
-   CYAN = '\033[96m'
-   DARKCYAN = '\033[36m'
-   BLUE = '\033[94m'
-   GREEN = '\033[92m'
-   YELLOW = '\033[93m'
-   RED = '\033[91m'
-   BOLD = '\033[1m'
-   UNDERLINE = '\033[4m'
-   END = '\033[0m'
-
 try:
     import fortnitepy
     from fortnitepy.errors import *
@@ -51,11 +39,11 @@ try:
     init(autoreset=True)
     from colorama import Fore, Back, Style
 except ModuleNotFoundError:
-    print(color.RED + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".' + color.END)
+    print(Fore.RED + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
     exit()
 
 time = datetime.datetime.now().strftime('%H:%M:%S')
-print(f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+print('\033[1m' + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
 
 def debugOn():
     logger = logging.getLogger('fortnitepy.xmpp')
@@ -136,7 +124,7 @@ async def event_friend_message(message):
         if id == None:
             await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
         else:
-            await client.user.party.me.set_outfit(asset=id,variants=None)
+            await client.user.party.me.set_backpack(asset=id,variants=None)
             
         await message.reply('Backpack set to ' + id)
         print(f"[FORTNITEPY] [{time}] Set Backpack to: " + id)
@@ -147,7 +135,7 @@ async def event_friend_message(message):
         if id == None:
             await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
-            await client.user.party.me.set_outfit(asset=id,variants=None)
+            await client.user.party.me.set_emote(asset=id,variants=None)
             
         await message.reply('Skin set to ' + id)
         print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
@@ -157,7 +145,7 @@ async def event_friend_message(message):
         if id == None:
             await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
         else:
-            await client.user.party.me.set_outfit(asset=id,variants=None)
+            await client.user.party.me.set_pickaxe(asset=id,variants=None)
             
         await message.reply('Pickaxe set to ' + id)
         print(f"[FORTNITEPY] [{time}] Set Pickaxe to: " + id)
