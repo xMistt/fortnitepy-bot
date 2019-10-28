@@ -14,7 +14,7 @@ A fortnite XAMPP bot coded in Python with party capabilites.
 python3 -m pip install -U fortnitepy
 python3 -m pip install -U aiohttp
 python3 -m pip install -U colorama
-python3 -m pip install -U BenBot-async
+python3 -m pip install -U BenBotAsync
 ```
 
 Then fill out ``config.json`` with your configuration & run the fortnite.py file!
