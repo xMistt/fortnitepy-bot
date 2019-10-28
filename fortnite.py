@@ -25,7 +25,7 @@ SOFTWARE.
 try:
     import fortnitepy
     from fortnitepy.errors import *
-    import AsyncBenBot
+    import BenBotAsync
     import asyncio
     import time as delay
     import datetime
@@ -110,7 +110,7 @@ async def event_friend_message(message):
     print('[FORTNITEPY] [' + time + '] {0.author.display_name}: {0.content}'.format(message))
 
     if "!skin" in args[0].lower():
-        id = await AsyncBenBot.getSkinId(joinedArguments)
+        id = await BenBotAsync.getSkinId(joinedArguments)
         if id == None:
             await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
@@ -119,7 +119,7 @@ async def event_friend_message(message):
             print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
         
     if "!backpack" in args[0].lower():
-        id = await AsyncBenBot.getBackpackId(joinedArguments)
+        id = await BenBotAsync.getBackpackId(joinedArguments)
         if id == None:
             await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
         else:
@@ -129,7 +129,7 @@ async def event_friend_message(message):
 
     if "!emote" in args[0].lower():
         await client.user.party.me.clear_emote()
-        id = await AsyncBenBot.getEmoteId(joinedArguments)
+        id = await BenBotAsync.getEmoteId(joinedArguments)
         if id == None:
             await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
@@ -138,7 +138,7 @@ async def event_friend_message(message):
             print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
 
     if "!pickaxe" in args[0].lower():
-        id = await AsyncBenBot.getPickaxeId(joinedArguments)
+        id = await BenBotAsync.getPickaxeId(joinedArguments)
         if id == None:
             await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
         else:
@@ -147,7 +147,7 @@ async def event_friend_message(message):
             print(f"[FORTNITEPY] [{time}] Set Pickaxe to: " + id)
 
     if "!pet" in args[0].lower():
-        id = await AsyncBenBot.getPetId(joinedArguments)
+        id = await BenBotAsync.getPetId(joinedArguments)
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
         )
