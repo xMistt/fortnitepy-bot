@@ -92,7 +92,8 @@ async def event_friend_request(request):
 
 @client.event
 async def event_party_member_join(member):
-    await client.user.party.me.set_outfit(asset=data['cid'])
+    variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
+    await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
     await client.user.party.me.set_backpack(asset=data['bid'])
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
     delay.sleep(2)
@@ -368,8 +369,13 @@ async def event_friend_message(message):
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
 
     if "!promote" in args[0].lower():
-        user = await client.fetch_profile(joinedArguments)
-        member = client.user.party.members.get(user.id)
+        if len(args) != 1:
+            user = await client.fetch_profile(joinedArguments)
+            member = client.user.party.members.get(user.id)
+        if len(args) == 1:
+            user = await client.fetch_profile(message.author.display_name)
+            user = await client.user.party.members.get(user.id)
+
         if member is None:
             await message.reply("Couldn't find that user, are you sure they're in the party?")
         else:
@@ -398,11 +404,6 @@ async def event_friend_message(message):
             await client.join_to_party(party_id, check_private=True)
         except fortnitepy.Forbidden:
             await message.reply('Failed to join back as party is set to private.')
-
-@client.event
-async def event_party_message(message):
-    ### NO LONGER REQUIRED! ###
-    print('Received message from {0.author.display_name} | Content: "{0.content}"'.format(message))
 
 try:
     client.run()
