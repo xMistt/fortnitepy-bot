@@ -92,8 +92,7 @@ async def event_friend_request(request):
 
 @client.event
 async def event_party_member_join(member):
-    variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
-    await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
+    await client.user.party.me.set_outfit(asset=data['cid'])
     await client.user.party.me.set_backpack(asset=data['bid'])
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
     delay.sleep(2)
