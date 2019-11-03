@@ -1,21 +1,15 @@
 try:
-    import fortnitepy
-    from fortnitepy.errors import *
-    import BenBotAsync
-    import asyncio
+    import fortnitepy, fortnitepy.errors, BenBotAsync, asyncio
     import time as delay
     import datetime
     import json
-    import aiohttp
-    import time
     import logging
     import sys
-    import random
     from colorama import init
     init(autoreset=True)
     from colorama import Fore, Back, Style
 except ModuleNotFoundError:
-    print(Fore.RED + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
+    print('\u001b[31m' + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
     exit()
 
 time = datetime.datetime.now().strftime('%H:%M:%S')
@@ -379,6 +373,13 @@ async def event_friend_message(message):
             await client.join_to_party(party_id, check_private=True)
         except fortnitepy.Forbidden:
             await message.reply('Failed to join back as party is set to private.')
+
+    if args[0] == "!id":
+        user = await client.fetch_profile(joinedArguments, cache=False, raw=False)
+        try:
+            await message.reply(f"{joinedArguments}'s Epic ID is: {user.id}")
+        except AttributeError:
+            await message.reply(f"I couldn't find an Epic account with the name: {joinedArguments}.")
 
 try:
     client.run()
