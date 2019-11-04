@@ -67,7 +67,7 @@ async def event_friend_request(request):
     if data['friendaccept'].lower() == True:
         await request.accept()
         print(f"[FORTNITEPY] [{time}] Accepted friend request from: {request.display_name}.")
-    if data['freindaccept'].lower() == False:
+    if data['friendaccept'].lower() == False:
         await request.decline()
         print(f"[FORTNITEPY] [{time}] Declined friend request from: {request.display_name}.")
 
