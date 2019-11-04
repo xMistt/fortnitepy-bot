@@ -17,7 +17,7 @@ python3 -m pip install -U colorama
 python3 -m pip install -U BenBotAsync
 ```
 
-Then fill out ``config.json`` with your configuration & run the fortnite.py file!
+Now run START_BOT.bat
 
 ## Commands
 For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/Commands">click here.</a>
