@@ -398,6 +398,18 @@ async def event_friend_message(message):
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
 
+    if "!join" in args[0]:
+        try:
+            _friend = await client.fetch_profile_by_display_name(args[1])
+            fid = _friend.id
+            friend = client.get_friend(fid)
+            if friend != None:
+                await client.join_to_party(friend.party_id)
+            await message.reply(f"Joining {message.author.display_name}'s party...")
+        except Exception as e:
+            await message.reply(f"""Failed to join to {message.author.display_name}'s party \n 
+            error code: {e}""")
+
     if "Playlist_" in args[0]:
         try:
             await client.user.party.set_playlist(playlist=args[0])
