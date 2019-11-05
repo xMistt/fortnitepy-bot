@@ -359,6 +359,12 @@ async def event_friend_message(message):
         await message.reply('Bye!')
         print(f'[FORTNITEPY] [{time}] Left the party as requested by {message.author.display_name}.')
 
+    if "!crash" in args[0].lower():
+        await message.reply('Bye!')
+        await client.user.party.me.set_emote('EID_Wave')
+        await asyncio.sleep(2)
+        await client.user.party.me.set_outfit('/Game/Athena/Items/Cosmetics/Characters//./')
+
     if "!kick" in args[0].lower():
         user = await client.fetch_profile(contet)
         member = client.user.party.members.get(user.id)
