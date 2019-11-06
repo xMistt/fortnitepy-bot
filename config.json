@@ -1,0 +1,17 @@
+[
+	{
+		"email": "",
+		"password": "",
+		"cid": "CID_029_Athena_Commando_F_Halloween",
+		"bid": "BID_023_Pinkbear",
+		"eid": "EID_RespectThePeace",
+		"banner": "otherbanner28",
+		"banner_colour": "defaultcolor15",
+		"level": 999,
+		"bp_tier": 999999999,
+		"status": "Fortnite XMPP Lobby Bot\n https://discord.gg/Aqvz5Xj",
+		"platform": "WIN",
+		"debug": false,
+		"friendaccept": true
+	}
+]

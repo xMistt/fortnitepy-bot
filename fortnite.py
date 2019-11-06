@@ -2,6 +2,7 @@ try:
     import fortnitepy
     from fortnitepy.errors import Forbidden
     import BenBotAsync, asyncio, datetime, json, livejson, aiohttp, time, logging, sys, random
+    import getpass
     from colorama import init
     init(autoreset=True)
     from colorama import Fore, Back, Style
@@ -12,7 +13,8 @@ except ModuleNotFoundError:
     exit()
 
 time = datetime.datetime.now().strftime('%H:%M:%S')
-print('\033[1m' + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt and Alexa. credit to Terbau for creating the library.')
+print('\033[1m' + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+print('\033[1m' + f'[FORTNITEPY] [{time}] Thanks to the contributors: Alexa, TheClassic36 & Wishinn.')
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 def debugOn():
@@ -22,14 +24,15 @@ def debugOn():
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
 
-print(f'[FORTNITEPY] [{time}] Loading config.')
-with livejson.File("settings.json",pretty=True,sort_keys=True,indent=4) as f:
-    data = f
-print(f'[FORTNITEPY] [{time}] Config loaded.')
+with open('config.json') as f:
+    print(f'[FORTNITEPY] [{time}] Loading config.')
+    data = json.load(f)[0]
+    print(f'[FORTNITEPY] [{time}] Config loaded.')
     
 if data['debug'] == True:
     print(f'[FORTNITEPY] [{time}] Debug logging is on, prepare for a shitstorm.')
     debugOn()
+    
 else:
     print(f'[FORTNITEPY] [{time}] Debug logging is off.')
 try:
@@ -92,7 +95,6 @@ async def event_party_member_join(member):
            pickaxe = await BenBotAsync.getPickaxeId(data["pid"])
         except KeyError:
             pickaxe = None
-        await asyncio.sleep(0.1)
         await client.user.party.me.set_outfit(asset=skin, variants=variants)
         await asyncio.sleep(0.1)
         await client.user.party.me.set_backpack(asset=backbling)
@@ -427,72 +429,12 @@ async def event_friend_message(message):
             await client.join_to_party(party_id, check_private=True)
         except fortnitepy.Forbidden:
             await message.reply('Failed to join back as party is set to private.')
-def progress(count, total, status=''):
-    bar_len = 60
-    filled_len = int(round(bar_len * count / float(total)))
 
-    percents = round(100.0 * count / float(total), 1)
-    bar = '#' * filled_len + '-' * (bar_len - filled_len)
+if data['email'] != "" and data['password'] != "":
+    client.run()
+else:
+    print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Couldn't find email & password in config." + Fore.WHITE)
+    data['email'] = input('Email: ')
+    data['password'] = getpass.getpass()
+    exit()
 
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
-    sys.stdout.flush() 
-def y_n(prompt):
-    wan = input(prompt)
-    put = wan.lower()
-    while put not in ("n", "y"):
-        print("ERROR Invalid input!, please enter Y or N")
-        put = input("Y/N ")
-    if put == "y":
-        return True
-    if put == "n":
-        return False
-if __name__ == "__main__":
-    if data["isconfigured"] == False:
-        print(Fore.GREEN + f"[FORTNITEPY] [{time}] Settings are not loaded.")
-        total = 1000
-        i = 0
-        while i < total:
-            progress(i, total, status='Loading settings...')
-            sleep(0.01)
-            i += 1
-            if i == 999:
-                i += 1
-                progress(i, total, status="Done           ")#Don't remove the whitespace at the end
-        data["bid"] = input("Please select your default bot backbling.                           ")
-        data["bp_tier"] = input("Please select the default battlepass tier.")
-        data["cid"] = input("Please select your default bot skin.")
-        data["level"] = input("Please input your bot XP level.")
-        x = y_n("Do you want to enable debug [UNSTABLE](Y/N).")
-        data["debug"]= x
-        data["eid"] = input("Please select your default emote.")
-        data["email"] = input("Please enter your bot email.")
-        data["password"] = input("Please enter your bot password.")
-        data["platform"] = input("Please select your default bot platforrm, the default is WIN, options are XBL - Xbox | PSN - PS4 | AND - Mobile/Android | ETC - Global | WIN - Windows | MAC - Mac |.").upper()
-        data["status"] = input("Please select your bot status.")
-        data["pid"] = input("Please select the defalt pickaxe for the bot.")
-        data["friendaccept"] = y_n("Do you want the bot to accept friend requests(Y/N)")
-        data["isconfigured"] = True
-        try:
-            data["platform"] = data["platform"].upper()
-            client.run()
-        except fortnitepy.AuthException:
-            exit(0)
-    else:
-        print(Fore.GREEN + f"[FORTNITEPY] [{time}] Settings are loaded.")
-        total = 1000
-        i = 0
-        while i < total:
-            progress(i, total, status= Fore.GREEN + f"[FORTNITEPY] [{time}] Loading main bot..")
-            sleep(0.01)
-            i += 1
-            if i == 999:
-                i += 1
-                progress(i, total, status=Fore.GREEN + f"[FORTNITEPY] [{time}] Done              ")#Don't remove the whitespace at the end
-        try:
-            data["platform"] = data["platform"].upper()
-            client.run()
-        except fortnitepy.AuthException:
-            print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Invalid account credentials.")
-            data["email"] = input("What is your account email?")
-            data["password"] = input("What is the account password?")
-            exit(0)
