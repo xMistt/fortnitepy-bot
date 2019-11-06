@@ -231,12 +231,13 @@ async def event_friend_message(message):
 
     if "VTID_" in args[0]:
         VTID = await setVTID(args[0])
-        if VTID[2] == 'Particle':
+        if VTID[1] == 'Particle':
             variants = client.user.party.me.create_variants(particle_config='Particle', particle=1)
         else:
-            variants = client.user.party.me.create_variants(**{VTID[1]: int(VTID[2])})
+            variants = client.user.party.me.create_variants(**{VTID[1].lower(): int(VTID[2])})
 
         await client.user.party.me.set_outfit(asset=VTID[0], variants=variants)
+        await message.reply(f'Variants set to {args[0]}.\n(Warning: This feature is not supported, please use !variants)')
 
     if "!variants" in args[0]:
         args3 = int(args[3])
