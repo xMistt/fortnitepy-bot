@@ -1,20 +1,20 @@
 try:
-    import fortnitepy
-    from fortnitepy.errors import Forbidden
-    import BenBotAsync, asyncio, datetime, json, livejson, aiohttp, time, logging, sys, random
+    import fortnitepy, fortnitepy.errors, BenBotAsync, asyncio
+    import time as delay
+    import datetime
+    import json
+    import logging
+    import sys
     from colorama import init
     init(autoreset=True)
     from colorama import Fore, Back, Style
-    from time import sleep
-    import warnings
 except ModuleNotFoundError:
     print('\u001b[31m' + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
     exit()
 
 time = datetime.datetime.now().strftime('%H:%M:%S')
-print('\033[1m' + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt and Alexa. credit to Terbau for creating the library.')
+print('\033[1m' + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
 
-warnings.filterwarnings("ignore", category=DeprecationWarning) 
 def debugOn():
     logger = logging.getLogger('fortnitepy.xmpp')
     logger.setLevel(level=logging.DEBUG)
@@ -22,112 +22,76 @@ def debugOn():
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
 
-print(f'[FORTNITEPY] [{time}] Loading config.')
-with livejson.File("settings.json",pretty=True,sort_keys=True,indent=4) as f:
-    data = f
-print(f'[FORTNITEPY] [{time}] Config loaded.')
+with open('config.json') as f:
+    print(f'[FORTNITEPY] [{time}] Loading config.')
+    data = json.load(f)[0]
+    print(f'[FORTNITEPY] [{time}] Config loaded.')
     
-if data['debug'] == True:
+if data['debug'] == 'True':
     print(f'[FORTNITEPY] [{time}] Debug logging is on, prepare for a shitstorm.')
     debugOn()
 else:
     print(f'[FORTNITEPY] [{time}] Debug logging is off.')
-try:
-    client = fortnitepy.Client(
-        email=data['email'],
-        password=data['password'],
-        status=data['status'],
-        platform=fortnitepy.Platform(data['platform'])
-    )
-except ValueError:
-    print(f"[FORTNITEPY] [{time}] Found issue with initial settings, resetting status and platform")
-    plat = "WIN"
-    status = None
-    client = fortnitepy.Client(
-        email=data['email'],
-        password=data['password'],
-        status=status,
-        platform=plat
-    )
+
+client = fortnitepy.Client(
+    email=data['email'],
+    password=data['password'],
+    status=data['status'],
+    platform=fortnitepy.Platform(data['platform'])
+)
 
 @client.event
 async def event_ready():
-    print("",end=None,flush=True)
-    print(Fore.GREEN + '[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}. '.format(client))
+    print(Fore.GREEN + '[FORTNITEPY] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
 
 @client.event
 async def event_party_invite(invite):
     await invite.accept()
-    print(f'[FORTNITEPY] [{time}] Accepted party invite from {invite.author.display_name}.')
+    print(f'[FORTNITEPY] [{time}] Accepted party invite.')
 
 @client.event
 async def event_friend_request(request):
     print(f"[FORTNITEPY] [{time}] Recieved friend request from: {request.display_name}.")
 
-    if data['friendaccept'].lower() == True:
+    if data['friendaccept'].lower() == 'true':
         await request.accept()
         print(f"[FORTNITEPY] [{time}] Accepted friend request from: {request.display_name}.")
-    if data['friendaccept'].lower() == False:
+    if data['freindaccept'].lower() == 'false':
         await request.decline()
         print(f"[FORTNITEPY] [{time}] Declined friend request from: {request.display_name}.")
 
 @client.event
 async def event_party_member_join(member):
-    variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
-    if member.id == client.user.id:
-        try:
-            skin = await BenBotAsync.getSkinId(data["cid"])
-            print(f"[FORTNITEPY] [{time}] Selected skin as {skin}")
-        except KeyError:
-            skin = None
-        try:
-            emote = await BenBotAsync.getEmoteId(data["eid"])
-        except KeyError:
-            emote = None
-        try:
-            backbling = await BenBotAsync.getBackpackId(data["bid"])
-        except KeyError:
-            backbling = None
-        try:
-           pickaxe = await BenBotAsync.getPickaxeId(data["pid"])
-        except KeyError:
-            pickaxe = None
-        await asyncio.sleep(0.1)
-        await client.user.party.me.set_outfit(asset=skin, variants=variants)
-        await asyncio.sleep(0.1)
-        await client.user.party.me.set_backpack(asset=backbling)
-        await asyncio.sleep(0.1)
-        await client.user.party.me.set_pickaxe(asset=pickaxe)
-        await asyncio.sleep(0.1)
-        await client.user.party.me.set_banner(data['banner'], data['banner_colour'], data['level'])
-        await asyncio.sleep(0.5)
-        await client.user.party.me.set_emote(asset=emote)
-        await asyncio.sleep(0.1)
-        await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
+    await client.user.party.me.set_outfit(asset=data['cid'])
+    await client.user.party.me.set_backpack(asset=data['bid'])
+    await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
+    delay.sleep(2)
+    await client.user.party.me.set_emote(asset=data['eid'])
+    await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
     
     if client.user.display_name != member.display_name:
         print(f"[FORTNITEPY] [{time}] {member.display_name} has joined the lobby.")
 
 @client.event
 async def event_friend_message(message):
-    contetaaa = message.content
     args = message.content.split()
-    contet = contetaaa.replace(args[0] + " ", "")
+    split = args[1:]
+    joinedArguments = " ".join(split)
     print('[FORTNITEPY] [' + time + '] {0.author.display_name}: {0.content}'.format(message))
 
     if "!skin" in args[0].lower():
-        id = await BenBotAsync.getSkinId(contet)
+        id = await BenBotAsync.getSkinId(joinedArguments)
         if id == None:
-            await message.reply(f"Couldn't find a skin with the name: {contet}")
+            await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
             await client.user.party.me.set_outfit(asset=id)
             await message.reply('Skin set to ' + id)
             print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
         
     if "!backpack" in args[0].lower():
-        id = await BenBotAsync.getBackpackId(contet)
+        id = await BenBotAsync.getBackpackId(joinedArguments)
         if id == None:
-            await message.reply(f"Couldn't find a backpack with the name: {contet}")
+            await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
         else:
             await client.user.party.me.set_backpack(asset=id)
             await message.reply('Backpack set to ' + id)
@@ -135,25 +99,25 @@ async def event_friend_message(message):
 
     if "!emote" in args[0].lower():
         await client.user.party.me.clear_emote()
-        id = await BenBotAsync.getEmoteId(contet)
+        id = await BenBotAsync.getEmoteId(joinedArguments)
         if id == None:
-            await message.reply(f"Couldn't find an emote with the name: {contet}")
+            await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
         else:
             await client.user.party.me.set_emote(asset=id)
             await message.reply('Skin set to ' + id)
-            print(f"[FORTNITEPY] [{time}] Set Emote: " + id)
+            print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
 
     if "!pickaxe" in args[0].lower():
-        id = await BenBotAsync.getPickaxeId(contet)
+        id = await BenBotAsync.getPickaxeId(joinedArguments)
         if id == None:
-            await message.reply(f"Couldn't find a pickaxe with the name: {contet}")
+            await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
         else:
             await client.user.party.me.set_pickaxe(asset=id)
             await message.reply('Pickaxe set to ' + id)
             print(f"[FORTNITEPY] [{time}] Set Pickaxe to: " + id)
 
     if "!pet" in args[0].lower():
-        id = await BenBotAsync.getPetId(contet)
+        id = await BenBotAsync.getPetId(joinedArguments)
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
         )
@@ -162,7 +126,7 @@ async def event_friend_message(message):
         print(f"[FORTNITEPY] [{time}] Client's PetCarrier set to: " + id)
 
     if "!emoji" in args[0].lower():
-        id = await BenBotAsync.getEmoteId(contet)
+        id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
         await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
@@ -298,7 +262,7 @@ async def event_friend_message(message):
         await message.reply('Backbling set to ' + message.content + '!')
 
     if "!help" in args[0].lower():
-        await message.reply('For a list of commands, goto: https://github.com/xMistt/fortnitepy-bot/blob/master/README.md')
+        await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot')
 
     if "PICKAXE_ID_" in args[0].lower():
         await client.user.party.me.set_pickaxe(
@@ -344,29 +308,23 @@ async def event_friend_message(message):
         await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
 
     if "!echo" in args[0].lower():
-        await client.user.party.send(contet)
+        await client.user.party.send(joinedArguments)
 
     if "!status" in args[0].lower():
-        await client.set_status(contet)
+        await client.set_status(joinedArguments)
 
-        await message.reply(f'Status set to {contet}')
-        print(f'[FORTNITEPY] [{time}] Status set to {contet}.')
+        await message.reply(f'Status set to {joinedArguments}')
+        print(f'[FORTNITEPY] [{time}] Status set to {joinedArguments}.')
 
     if "!leave" in args[0].lower():
         await client.user.party.me.set_emote('EID_Wave')
-        await asyncio.sleep(2)
+        delay.sleep(2)
         await client.user.party.me.leave()
         await message.reply('Bye!')
-        print(f'[FORTNITEPY] [{time}] Left the party as requested by {message.author.display_name}.')
-
-    if "!crash" in args[0].lower():
-        await message.reply('Bye!')
-        await client.user.party.me.set_emote('EID_Wave')
-        await asyncio.sleep(2)
-        await client.user.party.me.set_outfit('/Game/Athena/Items/Cosmetics/Characters//./')
+        print(f'[FORTNITEPY] [{time}] Left the party as I was requested.')
 
     if "!kick" in args[0].lower():
-        user = await client.fetch_profile(contet)
+        user = await client.fetch_profile(joinedArguments)
         member = client.user.party.members.get(user.id)
         if member is None:
             await message.reply("Couldn't find that user, are you sure they're in the party?")
@@ -375,13 +333,13 @@ async def event_friend_message(message):
                 await member.kick()
                 await message.reply(f"Kicked user: {member.display_name}.")
                 print(f"[FORTNITEPY] [{time}] Kicked user: {member.display_name}")
-            except Forbidden:
-                await message.reply(f"Couldn't kick {member.display_name}, as the bot is not party leader.")
-                print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as the bot doesn't have the required permissions." + Fore.WHITE)
+            except fortnitepy.PartyPermissionError:
+                await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
+                print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
 
     if "!promote" in args[0].lower():
         if len(args) != 1:
-            user = await client.fetch_profile(contet)
+            user = await client.fetch_profile(joinedArguments)
             member = client.user.party.members.get(user.id)
         if len(args) == 1:
             user = await client.fetch_profile(message.author.display_name)
@@ -394,26 +352,14 @@ async def event_friend_message(message):
                 await member.promote()
                 await message.reply(f"Promoted user: {member.display_name}.")
                 print(f"[FORTNITEPY] [{time}] Promoted user: {member.display_name}")
-            except Forbidden:
+            except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
-
-    if "!join" in args[0]:
-        try:
-            _friend = await client.fetch_profile_by_display_name(args[1])
-            fid = _friend.id
-            friend = client.get_friend(fid)
-            if friend != None:
-                await client.join_to_party(friend.party_id)
-            await message.reply(f"Joining {message.author.display_name}'s party...")
-        except Exception as e:
-            await message.reply(f"""Failed to join to {message.author.display_name}'s party \n 
-            error code: {e}""")
 
     if "Playlist_" in args[0]:
         try:
             await client.user.party.set_playlist(playlist=args[0])
-        except Forbidden:
+        except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
 
@@ -427,72 +373,15 @@ async def event_friend_message(message):
             await client.join_to_party(party_id, check_private=True)
         except fortnitepy.Forbidden:
             await message.reply('Failed to join back as party is set to private.')
-def progress(count, total, status=''):
-    bar_len = 60
-    filled_len = int(round(bar_len * count / float(total)))
 
-    percents = round(100.0 * count / float(total), 1)
-    bar = '#' * filled_len + '-' * (bar_len - filled_len)
+    if args[0] == "!id":
+        user = await client.fetch_profile(joinedArguments, cache=False, raw=False)
+        try:
+            await message.reply(f"{joinedArguments}'s Epic ID is: {user.id}")
+        except AttributeError:
+            await message.reply(f"I couldn't find an Epic account with the name: {joinedArguments}.")
 
-    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
-    sys.stdout.flush() 
-def y_n(prompt):
-    wan = input(prompt)
-    put = wan.lower()
-    while put not in ("n", "y"):
-        print("ERROR Invalid input!, please enter Y or N")
-        put = input("Y/N ")
-    if put == "y":
-        return True
-    if put == "n":
-        return False
-if __name__ == "__main__":
-    if data["isconfigured"] == False:
-        print(Fore.GREEN + f"[FORTNITEPY] [{time}] Settings are not loaded.")
-        total = 1000
-        i = 0
-        while i < total:
-            progress(i, total, status='Loading settings...')
-            sleep(0.01)
-            i += 1
-            if i == 999:
-                i += 1
-                progress(i, total, status="Done           ")#Don't remove the whitespace at the end
-        data["bid"] = input("Please select your default bot backbling.                           ")
-        data["bp_tier"] = input("Please select the default battlepass tier.")
-        data["cid"] = input("Please select your default bot skin.")
-        data["level"] = input("Please input your bot XP level.")
-        x = y_n("Do you want to enable debug [UNSTABLE](Y/N).")
-        data["debug"]= x
-        data["eid"] = input("Please select your default emote.")
-        data["email"] = input("Please enter your bot email.")
-        data["password"] = input("Please enter your bot password.")
-        data["platform"] = input("Please select your default bot platforrm, the default is WIN, options are XBL - Xbox | PSN - PS4 | AND - Mobile/Android | ETC - Global | WIN - Windows | MAC - Mac |.").upper()
-        data["status"] = input("Please select your bot status.")
-        data["pid"] = input("Please select the defalt pickaxe for the bot.")
-        data["friendaccept"] = y_n("Do you want the bot to accept friend requests(Y/N)")
-        data["isconfigured"] = True
-        try:
-            data["platform"] = data["platform"].upper()
-            client.run()
-        except fortnitepy.AuthException:
-            exit(0)
-    else:
-        print(Fore.GREEN + f"[FORTNITEPY] [{time}] Settings are loaded.")
-        total = 1000
-        i = 0
-        while i < total:
-            progress(i, total, status= Fore.GREEN + f"[FORTNITEPY] [{time}] Loading main bot..")
-            sleep(0.01)
-            i += 1
-            if i == 999:
-                i += 1
-                progress(i, total, status=Fore.GREEN + f"[FORTNITEPY] [{time}] Done              ")#Don't remove the whitespace at the end
-        try:
-            data["platform"] = data["platform"].upper()
-            client.run()
-        except fortnitepy.AuthException:
-            print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Invalid account credentials.")
-            data["email"] = input("What is your account email?")
-            data["password"] = input("What is the account password?")
-            exit(0)
+try:
+    client.run()
+except fortnitepy.AuthException:
+    print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Invalid account credentials.")
