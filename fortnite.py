@@ -1,5 +1,7 @@
 try:
     import fortnitepy, fortnitepy.errors, BenBotAsync, asyncio
+    import aiohttp
+    import getpass
     import time as delay
     import datetime
     import json
@@ -24,7 +26,7 @@ def debugOn():
 
 with open('config.json') as f:
     print(f'[FORTNITEPY] [{time}] Loading config.')
-    data = json.load(f)[0]
+    data = json.load(f)
     print(f'[FORTNITEPY] [{time}] Config loaded.')
     
 if data['debug'] == 'True':
@@ -39,6 +41,27 @@ client = fortnitepy.Client(
     status=data['status'],
     platform=fortnitepy.Platform(data['platform'])
 )
+
+async def setVTID(VTID):
+    url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as r:
+            fileLocation = await r.json()
+
+            SkinCID = fileLocation['export_properties'][0]['cosmetic_item']
+            VariantChanelTag = fileLocation['export_properties'][0]['VariantChanelTag']['TagName']
+            VariantNameTag = fileLocation['export_properties'][0]['VariantNameTag']['TagName']
+
+            VariantType = VariantChanelTag.split('Cosmetics.Variant.Channel.')[1].split('.')[0]
+
+            VariantInt = int("".join(filter(lambda x: x.isnumeric(), VariantNameTag)))
+
+            if VariantType == 'ClothingColor':
+                return SkinCID, 'clothing_color', VariantInt
+            else:
+                return SkinCID, VariantType, VariantInt
+
 
 @client.event
 async def event_ready():
@@ -205,6 +228,15 @@ async def event_friend_message(message):
 
         await message.reply(f'Skin set to {args[0]}')
         await print(f'[FORTNITEPY] [{time}] Skin set to ' + args[0])
+
+    if "VTID_" in args[0]:
+        VTID = await setVTID(args[0])
+        if VTID[2] == 'Particle':
+            variants = client.user.party.me.create_variants(particle_config='Particle', particle=1)
+        else:
+            variants = client.user.party.me.create_variants(**{VTID[1]: int(VTID[2])})
+
+        await client.user.party.me.set_outfit(asset=VTID[0], variants=variants)
 
     if "!variants" in args[0]:
         args3 = int(args[3])
@@ -385,3 +417,11 @@ try:
     client.run()
 except fortnitepy.AuthException:
     print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Invalid account credentials.")
+
+    #f.close()
+    #with open('config.json', 'w') as f:
+    #    data = json.load(f)
+    #    data['email'] = input('Email: ')
+    #    data['password'] = getpass.getpass()
+    #    f.write(json.dumps(data))
+    
