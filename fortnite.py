@@ -414,15 +414,15 @@ async def event_friend_message(message):
         except AttributeError:
             await message.reply(f"I couldn't find an Epic account with the name: {joinedArguments}.")
 
+if bool(data['email']) == False or bool(data['password']) == False:
+    with open('config.json', 'w') as file:
+        data['email'] = input('Email: ')
+        data['password'] = getpass.getpass()
+        json.dump(data, file, sort_keys=False, indent=4)
+    exit()
+
 try:
     client.run()
 except fortnitepy.AuthException:
     print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Invalid account credentials.")
-
-    #f.close()
-    #with open('config.json', 'w') as f:
-    #    data = json.load(f)
-    #    data['email'] = input('Email: ')
-    #    data['password'] = getpass.getpass()
-    #    f.write(json.dumps(data))
     
