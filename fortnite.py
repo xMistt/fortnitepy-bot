@@ -25,12 +25,10 @@ SOFTWARE.
 try:
     import fortnitepy
     from fortnitepy.errors import Forbidden
-    import BenBotAsync, asyncio, datetime, json, livejson, aiohttp, time, logging, sys, random, functions
+    import BenBotAsync, asyncio, datetime, json, livejson, aiohttp, time, logging, sys, random, functions, warnings
     from colorama import init
     init(autoreset=True)
     from colorama import Fore, Back, Style
-    from time import sleep
-    import warnings
 except ModuleNotFoundError:
     print(Fore.RED + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
     exit()
@@ -69,7 +67,7 @@ async def getEmoticon(search):
 
 print(f'[FORTNITEPY] [{time}] Config loaded.')
     
-if data['debug'] == True:
+if data['debug'] == 'True':
     print(f'[FORTNITEPY] [{time}] Debug logging is on, prepare for a shitstorm.')
     debugOn()
 else:
@@ -107,11 +105,29 @@ async def event_ready():
                 output += Fore.GREEN + f"{friend.display_name} "
     print(str(output))
     
+async def setVTID(VTID):
+    url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
 
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as r:
+            fileLocation = await r.json()
+
+            SkinCID = fileLocation['export_properties'][0]['cosmetic_item']
+            VariantChanelTag = fileLocation['export_properties'][0]['VariantChanelTag']['TagName']
+            VariantNameTag = fileLocation['export_properties'][0]['VariantNameTag']['TagName']
+
+            VariantType = VariantChanelTag.split('Cosmetics.Variant.Channel.')[1].split('.')[0]
+
+            VariantInt = int("".join(filter(lambda x: x.isnumeric(), VariantNameTag)))
+
+            if VariantType == 'ClothingColor':
+                return SkinCID, 'clothing_color', VariantInt
+            else:
+                return SkinCID, VariantType, VariantInt
 @client.event
 async def event_party_invite(invite):
     await invite.accept()
-    print(f'[FORTNITEPY] [{time}] Accepted party invite from {invite.author.display_name}.')
+    print(f'[FORTNITEPY] [{time}] Accepted party invite.')
 
 @client.event
 async def event_friend_request(request):
@@ -120,7 +136,7 @@ async def event_friend_request(request):
     if data['friendaccept'] == True:
         await request.accept()
         print(f"[FORTNITEPY] [{time}] Accepted friend request from: {request.display_name}.")
-    if data['friendaccept'] == False:
+    elif data['friendaccept'] == False:
         await request.decline()
         print(f"[FORTNITEPY] [{time}] Declined friend request from: {request.display_name}.")
 
@@ -202,11 +218,11 @@ async def event_friend_message(message):
         await client.user.party.me.clear_emote()
         id = await BenBotAsync.getEmoteId(contet)
         if id == None:
-            await message.reply(f"Couldn't find an emote with the name: {contet}")
+            await message.reply(f"Couldn't find a skin with the name: {contet}")
         else:
             await client.user.party.me.set_emote(asset=id)
             await message.reply('Skin set to ' + id)
-            print(f"[FORTNITEPY] [{time}] Set Emote: " + id)
+            print(f"[FORTNITEPY] [{time}] Set Skin to: " + id)
 
     if "!pickaxe" in args[0].lower():
         id = await BenBotAsync.getPickaxeId(contet)
@@ -346,6 +362,16 @@ async def event_friend_message(message):
         await message.reply(f'Skin set to {args[0]}')
         await print(f'[FORTNITEPY] [{time}] Skin set to ' + args[0])
 
+    if "VTID_" in args[0]:
+        VTID = await setVTID(args[0])
+        if VTID[1] == 'Particle':
+            variants = client.user.party.me.create_variants(particle_config='Particle', particle=1)
+        else:
+            variants = client.user.party.me.create_variants(**{VTID[1].lower(): int(VTID[2])})
+
+        await client.user.party.me.set_outfit(asset=VTID[0], variants=variants)
+        await message.reply(f'Variants set to {args[0]}.\n(Warning: This feature is not supported, please use !variants)')
+
     if "!variants" in args[0]:
         currentskin = await BenBotAsync.getCosmeticFromId(client.user.party.me.outfit)
         currentback = await BenBotAsync.getCosmeticFromId(client.user.party.me.backpack)
@@ -417,7 +443,7 @@ async def event_friend_message(message):
         await message.reply('Backbling set to ' + message.content + '!')
 
     if "!help" in args[0].lower():
-        await message.reply('For a list of commands, goto: https://github.com/xMistt/fortnitepy-bot/blob/master/README.md')
+        await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot')
 
     if "PICKAXE_ID_" in args[0].lower():
         await client.user.party.me.set_pickaxe(
@@ -488,9 +514,9 @@ async def event_friend_message(message):
                 await member.kick()
                 await message.reply(f"Kicked user: {member.display_name}.")
                 print(f"[FORTNITEPY] [{time}] Kicked user: {member.display_name}")
-            except Forbidden:
-                await message.reply(f"Couldn't kick {member.display_name}, as the bot is not party leader.")
-                print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as the bot doesn't have the required permissions." + Fore.WHITE)
+            except fortnitepy.Forbidden:
+                await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
+                print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
 
     if "!promote" in args[0].lower():
         if len(args) != 1:
@@ -507,14 +533,14 @@ async def event_friend_message(message):
                 await member.promote()
                 await message.reply(f"Promoted user: {member.display_name}.")
                 print(f"[FORTNITEPY] [{time}] Promoted user: {member.display_name}")
-            except Forbidden:
+            except fortnitepy.Forbidden:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
 
     if "Playlist_" in args[0]:
         try:
             await client.user.party.set_playlist(playlist=args[0])
-        except Forbidden:
+        except fortnitepy.Forbidden:
                 await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
                 print(Fore.RED + f"[FORTNITEPY] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
 
@@ -550,6 +576,12 @@ async def event_friend_message(message):
             await asyncio.sleep(0.99)
         await client.user.party.me.set_emote('EID_Wave')
         await client.user.party.me.set_outfit('/Game/Athena/Items/Cosmetics/Characters//./')
+    if args[0] == "!id":
+        user = await client.fetch_profile(contet, cache=False, raw=False)
+        try:
+            await message.reply(f"{contet}'s Epic ID is: {user.id}")
+        except AttributeError:
+            await message.reply(f"I couldn't find an Epic account with the name: {contet}.")
 
 if __name__ == "__main__":
     if data["isconfigured"] == False:
@@ -558,7 +590,7 @@ if __name__ == "__main__":
         i = 0
         while i < total:
             functions.progress(i, total, status='Loading settings...')
-            sleep(0.01)
+            time.sleep(0.01)
             i += 1
             if i == 999:
                 i += 1
@@ -590,7 +622,7 @@ if __name__ == "__main__":
         i = 0
         while i < total:
             functions.progress(i, total, status= Fore.GREEN + f"[FORTNITEPY] [{time}] Loading main bot..")
-            sleep(0.01)
+            time.sleep(0.01)
             i += 1
             if i == 999:
                 i += 1
