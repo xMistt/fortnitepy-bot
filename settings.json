@@ -1,6 +1,6 @@
 {
-    "banner": "otherbanner28",
-    "banner_colour": "defaultcolor15",
+    "banner": "",
+    "banner_colour": "",
     "bid": "",
     "bp_tier": "",
     "cid": "",
@@ -10,10 +10,11 @@
     "friendaccept": false,
     "isconfigured": false,
     "level": "",
+    "owner": "",
     "password": "",
-    "platform": "WIN",
+    "pid": "",
+    "platform": "",
     "status": "",
-    "pid":"",
     "variants": 3,
     "variants-type": "material"
 }
