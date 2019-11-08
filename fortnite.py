@@ -25,7 +25,8 @@ SOFTWARE.
 try:
     import fortnitepy
     from fortnitepy.errors import Forbidden
-    import BenBotAsync, asyncio, datetime, json, livejson, aiohttp, time, logging, sys, random, functions, warnings
+    import BenBotAsync, asyncio, datetime, json, livejson, aiohttp, logging, sys, random, functions, warnings
+    import time as sleep
     from colorama import init
     init(autoreset=True)
     from colorama import Fore, Back, Style
@@ -37,8 +38,6 @@ with livejson.File("settings.json",pretty=True,sort_keys=True,indent=4) as f:
     for value in data.values():
         if value == "":
             value = 'null'
-class ValueError():
-    pass
 time = datetime.datetime.now().strftime('%H:%M:%S')
 print('\033[1m' + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt and Alexa. credit to Terbau for creating the library.')
 class Constants:
@@ -193,6 +192,7 @@ async def event_party_member_join(member):
 async def event_friend_message(message):
     contetaaa = message.content
     args = message.content.split()
+    argos = args[1:]
     contet = contetaaa.replace(args[0] + " ", "")
     print('[FORTNITEPY] [' + time + '] {0.author.display_name}: {0.content}'.format(message))
 
@@ -571,9 +571,13 @@ async def event_friend_message(message):
             await message.reply(f"""Failed to join to {friend.display_name}'s party \n 
             error code: {e}""")
     if "!crash" in args[0].lower():
-        for index in range(10,-1,-1) :
-            await message.reply(f"Crashing party in {index} seconds")
-            await asyncio.sleep(0.99)
+
+        def check(en):
+            return en.id == client.user.id
+        try:
+            await client.wait_for('party_member_promote', check=check, timeout=100)
+        except asyncio.TimeoutError:
+            await data.reply("You took too long to promote me")
         await client.user.party.me.set_emote('EID_Wave')
         await client.user.party.me.set_outfit('/Game/Athena/Items/Cosmetics/Characters//./')
     if args[0] == "!id":
@@ -590,7 +594,7 @@ if __name__ == "__main__":
         i = 0
         while i < total:
             functions.progress(i, total, status='Loading settings...')
-            time.sleep(0.01)
+            sleep.sleep(0.01)
             i += 1
             if i == 999:
                 i += 1
@@ -622,7 +626,7 @@ if __name__ == "__main__":
         i = 0
         while i < total:
             functions.progress(i, total, status= Fore.GREEN + f"[FORTNITEPY] [{time}] Loading main bot..")
-            time.sleep(0.01)
+            sleep.sleep(0.01)
             i += 1
             if i == 999:
                 i += 1
