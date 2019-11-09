@@ -44,3 +44,4 @@ If you need help with ``!variants``, check out the variants wiki page: https://g
 ## How can I contribute?
 Fork this repo, add/fix what you want to do and then submit a pull request back.
 
+By downloading this, you agree to the Creative Commons license and that you're not allowed to sell this repository or any code from this repository. For more info see https://commonsclause.com/.
