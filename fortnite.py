@@ -41,7 +41,8 @@ except ModuleNotFoundError:
     exit()
 
 time = datetime.datetime.now().strftime('%H:%M:%S')
-print('\033[1m' + f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+print(f'[FORTNITEPY] [{time}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+print(f"[FORTNITEPY] [{time}] If you have paid for this program, you have been scammed. I'd advise you try and get a refund. This is an open-source free program.")
 
 def debugOn():
     logger = logging.getLogger('fortnitepy.xmpp')
