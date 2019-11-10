@@ -19,6 +19,18 @@ of the Software. Any license notice or attribution required by
 the License must also include this Commons Clause License
 Condition notice.
 
+You do not have the right to claim you have "made" this software.
+For the purposes of the foregoing, "Made" means to create something.
+Adding anything to this software still falls under this condition,
+even if you use a small amount of this software, you still have to
+abide by this license & rules by the licensee. If you fork this
+software, you can only claim you "made" any content that you have
+actually added such as a function. Downloading this and using this
+software doesn't give you right to say you have "made" it either.
+Same rules apply above. Any license notice or attribution required by
+the License must also include this Commons Clause License
+Condition notice.
+
 Software: fortnitepy-bot
 
 License: Apache 2.0
@@ -440,13 +452,6 @@ async def event_friend_message(message):
             await message.reply(f"{joinedArguments}'s Epic ID is: {user.id}")
         except AttributeError:
             await message.reply(f"I couldn't find an Epic account with the name: {joinedArguments}.")
-
-if bool(data['email']) == False or bool(data['password']) == False:
-    with open('config.json', 'w') as file:
-        data['email'] = input('Email: ')
-        data['password'] = getpass.getpass()
-        json.dump(data, file, sort_keys=False, indent=4)
-    exit()
 
 try:
     client.run()
