@@ -22,13 +22,6 @@ def getTime():
     time = datetime.datetime.now().strftime('%H:%M:%S')
     return time
 
-def debugOn():
-    logger = logging.getLogger('fortnitepy.xmpp')
-    logger.setLevel(level=logging.DEBUG)
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-    logger.addHandler(handler)
-
 async def setVTID(VTID):
     url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
 
@@ -56,10 +49,19 @@ with open('config.json') as f:
     print(f'[FORTNITEPY] [{getTime()}] Config loaded.')
     
 if data['debug'] == 'True':
-    print(f'[FORTNITEPY] [{getTime()}] Debug logging is on, prepare for a shitstorm.')
-    debugOn()
+    logger = logging.getLogger('fortnitepy.http')
+    logger.setLevel(level=logging.DEBUG)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter('\u001b[36m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
+    logger.addHandler(handler)
+
+    logger = logging.getLogger('fortnitepy.xmpp')
+    logger.setLevel(level=logging.DEBUG)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter('\u001b[35m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
+    logger.addHandler(handler)
 else:
-    print(f'[FORTNITEPY] [{getTime()}] Debug logging is off.')
+    print(f"[FORTNITEPY] [{getTime()}] Debug logging is off. (This isn't an error!)")
 
 client = fortnitepy.Client(
     email=data['email'],
