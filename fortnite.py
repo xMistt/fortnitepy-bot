@@ -215,18 +215,6 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Pink Ghoul Trooper!')
 
-    if "!brainiacghoul" in args[0].lower():
-        variants = client.user.party.me.create_variants(
-           material=2
-        )
-
-        await client.user.party.me.set_outfit(
-            asset='CID_029_Athena_Commando_F_Halloween',
-            variants=variants
-        )
-
-        await message.reply('Skin set to Brainiac Ghoul Trooper!')
-
     if "!purpleportal" in args[0].lower():
         variants = client.user.party.me.create_variants(
             item='AthenaBackpack',
@@ -354,6 +342,21 @@ async def event_friend_message(message):
         )
 
         await message.reply('Pickaxe set to ' + args[1] + '!')
+
+    if "!point" in args[0].lower():
+        if 'PICKAXE_ID' in args[1]:
+            await client.user.party.me.set_pickaxe(asset=args[1])
+            await client.user.party.me.set_emote(asset='EID_IceKing')
+            await message.reply(f'Pickaxe set to {args[1]} & Point it Out played.')
+        else:
+            id = await BenBotAsync.getPickaxeId(content)
+            if id == None:
+                await message.reply(f"Couldn't find a pickaxe with the name: {content}")
+            else:
+                await client.user.party.me.set_pickaxe(asset=id)
+                await client.user.party.me.set_emote(asset='EID_IceKing')
+                await message.reply(f'Pickaxe set to {content} & Point it Out played.')
+
 
     if "!ready" in args[0].lower():
         await client.user.party.me.set_ready(True)
