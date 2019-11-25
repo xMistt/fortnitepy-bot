@@ -1,15 +1,20 @@
-{
-    "email": "",
-    "password": "",
-    "cid": "CID_029_Athena_Commando_F_Halloween",
-    "bid": "BID_023_Pinkbear",
-    "eid": "EID_RespectThePeace",
-    "banner": "otherbanner28",
-    "banner_colour": "defaultcolor15",
-    "level": 999,
-    "bp_tier": 999999999,
-    "status": "Created by xMistt, enjoy!",
-    "platform": "WIN",
-    "debug": "False",
-    "friendaccept": "True"
-}
+[
+	{
+		"email": "",
+		"password": "",
+		"cid": "CID_029_Athena_Commando_F_Halloween",
+		"variants-type": "material",
+		"variants": 3,
+		"bid": "BID_138_Celestial",
+		"eid": "EID_ChairTime",
+		"banner": "otherbanner28",
+		"banner_colour": "defaultcolor22",
+		"level": "999",
+		"bp_tier": 100,
+		"status": "In Battle Royale Lobby - 2184 / 16",
+		"platform": "PSN",
+		"debug": "False",
+		"friendaccept": "True",
+		"joinoninvite": "True"
+	}
+]
