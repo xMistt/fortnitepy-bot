@@ -1,4 +1,4 @@
-Credits to xMistt for the source code and inspiration of this bot.
+-- Credits to xMistt for the source code and inspiration of this bot.
 
 # fortnitepy-bot
 A fortnite XMPP bot coded in Python with party capabilites.
