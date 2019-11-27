@@ -76,7 +76,7 @@ def debugOn():
 with open('config.json') as f:
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(f' [PYBOT] [{time}] Loading config.')
-    data = json.load(f)[0]
+    data = json.load(f)
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(f' [PYBOT] [{time}] Config loaded.')
     
@@ -106,15 +106,18 @@ async def event_party_invite(invite):
         try:
             await invite.accept()
             time = datetime.datetime.now().strftime('%H:%M:%S')
-            print(Fore.GREEN + f' [PYBOT] [{time}] Accepted party invite.')
+            print(Fore.GREEN + f' [PYBOT] [{time}] Accepted party invite from {invite.author.display_name}.')
         except Exception as e:
             pass
     if data['joinoninvite'].lower() == 'false':
-        try:
+        if invite.author.display_name in data['FullAccess']:
+            await invite.accept()
             time = datetime.datetime.now().strftime('%H:%M:%S')
-            print(Fore.GREEN + f' [PYBOT] [{time}] Never accepted party invite.')
-        except Exception as e:
-            pass
+            print(Fore.GREEN + f' [PYBOT] [{time}] Accepted party invite from {invite.author.display_name}.')
+        else:
+            time = datetime.datetime.now().strftime('%H:%M:%S')
+            print(Fore.GREEN + f' [PYBOT] [{time}] Never accepted party invite from {invite.author.display_name}.')
+            await invite.author.send(f"I can't join you right now.")
 
 @client.event
 async def event_friend_request(request):
@@ -140,6 +143,7 @@ async def event_party_member_join(member):
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
     delay.sleep(2)
     await client.user.party.me.set_emote(asset=data['eid'])
+    await client.user.party.me.set_pickaxe(asset=data['pid'])
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
     
     if client.user.display_name != member.display_name:
@@ -165,14 +169,20 @@ async def event_friend_message(message):
             print(f" [PYBOT] [{time}] Set Skin to: " + id)
         
     if "!backpack" in args[0].lower():
-        id = await BenBotAsync.getBackpackId(joinedArguments)
-        if id == None:
-            await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
-        else:
-            await client.user.party.me.set_backpack(asset=id)
-            await message.reply('Backpack set to ' + id)
+        if len(args) == 1:
+            await client.user.party.me.set_backpack(asset='none')
+            await message.reply('Backpack set to None')
             time = datetime.datetime.now().strftime('%H:%M:%S')
-            print(f" [PYBOT] [{time}] Set Backpack to: " + id)
+            print(f" [PYBOT] [{time}] Set Backpack to None")
+        else:
+            id = await BenBotAsync.getBackpackId(joinedArguments)
+            if id == None:
+                await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
+            else:
+                await client.user.party.me.set_backpack(asset=id)
+                await message.reply('Backpack set to ' + id)
+                time = datetime.datetime.now().strftime('%H:%M:%S')
+                print(f" [PYBOT] [{time}] Set Backpack to: " + id)
 
     if "!emote" in args[0].lower():
         await client.user.party.me.clear_emote()
@@ -318,7 +328,6 @@ async def event_friend_message(message):
         await client.user.party.me.set_outfit(
             asset=args[0]
         )
-
         await message.reply(f'Skin set to {args[0]}')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await print(f' [PYBOT] [{time}] Skin set to ' + args[0])
@@ -382,7 +391,7 @@ async def event_friend_message(message):
         await message.reply('Backbling set to ' + message.content + '!')
 
     if "help" in args[0].lower():
-        await message.reply('Commands: !cosmetics - Lists Cosmetic Commands  |  !party - Lists Party Commands | You can view a more detailed command list in my discord server!')
+        await message.reply('Commands: !cosmetics - Lists Cosmetic Commands  |  !party - Lists Party Commands | You can view a more detailed commands list in my discord server!')
 
     if "!cosmetics" in args[0].lower():
         await message.reply('Cosmetic Commands: !skin (skin name), !backpack (backpack name), !emote (emote name) | !stop-to stop the emote, !pickaxe (pickaxe name), !point (pickaxe name), !pet (pet name), !emoji (emoji name), !variants (CID) (style type) (integer), !purpleskull, !pinkghoul, !brainiacghoul, !purpleportal, !checkeredrenegade, !banner (icon) (colour) (level), CID_, BID_, PICKAXE_ID_, EID_')
@@ -425,26 +434,111 @@ async def event_friend_message(message):
 
     if "!level" in args[0].lower():
         await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
+    
+    if "!reset" in args[0].lower():
+        variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
+        await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
+        await client.user.party.me.set_backpack(asset=data['bid'])
+        await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
+        await client.user.party.me.set_pickaxe(asset=data['pid'])
+        await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
+        await message.reply(f"Reset to default cosmetic loadout.")
 
     if "!echo" in args[0].lower():
-        await client.user.party.send(joinedArguments)
+        if message.author.display_name in data['FullAccess']:
+            await client.user.party.send(joinedArguments)
+            time = datetime.datetime.now().strftime('%H:%M:%S')
+            print(f' [PYBOT] [{time}] ' + color.GREEN + 'Sent Message:' + color.END + f' {joinedArguments}')
+        else:
+            if message.author.display_name not in data['FullAccess']:
+                await message.reply(f"You don't have access to this command!")
+
+    if "!admin" in args[0].lower():
+        if message.author.display_name in data['FullAccess']:
+            if len(args) == 1:
+                await message.reply('Please specify if you want to add or remove a user from the admin list')
+                time = datetime.datetime.now().strftime('%H:%M:%S')
+                print(f' [PYBOT] [{time}] Please specify if you want to add or remove a user from the admin list, using ' + color.GREEN + '!admin add ' + color.END + 'or ' + color.GREEN + '!admin remove' + color.END)
+            if len(args) == 2:
+                if args[1].lower() == 'add' or args[1].lower() == 'remove':
+                    await message.reply('Please specify the name of the user you want to add/remove from the admin list')
+                    time = datetime.datetime.now().strftime('%H:%M:%S')
+                    print(f' [PYBOT] [{time}] Please specify the name of the user you want to add/remove from the admin list')
+                else:
+                    await message.reply('Invalid usage, try !admin add <username> or !admin remove <username>')
+                    time = datetime.datetime.now().strftime('%H:%M:%S')
+                    print(f' [PYBOT] [{time}] Invalid usage, try ' + color.GREEN + '!admin add <username> ' + color.END + 'or ' + color.GREEN + '!admin remove <username>' + color.END)
+            if len(args) >= 3:
+                joinedArgumentsAdmin = " ".join(args[2:])
+                user = await client.fetch_profile(joinedArgumentsAdmin)
+                try:
+                    if args[1].lower() == 'add':
+                        if user.display_name not in data['FullAccess']:
+                            data['FullAccess'].append(f"{user.display_name}")
+                            with open('config.json', 'w') as f:
+                                json.dump(data, f, indent=4)
+                                print(f" [PYBOT] [{time}] Added " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
+                        elif user.display_name in data['FullAccess']:
+                            time = datetime.datetime.now().strftime('%H:%M:%S')
+                            print(f" [PYBOT] [{time}]" + color.GREEN + f" {user.display_name}" + color.END + " is already an admin")
+                    elif args[1].lower() == 'remove':
+                        if user.display_name in data['FullAccess']:
+                            data['FullAccess'].remove(user.display_name)
+                            with open('config.json', 'w') as f:
+                                json.dump(data, f, indent=4)
+                                print(f" [PYBOT] [{time}] Removed " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
+                        elif user.display_name not in data['FullAccess']:
+                            time = datetime.datetime.now().strftime('%H:%M:%S')
+                            print(f" [PYBOT] [{time}]" + color.GREEN + f" {user.display_name}" + color.END + " is not an admin")
+                except AttributeError:
+                    pass
+                    time = datetime.datetime.now().strftime('%H:%M:%S')
+                    print(f" [PYBOT] [{time}] Can't find user: " + color.GREEN + f"{joinedArgumentsAdmin}" + color.END)
+                    await message.reply(f"I couldn't find an Epic account with the name: {joinedArgumentsAdmin}.")
+        if message.author.display_name not in data['FullAccess']:
+            if len(args) >= 3 and args[1].lower() == 'add':
+                await message.reply(f"Password?")
+                res = await client.wait_for('friend_message')
+                content = res.content.lower()
+                joinedArgumentsAdmin = " ".join(args[2:])
+                user = await client.fetch_profile(joinedArgumentsAdmin)
+                if content in data['AdminPassword']:
+                    if user.display_name not in data['FullAccess']:
+                        data['FullAccess'].append(f"{user.display_name}")
+                        with open('config.json', 'w') as f:
+                            json.dump(data, f, indent=4)
+                            await message.reply(f"Correct. Added {user.display_name} as an admin.")
+                            print(f" [PYBOT] [{time}] Added " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
+                    elif user.display_name in data['FullAccess']:
+                        time = datetime.datetime.now().strftime('%H:%M:%S')
+                        print(f" [PYBOT] [{time}]" + color.GREEN + f" {user.display_name}" + color.END + " is already an admin")
+                        await message.reply(f"{user.display_name} is already an admin.")
+            else:
+                await message.reply(f"You don't have access to this command!")
 
     if "!status" in args[0].lower():
-        await client.set_status(joinedArguments)
-
-        await message.reply(f'Status set to {joinedArguments}')
-        time = datetime.datetime.now().strftime('%H:%M:%S')
-        print(f' [PYBOT] [{time}] Status set to {joinedArguments}.')
-
+        if message.author.display_name in data['FullAccess']:
+            await client.set_status(joinedArguments)
+            await message.reply(f'Status set to {joinedArguments}')
+            time = datetime.datetime.now().strftime('%H:%M:%S')
+            print(f' [PYBOT] [{time}] Status set to {joinedArguments}.')
+        else:
+            if message.author.display_name not in data['FullAccess']:
+                await message.reply(f"You don't have access to this command!")
+            
     if "!leave" in args[0].lower():
-        await client.user.party.me.set_emote('EID_Wave')
-        delay.sleep(2)
-        await client.user.party.me.leave()
-        await message.reply('Bye!')
-        time = datetime.datetime.now().strftime('%H:%M:%S')
-        print(Fore.GREEN + f' [PYBOT] [{time}] Left the party as I was requested.')
+        if message.author.display_name in data['FullAccess']:
+            await client.user.party.me.set_emote('EID_Snap')
+            delay.sleep(2)
+            await client.user.party.me.leave()
+            await message.reply('Bye!')
+            time = datetime.datetime.now().strftime('%H:%M:%S')
+            print(Fore.GREEN + f' [PYBOT] [{time}] Left the party as I was requested.')
+        else:
+            if message.author.display_name not in data['FullAccess']:
+                await message.reply(f"You don't have access to this command!")
 
-    if "!kick" in args[0].lower():
+    if "!kick" in args[0].lower() and message.author.display_name in data['FullAccess']:
         user = await client.fetch_profile(joinedArguments)
         member = client.user.party.members.get(user.id)
         if member is None:
@@ -460,6 +554,27 @@ async def event_friend_message(message):
                 await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
                 time = datetime.datetime.now().strftime('%H:%M:%S')
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
+        if message.author.display_name not in data['FullAccess']:
+            await message.reply(f"You don't have access to this command!")
+
+    if "!join" in args[0] and message.author.display_name in data['FullAccess']:
+        if len(args) != 1:
+            user = await client.fetch_profile(joinedArguments)
+            friend = client.get_friend(user.id)
+        if len(args) == 1:
+            user = await client.fetch_profile(message.author.id, cache=False, raw=False)
+            friend = client.get_friend(user.id)
+        if friend is None:
+            await message.reply(f"Unable to invite that user, are you sure the bot has them added?")
+            print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Unable to invite user: {joinedArguments}, are you sure the bot has them added?" + Fore.WHITE)
+        if message.author.display_name not in data['FullAccess']:
+            await message.reply(f"You don't have access to this command!")
+        else:
+            try:
+                await friend.join_party()
+                await message.reply(f"Joining {friend.display_name}'s party.")
+            except Exception as e:
+                await message.reply(f"Can not join {friend.display_name}'s party.")
 
     if "!invite" in args[0].lower():
         if len(args) != 1:
@@ -483,7 +598,7 @@ async def event_friend_message(message):
                 time = datetime.datetime.now().strftime('%H:%M:%S')
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Something went wrong while trying to invite {friend.display_name}" + Fore.WHITE)           
 
-    if "!add" in args[0].lower():
+    if "!add" in args[0].lower() and message.author.display_name in data['FullAccess']:
         user = await client.fetch_profile(joinedArguments)
         friends = client.friends
         if user is None:
@@ -505,8 +620,10 @@ async def event_friend_message(message):
                 pass
                 time = datetime.datetime.now().strftime('%H:%M:%S')
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Something went wrong adding {joinedArguments}" + Fore.WHITE)
+        if message.author.display_name not in data['FullAccess']:
+            await message.reply(f"You don't have access to this command!")
 
-    if "!remove" in args[0].lower():
+    if "!remove" in args[0].lower() and message.author.display_name in data['FullAccess']:
         user = await client.fetch_profile(joinedArguments)
         friends = client.friends
         if user is None:
@@ -529,8 +646,10 @@ async def event_friend_message(message):
                 pass
                 time = datetime.datetime.now().strftime('%H:%M:%S')
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Something went wrong removing {joinedArguments} as a friend." + Fore.WHITE)
+        if message.author.display_name not in data['FullAccess']:
+            await message.reply(f"You don't have access to this command!")
 
-    if "!showfriends" in args[0].lower():
+    if "!showfriends" in args[0].lower() and message.author.display_name in data['FullAccess']:
         friends = client.friends
         onlineFriends = []
         offlineFriends = []
@@ -548,9 +667,11 @@ async def event_friend_message(message):
         for x in offlineFriends:
             if x is not None:
                 print(Fore.LIGHTBLACK_EX + " " + x + Fore.WHITE)
-        await message.reply("Check the command window for the list of my friends.")    
+        await message.reply("Check the command window for the list of my friends.")   
+        if message.author.display_name not in data['FullAccess']:
+            await message.reply(f"You don't have access to this command!")
 
-    if "!promote" in args[0].lower():
+    if "!promote" in args[0].lower() and message.author.display_name in data['FullAccess']:
         if len(args) != 1:
             user = await client.fetch_profile(joinedArguments)
             member = client.user.party.members.get(user.id)
@@ -570,6 +691,8 @@ async def event_friend_message(message):
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
                 time = datetime.datetime.now().strftime('%H:%M:%S')
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
+        if message.author.display_name not in data['FullAccess']:
+            await message.reply(f"You don't have access to this command!")
 
     if "Playlist_" in args[0]:
         try:
@@ -580,7 +703,7 @@ async def event_friend_message(message):
             time = datetime.datetime.now().strftime('%H:%M:%S')
             print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
 
-    if "!platform" in args[0]:
+    if "!platform" in args[0] and message.author.display_name in data['FullAccess']:
         await message.reply('Setting platform to ' + args[1] + '.')
         party_id = client.user.party.id
         await client.user.party.me.leave()
@@ -591,6 +714,9 @@ async def event_friend_message(message):
         except Exception as e:
             pass
             await message.reply('Failed to join back as party is set to private.')
+        else:
+            if message.author.display_name not in data['FullAccess']:
+                await message.reply(f"You don't have access to this command!")
 
     if args[0] == "!id":
         user = await client.fetch_profile(joinedArguments, cache=False, raw=False)
@@ -608,4 +734,3 @@ try:
 except fortnitepy.AuthException:
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Couldn't log into the account, is config.json filled out?")
-
