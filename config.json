@@ -1,20 +1,24 @@
-[
-	{
-		"email": "",
-		"password": "",
-		"cid": "CID_029_Athena_Commando_F_Halloween",
-		"variants-type": "material",
-		"variants": 3,
-		"bid": "BID_023_Pinkbear",
-		"eid": "EID_ChairTime",
-		"banner": "otherbanner28",
-		"banner_colour": "defaultcolor22",
-		"level": "999",
-		"bp_tier": 100,
-		"status": "In Battle Royale Lobby - 2184 / 16",
-		"platform": "PSN",
-		"debug": "False",
-		"friendaccept": "True",
-		"joinoninvite": "True"
-	}
-]
+{
+    "email": "",
+    "password": "",
+    "cid": "CID_029_Athena_Commando_F_Halloween",
+    "variants-type": "material",
+    "variants": 3,
+    "bid": "BID_023_Pinkbear",
+    "eid": "EID_ChairTime",
+    "pid": "Pickaxe_Lockjaw",
+    "banner": "otherbanner28",
+    "banner_colour": "defaultcolor22",
+    "level": "999",
+    "bp_tier": 100,
+    "status": "In Battle Royale Lobby - 2184 / 16",
+    "platform": "AND",
+    "debug": "False",
+    "friendaccept": "True",
+    "joinoninvite": "False",
+    "AdminPassword": "0001",
+    "FullAccess": [
+        "Replace This With Your Epic Games Name",
+	"Or Anyone Else That You Want To Have Full Access"
+    ]
+}
