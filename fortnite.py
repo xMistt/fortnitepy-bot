@@ -140,10 +140,10 @@ async def event_party_member_join(member):
     variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
     await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
     await client.user.party.me.set_backpack(asset=data['bid'])
+    await client.user.party.me.set_pickaxe(asset=data['pid'])
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
     delay.sleep(2)
     await client.user.party.me.set_emote(asset=data['eid'])
-    await client.user.party.me.set_pickaxe(asset=data['pid'])
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
     
     if client.user.display_name != member.display_name:
