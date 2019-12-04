@@ -39,8 +39,9 @@ try:
     from colorama import init
     init(autoreset=True)
     from colorama import Fore, Back, Style
-except ModuleNotFoundError:
-    print('\u001b[31m' + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
+except ModuleNotFoundError as e:
+    print(e)
+    print('Failed to import 1 or more modules, run "INSTALL PACKAGES.bat" to fix.')
     exit()
 
 # All functions (not including events).
