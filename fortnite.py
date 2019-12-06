@@ -30,8 +30,6 @@ try:
     import BenBotAsync
     import asyncio
     import aiohttp
-    import getpass
-    import time as delay
     import datetime
     import json
     import logging
