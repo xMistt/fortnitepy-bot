@@ -122,7 +122,7 @@ async def event_party_member_join(member):
     await client.user.party.me.set_outfit(asset=data['cid'])
     await client.user.party.me.set_backpack(asset=data['bid'])
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
-    delay.sleep(2)
+    await asyncio.sleep(2)
     await client.user.party.me.set_emote(asset=data['eid'])
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
     
@@ -388,7 +388,7 @@ async def event_friend_message(message):
 
     elif "!leave" in args[0].lower():
         await client.user.party.me.set_emote('EID_Wave')
-        delay.sleep(2)
+        await asyncio.sleep(2)
         await client.user.party.me.leave()
         await message.reply('Bye!')
         print(f'[FORTNITEPY] [{getTime()}] Left the party as I was requested.')
