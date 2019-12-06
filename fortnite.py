@@ -137,60 +137,60 @@ async def event_friend_message(message):
     print(f'[FORTNITEPY] [{getTime()}] {message.author.display_name}: {message.content}')
 
     if "!skin" in args[0].lower():
-        id = await BenBotAsync.getSkinId(content)
-        if id == None:
+        cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='type', filter='Outfit')
+        if cosmetic == None:
             await message.reply(f"Couldn't find a skin with the name: {content}")
         else:
-            await client.user.party.me.set_outfit(asset=id)
-            await message.reply('Skin set to ' + id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Skin to: " + id)
+            await client.user.party.me.set_outfit(asset=cosmetic.id)
+            await message.reply('Skin set to ' + cosmetic.id)
+            print(f"[FORTNITEPY] [{getTime()}] Set Skin to: " + cosmetic.id)
         
     elif "!backpack" in args[0].lower():
-        id = await BenBotAsync.getBackpackId(content)
-        if id == None:
+        cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='type', filter='Back Bling')
+        if cosmetic == None:
             await message.reply(f"Couldn't find a backpack with the name: {content}")
         else:
-            await client.user.party.me.set_backpack(asset=id)
-            await message.reply('Backpack set to ' + id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Backpack to: " + id)
+            await client.user.party.me.set_backpack(asset=cosmetic.id)
+            await message.reply('Backpack set to ' + cosmetic.id)
+            print(f"[FORTNITEPY] [{getTime()}] Set Backpack to: " + cosmetic.id)
 
     elif "!emote" in args[0].lower():
         await client.user.party.me.clear_emote()
-        id = await BenBotAsync.getEmoteId(content)
-        if id == None:
+        cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='type', filter='Emote')
+        if cosmetic == None:
             await message.reply(f"Couldn't find a skin with the name: {content}")
         else:
-            await client.user.party.me.set_emote(asset=id)
-            await message.reply('Skin set to ' + id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Skin to: " + id)
+            await client.user.party.me.set_emote(asset=cosmetic.id)
+            await message.reply('Skin set to ' + cosmetic.id)
+            print(f"[FORTNITEPY] [{getTime()}] Set Skin to: " + cosmetic.id)
 
     elif "!pickaxe" in args[0].lower():
-        id = await BenBotAsync.getPickaxeId(content)
-        if id == None:
+        cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='type', filter='Harvesting Tool')
+        if cosmetic == None:
             await message.reply(f"Couldn't find a pickaxe with the name: {content}")
         else:
-            await client.user.party.me.set_pickaxe(asset=id)
-            await message.reply('Pickaxe set to ' + id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Pickaxe to: " + id)
+            await client.user.party.me.set_pickaxe(asset=cosmetic.id)
+            await message.reply('Pickaxe set to ' + cosmetic.id)
+            print(f"[FORTNITEPY] [{getTime()}] Set Pickaxe to: " + cosmetic.id)
 
     elif "!pet" in args[0].lower():
-        id = await BenBotAsync.getPetId(content)
+        cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='backendType', filter='AthenaPet')
         await client.user.party.me.set_backpack(
-                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
+                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + cosmetic.id + "." + cosmetic.id
         )
 
-        await message.reply('Pet set to ' + id)
-        print(f"[FORTNITEPY] [{getTime()}] Client's PetCarrier set to: " + id)
+        await message.reply('Pet set to ' + cosmetic.id)
+        print(f"[FORTNITEPY] [{getTime()}] Client's PetCarrier set to: " + cosmetic.id)
 
     elif "!emoji" in args[0].lower():
-        id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
+        cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='backendType', filter='AthenaDance')
         await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
-                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
+                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + cosmetic.id + "." + cosmetic.id
         )
 
-        await message.reply('Emoji set to ' + id)
-        print(f"[FORTNITEPY] [{getTime()}] Client's Emoji set to " + id)
+        await message.reply('Emoji set to ' + cosmetic.id)
+        print(f"[FORTNITEPY] [{getTime()}] Client's Emoji set to " + cosmetic.id)
 
     elif "!purpleskull" in args[0].lower():
         variants = client.user.party.me.create_variants(
@@ -350,11 +350,11 @@ async def event_friend_message(message):
             await client.user.party.me.set_emote(asset='EID_IceKing')
             await message.reply(f'Pickaxe set to {args[1]} & Point it Out played.')
         else:
-            id = await BenBotAsync.getPickaxeId(content)
-            if id == None:
+            cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='type', filter='Harvesting Tool')
+            if cosmetic == None:
                 await message.reply(f"Couldn't find a pickaxe with the name: {content}")
             else:
-                await client.user.party.me.set_pickaxe(asset=id)
+                await client.user.party.me.set_pickaxe(asset=cosmetic.id)
                 await client.user.party.me.set_emote(asset='EID_IceKing')
                 await message.reply(f'Pickaxe set to {content} & Point it Out played.')
 
