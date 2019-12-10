@@ -34,12 +34,10 @@ try:
     import json
     import logging
     import sys
-    from colorama import init
-    init(autoreset=True)
-    from colorama import Fore, Back, Style
+    import crayons
 except ModuleNotFoundError as e:
     print(e)
-    print('Failed to import 1 or more modules, run "INSTALL PACKAGES.bat" to fix.')
+    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue.')
     exit()
 
 # All functions (not including events).
@@ -67,7 +65,7 @@ async def setVTID(VTID):
             else:
                 return SkinCID, VariantType, VariantInt
 
-print('\033[1m' + f'[FORTNITEPY] [{getTime()}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
+print(crayons.clean(f'[FORTNITEPY] [{getTime()}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.', bold=True))
 
 with open('config.json') as f:
     data = json.load(f)
@@ -97,7 +95,7 @@ client = fortnitepy.Client(
 
 @client.event
 async def event_ready():
-    print(Fore.GREEN + f'[FORTNITEPY] [{getTime()}] Client ready as {client.user.display_name}.')
+    print(crayons.green(f'[FORTNITEPY] [{getTime()}] Client ready as {client.user.display_name}.'))
 
 @client.event
 async def event_party_invite(invite):
@@ -140,8 +138,8 @@ async def event_friend_message(message):
             await message.reply(f"Couldn't find a skin with the name: {content}")
         else:
             await client.user.party.me.set_outfit(asset=cosmetic.id)
-            await message.reply('Skin set to ' + cosmetic.id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Skin to: " + cosmetic.id)
+            await message.reply(f'Skin set to {cosmetic.id}')
+            print(f"[FORTNITEPY] [{getTime()}] Set Skin to: {cosmetic.id}")
         
     elif "!backpack" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='type', filter='Back Bling')
@@ -149,8 +147,8 @@ async def event_friend_message(message):
             await message.reply(f"Couldn't find a backpack with the name: {content}")
         else:
             await client.user.party.me.set_backpack(asset=cosmetic.id)
-            await message.reply('Backpack set to ' + cosmetic.id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Backpack to: " + cosmetic.id)
+            await message.reply(f'Backpack set to {cosmetic.id}')
+            print(f"[FORTNITEPY] [{getTime()}] Set Backpack to: {cosmetic.id}")
 
     elif "!emote" in args[0].lower():
         await client.user.party.me.clear_emote()
@@ -159,8 +157,8 @@ async def event_friend_message(message):
             await message.reply(f"Couldn't find a skin with the name: {content}")
         else:
             await client.user.party.me.set_emote(asset=cosmetic.id)
-            await message.reply('Skin set to ' + cosmetic.id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Skin to: " + cosmetic.id)
+            await message.reply(f'Emote set to {cosmetic.id}')
+            print(f"[FORTNITEPY] [{getTime()}] Set Emote to: {cosmetic.id}")
 
     elif "!pickaxe" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='type', filter='Harvesting Tool')
@@ -168,27 +166,21 @@ async def event_friend_message(message):
             await message.reply(f"Couldn't find a pickaxe with the name: {content}")
         else:
             await client.user.party.me.set_pickaxe(asset=cosmetic.id)
-            await message.reply('Pickaxe set to ' + cosmetic.id)
-            print(f"[FORTNITEPY] [{getTime()}] Set Pickaxe to: " + cosmetic.id)
+            await message.reply(f'Pickaxe set to {cosmetic.id}')
+            print(f"[FORTNITEPY] [{getTime()}] Set Pickaxe to: {cosmetic.id}")
 
     elif "!pet" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='backendType', filter='AthenaPet')
-        await client.user.party.me.set_backpack(
-                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + cosmetic.id + "." + cosmetic.id
-        )
-
-        await message.reply('Pet set to ' + cosmetic.id)
-        print(f"[FORTNITEPY] [{getTime()}] Client's PetCarrier set to: " + cosmetic.id)
+        await client.user.party.me.set_backpack(asset=f"/Game/Athena/Items/Cosmetics/PetCarriers/{cosmetic.id}.{cosmetic.id}")
+        await message.reply(f'Pet set to {cosmetic.id}')
+        print(f"[FORTNITEPY] [{getTime()}] Set PetCarrier to: {cosmetic.id}")
 
     elif "!emoji" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(content, parameter='displayName', sorter='backendType', filter='AthenaDance')
         await client.user.party.me.clear_emote()
-        await client.user.party.me.set_emote(
-                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + cosmetic.id + "." + cosmetic.id
-        )
-
-        await message.reply('Emoji set to ' + cosmetic.id)
-        print(f"[FORTNITEPY] [{getTime()}] Client's Emoji set to " + cosmetic.id)
+        await client.user.party.me.set_emote(asset=f"/Game/Athena/Items/Cosmetics/Dances/Emoji/{cosmetic.id}.{cosmetic.id}")
+        await message.reply(f'Emoji set to {cosmetic.id}')
+        print(f"[FORTNITEPY] [{getTime()}] Set Emoji to: {cosmetic.id}")
 
     elif "!purpleskull" in args[0].lower():
         variants = client.user.party.me.create_variants(
@@ -247,7 +239,7 @@ async def event_friend_message(message):
         )
 
         await message.reply(f'Skin set to {args[0]}')
-        await print(f'[FORTNITEPY] [{getTime()}] Skin set to ' + args[0])
+        await print(f'[FORTNITEPY] [{getTime()}] Skin set to {args[0]}')
 
     elif "VTID_" in args[0]:
         VTID = await setVTID(args[0])
@@ -301,7 +293,7 @@ async def event_friend_message(message):
         await client.user.party.me.set_emote(
             asset=args[0]
         )
-        await message.reply('Emote set to ' + args[0] + '!')
+        await message.reply(f'Emote set to {args[0]}!')
         
     elif "!stop" in args[0].lower():
         await client.user.party.me.clear_emote()
@@ -312,7 +304,7 @@ async def event_friend_message(message):
             asset=args[0]
         )
 
-        await message.reply('Backbling set to ' + message.content + '!')
+        await message.reply(f'Backbling set to {args[0]}!')
 
     elif "!help" in args[0].lower():
         await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot')
@@ -322,17 +314,17 @@ async def event_friend_message(message):
                 asset=args[0]
         )
 
-        await message.reply('Pickaxe set to ' + args[0] + '!')
+        await message.reply(f'Pickaxe set to {args[0]}')
 
     elif "PetCarrier_" in args[0]:
         await client.user.party.me.set_backpack(
-                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + args[0] + "." + args[0]
+                asset=f"/Game/Athena/Items/Cosmetics/PetCarriers/{args[0]}.{args[0]}"
         )
 
     elif "Emoji_" in args[0]:
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
-                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + args[0] + "." + args[0]
+                asset=f"/Game/Athena/Items/Cosmetics/Dances/Emoji/{args[0]}.{args[0]}"
         )
 
     elif "!legacypickaxe" in args[0].lower():
@@ -340,7 +332,7 @@ async def event_friend_message(message):
                 asset=args[1]
         )
 
-        await message.reply('Pickaxe set to ' + args[1] + '!')
+        await message.reply(f'Pickaxe set to {args[1]}!)
 
     elif "!point" in args[0].lower():
         if 'PICKAXE_ID' in args[1]:
@@ -403,7 +395,7 @@ async def event_friend_message(message):
                 print(f"[FORTNITEPY] [{getTime()}] Kicked user: {member.display_name}")
             except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
-                print(Fore.RED + f"[FORTNITEPY] [{getTime()}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
+                print(crayons.red(f"[FORTNITEPY] [{getTime()}] [ERROR] Failed to kick member as I don't have the required permissions."))
 
     elif "!promote" in args[0].lower():
         if len(args) != 1:
@@ -422,21 +414,21 @@ async def event_friend_message(message):
                 print(f"[FORTNITEPY] [{getTime()}] Promoted user: {member.display_name}")
             except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
-                print(Fore.RED + f"[FORTNITEPY] [{getTime()}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
+                print(crayons.red(f"[FORTNITEPY] [{getTime()}] [ERROR] Failed to promote member as I don't have the required permissions."))
 
     elif "Playlist_" in args[0]:
         try:
             await client.user.party.set_playlist(playlist=args[0])
         except fortnitepy.PartyPermissionError:
                 await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
-                print(Fore.RED + f"[FORTNITEPY] [{getTime()}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
+                print(crayons.red(f"[FORTNITEPY] [{getTime()}] [ERROR] Failed to set gamemode as I don't have the required permissions."))
 
     elif "!platform" in args[0]:
-        await message.reply('Setting platform to ' + args[1] + '.')
+        await message.reply(f'Setting platform to {args[0]}')
         party_id = client.user.party.id
         await client.user.party.me.leave()
         client.platform = fortnitepy.Platform(args[1])
-        await message.reply('Platform set to ' + str(client.platform) + '.')
+        await message.reply(f'Platform set to {str(client.platform)}.')
         try:
             await client.join_to_party(party_id, check_private=True)
         except fortnitepy.Forbidden:
@@ -452,5 +444,5 @@ async def event_friend_message(message):
 try:
     client.run()
 except fortnitepy.AuthException:
-    print(Fore.RED + f"[FORTNITEPY] [{getTime()}] [ERROR] Invalid account credentials.")
+    print(crayons.red(f"[FORTNITEPY] [{getTime()}] [ERROR] Invalid account credentials."))
     
