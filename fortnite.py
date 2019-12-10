@@ -65,13 +65,12 @@ async def setVTID(VTID):
             else:
                 return SkinCID, VariantType, VariantInt
 
-print(crayons.clean(f'[FORTNITEPY] [{getTime()}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.', bold=True))
+print(f'[FORTNITEPY] [{getTime()}] fortnitepy-bot made by xMistt. credit to Terbau for creating the library.')
 
 with open('config.json') as f:
     data = json.load(f)
-    print(f'[FORTNITEPY] [{getTime()}] Config loaded.')
     
-if data['debug'] == 'True':
+if data['debug'] == True:
     logger = logging.getLogger('fortnitepy.http')
     logger.setLevel(level=logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
@@ -106,7 +105,7 @@ async def event_party_invite(invite):
 async def event_friend_request(request):
     print(f"[FORTNITEPY] [{getTime()}] Recieved friend request from: {request.display_name}.")
 
-    if data['friendaccept'].lower() == 'true':
+    if data['friendaccept'].lower() == True:
         await request.accept()
         print(f"[FORTNITEPY] [{getTime()}] Accepted friend request from: {request.display_name}.")
     else:
@@ -332,7 +331,7 @@ async def event_friend_message(message):
                 asset=args[1]
         )
 
-        await message.reply(f'Pickaxe set to {args[1]}!)
+        await message.reply(f'Pickaxe set to {args[1]}!')
 
     elif "!point" in args[0].lower():
         if 'PICKAXE_ID' in args[1]:

@@ -10,6 +10,6 @@
     "bp_tier": 999999999,
     "status": "Created by xMistt, enjoy!",
     "platform": "WIN",
-    "debug": "False",
-    "friendaccept": "True"
+    "debug": false,
+    "friendaccept": true
 }
