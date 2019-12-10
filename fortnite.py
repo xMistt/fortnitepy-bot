@@ -1,11 +1,14 @@
 """
 “Commons Clause” License Condition v1.0
 Copyright Oli 2019
+
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
+
 Without limiting other conditions in the License, the grant
 of rights under the License will not include, and the License
 does not grant to you, the right to Sell the Software.
+
 For purposes of the foregoing, “Sell” means practicing any or
 all of the rights granted to you under the License to provide
 to third parties, for a fee or other consideration (including
@@ -15,9 +18,12 @@ value derives, entirely or substantially, from the functionality
 of the Software. Any license notice or attribution required by
 the License must also include this Commons Clause License
 Condition notice.
+
 Software: fortnitepy-bot
+
 License: Apache 2.0
 """
+
 class color:
    PURPLE = '\033[95m'
    CYAN = '\033[96m'
@@ -29,6 +35,7 @@ class color:
    BOLD = '\033[1m'
    UNDERLINE = '\033[4m'
    END = '\033[0m'
+
 try:
     import fortnitepy
     from fortnitepy.errors import *
@@ -48,6 +55,7 @@ try:
 except ModuleNotFoundError:
     print(Fore.RED + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
     exit()
+
 time = datetime.datetime.now().strftime('%H:%M:%S')
 print(f'  ')
 print(color.CYAN + f'   ██████╗ ██╗   ██╗     ██████╗  ██████╗ ████████╗')
@@ -57,12 +65,14 @@ print(color.CYAN + f'   ██╔═══╝   ╚██╔╝ ╚════�
 print(color.CYAN + f'   ██║        ██║        ██████╔╝╚██████╔╝   ██║   ')
 print(color.CYAN + f'   ╚═╝        ╚═╝        ╚═════╝  ╚═════╝    ╚═╝   ')
 print(f'  ')
+
 def debugOn():
     logger = logging.getLogger('fortnitepy.xmpp')
     logger.setLevel(level=logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
     logger.addHandler(handler)
+
 with open('config.json') as f:
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(f' [PYBOT] [{time}] Loading config.')
@@ -77,16 +87,19 @@ if data['debug'] == 'True':
 else:
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(f' [PYBOT] [{time}] Debug logging is off.')
+
 client = fortnitepy.Client(
     email=data['email'],
     password=data['password'],
     status=data['status'],
     platform=fortnitepy.Platform(data['platform'])
 )
+
 @client.event
 async def event_ready():
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(Fore.GREEN + ' [PYBOT] [' + time + '] Client ready as {0.user.display_name}.'.format(client))
+
 @client.event
 async def event_party_invite(invite):
     if data['joinoninvite'].lower() == 'true':
@@ -105,6 +118,7 @@ async def event_party_invite(invite):
             time = datetime.datetime.now().strftime('%H:%M:%S')
             print(Fore.GREEN + f' [PYBOT] [{time}] Never accepted party invite from {invite.author.display_name}.')
             await invite.author.send(f"I can't join you right now.")
+
 @client.event
 async def event_friend_request(request):
     if data['friendaccept'].lower() == 'true':
@@ -120,6 +134,7 @@ async def event_friend_request(request):
             print(f" [PYBOT] [{time}] Never accepted friend request from: {request.display_name}.")
         except Exception as e:
             pass
+
 @client.event
 async def event_party_member_join(member):
     variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
@@ -129,12 +144,12 @@ async def event_party_member_join(member):
     await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
     delay.sleep(2)
     await client.user.party.me.set_emote(asset=data['eid'])
-    await client.user.party.me.set_pickaxe(asset=data['pid'])
     await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
-
+    
     if client.user.display_name != member.display_name:
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] {member.display_name} has joined the lobby.")
+
 @client.event
 async def event_friend_message(message):
     args = message.content.split()
@@ -142,6 +157,7 @@ async def event_friend_message(message):
     joinedArguments = " ".join(split)
     time = datetime.datetime.now().strftime('%H:%M:%S')
     print(' [PYBOT] [' + time + '] {0.author.display_name}: {0.content}'.format(message))
+
     if "!skin" in args[0].lower():
         id = await BenBotAsync.getSkinId(joinedArguments)
         if id == None:
@@ -167,6 +183,7 @@ async def event_friend_message(message):
                 await message.reply('Backpack set to ' + id)
                 time = datetime.datetime.now().strftime('%H:%M:%S')
                 print(f" [PYBOT] [{time}] Set Backpack to: " + id)
+
     if "!emote" in args[0].lower():
         await client.user.party.me.clear_emote()
         id = await BenBotAsync.getEmoteId(joinedArguments)
@@ -187,6 +204,7 @@ async def event_friend_message(message):
             await message.reply('Pickaxe set to ' + id)
             time = datetime.datetime.now().strftime('%H:%M:%S')
             print(f" [PYBOT] [{time}] Set Pickaxe to: " + id)
+
     if "!point" in args[0].lower():
         await client.user.party.me.clear_emote()
         id = await BenBotAsync.getPickaxeId(joinedArguments)
@@ -198,80 +216,100 @@ async def event_friend_message(message):
             await message.reply('Pointing with ' + id)
             time = datetime.datetime.now().strftime('%H:%M:%S')
             print(f" [PYBOT] [{time}] Pointing a pickaxe with: " + id)
+
     if "!pet" in args[0].lower():
         id = await BenBotAsync.getPetId(joinedArguments)
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
         )
+
         await message.reply('Pet set to ' + id)
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's PetCarrier set to: " + id)
+
     if "!emoji" in args[0].lower():
         id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
         await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
         )
+
         await message.reply('Emoji set to ' + id)
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's Emoji set to " + id)
+
     if "!purpleskull" in args[0].lower():
         variants = client.user.party.me.create_variants(
            clothing_color=1
         )
+
         await client.user.party.me.set_outfit(
             asset='CID_030_Athena_Commando_M_Halloween',
             variants=variants
         )
+
         await message.reply('Skin set to Purple Skull Trooper!')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's Skin set to Purple Skull Trooper")
+
     if "!pinkghoul" in args[0].lower():
         variants = client.user.party.me.create_variants(
            material=3
         )
+
         await client.user.party.me.set_outfit(
             asset='CID_029_Athena_Commando_F_Halloween',
             variants=variants
         )
+
         await message.reply('Skin set to Pink Ghoul Trooper!')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's Skin set to Pink Ghoul Trooper")
+
     if "!brainiacghoul" in args[0].lower():
         variants = client.user.party.me.create_variants(
            material=2
         )
+
         await client.user.party.me.set_outfit(
             asset='CID_029_Athena_Commando_F_Halloween',
             variants=variants
         )
+
         await message.reply('Skin set to Brainiac Ghoul Trooper!')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's Skin set to Brainiac Ghoul Trooper")
+
     if "!normalghoul" in args[0].lower():
         variants = client.user.party.me.create_variants(
            material=0
         )
+
         await client.user.party.me.set_outfit(
             asset='CID_029_Athena_Commando_F_Halloween',
             variants=variants
         )
+
         await message.reply('Skin set to Brainiac Ghoul Trooper!')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's Skin set to Normal Ghoul Trooper")
+
     if "!purpleportal" in args[0].lower():
         variants = client.user.party.me.create_variants(
             item='AthenaBackpack',
             particle_config='Particle',
             particle=1
         )
+
         await client.user.party.me.set_backpack(
             asset='BID_105_GhostPortal',
             variants=variants
         )
+
         await message.reply('Backpack set to Purple Ghost Portal!')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's Backpack set to Purple Ghost Portal")
+
     if "!banner" in args[0].lower():
         if len(args) == 1:
             await message.reply('You need to specify which banner, color & level you want to set the banner as.')
@@ -281,9 +319,11 @@ async def event_friend_message(message):
             await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
         if len(args) == 4:
             await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
+
         await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Banner set to; {args[1]} {args[2]} {args[3]}")
+
     if "CID_" in args[0]:
         await client.user.party.me.set_outfit(
             asset=args[0]
@@ -291,8 +331,10 @@ async def event_friend_message(message):
         await message.reply(f'Skin set to {args[0]}')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         await print(f' [PYBOT] [{time}] Skin set to ' + args[0])
+
     if "!variants" in args[0]:
         args3 = int(args[3])
+
         if 'CID' in args[1]:
             variants = client.user.party.me.create_variants(**{args[2]: args3})
             await client.user.party.me.set_outfit(
@@ -311,20 +353,25 @@ async def event_friend_message(message):
                 asset=args[1],
                 variants=variants
             )
+
         await message.reply(f'Set variants of {args[1]} to {args[2]} {args[3]}.')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f' [PYBOT] [{time}] Set variants of {args[1]} to {args[2]} {args[3]}.')
+
     if "!checkeredrenegade" in args[0].lower():
         variants = client.user.party.me.create_variants(
            material=2
         )
+
         await client.user.party.me.set_outfit(
             asset='CID_028_Athena_Commando_F',
             variants=variants
         )
+
         await message.reply('Skin set to Checkered Renegade!')
         time = datetime.datetime.now().strftime('%H:%M:%S')
         print(f" [PYBOT] [{time}] Client's Skin set to Checkered Renegade")
+
     if "EID_" in args[0]:
         await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
@@ -335,42 +382,56 @@ async def event_friend_message(message):
     if "!stop" in args[0].lower():
         await client.user.party.me.clear_emote()
         await message.reply('Stopped emoting.')
+
     if "BID_" in args[0]:
         await client.user.party.me.set_backpack(
             asset=args[0]
         )
+
         await message.reply('Backbling set to ' + message.content + '!')
+
     if "help" in args[0].lower():
         await message.reply('Commands: !cosmetics - Lists Cosmetic Commands  |  !party - Lists Party Commands | You can view a more detailed commands list in my discord server!')
+
     if "!cosmetics" in args[0].lower():
         await message.reply('Cosmetic Commands: !skin (skin name), !backpack (backpack name), !emote (emote name) | !stop-to stop the emote, !pickaxe (pickaxe name), !point (pickaxe name), !pet (pet name), !emoji (emoji name), !variants (CID) (style type) (integer), !purpleskull, !pinkghoul, !brainiacghoul, !purpleportal, !checkeredrenegade, !banner (icon) (colour) (level), CID_, BID_, PICKAXE_ID_, EID_')
+
     if "!party" in args[0].lower():
         await message.reply('Party Commands: !ready, !unready, !sitout, !sitin, !bp (tier), !level (level), !echo (message), !leave, !kick (username), Playlist_')
+
     if "Pickaxe_" in args[0]:
         await client.user.party.me.set_pickaxe(
                 asset=args[0]
         )
+
         await message.reply('Pickaxe set to ' + args[0] + '!')
+
     if "PetCarrier_" in args[0]:
         await client.user.party.me.set_backpack(
                 asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + args[0] + "." + args[0]
         )
+
     if "Emoji_" in args[0]:
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
                 asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + args[0] + "." + args[0]
         )
+
     if "!ready" in args[0].lower():
         await client.user.party.me.set_ready(True)
         await message.reply('Ready!')
+
     if ("!unready" in args[0].lower()) or ("!sitin" in args[0].lower()):
         await client.user.party.me.set_ready(False)
         await message.reply('Unready!')
+
     if "!sitout" in args[0].lower():
         await client.user.party.me.set_ready(None)
         await message.reply('Sitting Out!')
+
     if "!bp" in args[0].lower():
         await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
+
     if "!level" in args[0].lower():
         await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
     
@@ -382,6 +443,7 @@ async def event_friend_message(message):
         await client.user.party.me.set_pickaxe(asset=data['pid'])
         await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
         await message.reply(f"Reset to default cosmetic loadout.")
+
     if "!echo" in args[0].lower():
         if message.author.display_name in data['FullAccess']:
             await client.user.party.send(joinedArguments)
@@ -390,6 +452,7 @@ async def event_friend_message(message):
         else:
             if message.author.display_name not in data['FullAccess']:
                 await message.reply(f"You don't have access to this command!")
+
     if "!admin" in args[0].lower():
         if message.author.display_name in data['FullAccess']:
             if len(args) == 1:
@@ -452,6 +515,7 @@ async def event_friend_message(message):
                         await message.reply(f"{user.display_name} is already an admin.")
             else:
                 await message.reply(f"You don't have access to this command!")
+
     if "!status" in args[0].lower():
         if message.author.display_name in data['FullAccess']:
             await client.set_status(joinedArguments)
@@ -473,6 +537,7 @@ async def event_friend_message(message):
         else:
             if message.author.display_name not in data['FullAccess']:
                 await message.reply(f"You don't have access to this command!")
+
     if "!kick" in args[0].lower() and message.author.display_name in data['FullAccess']:
         user = await client.fetch_profile(joinedArguments)
         member = client.user.party.members.get(user.id)
@@ -491,6 +556,7 @@ async def event_friend_message(message):
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Failed to kick member as I don't have the required permissions." + Fore.WHITE)
         if message.author.display_name not in data['FullAccess']:
             await message.reply(f"You don't have access to this command!")
+
     if "!join" in args[0] and message.author.display_name in data['FullAccess']:
         if len(args) != 1:
             user = await client.fetch_profile(joinedArguments)
@@ -509,6 +575,7 @@ async def event_friend_message(message):
                 await message.reply(f"Joining {friend.display_name}'s party.")
             except Exception as e:
                 await message.reply(f"Can not join {friend.display_name}'s party.")
+
     if "!invite" in args[0].lower():
         if len(args) != 1:
             user = await client.fetch_profile(joinedArguments)
@@ -530,6 +597,7 @@ async def event_friend_message(message):
                 await message.reply(f"Something went wrong trying to invite {friend.display_name}")
                 time = datetime.datetime.now().strftime('%H:%M:%S')
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Something went wrong while trying to invite {friend.display_name}" + Fore.WHITE)           
+
     if "!add" in args[0].lower() and message.author.display_name in data['FullAccess']:
         user = await client.fetch_profile(joinedArguments)
         friends = client.friends
@@ -554,6 +622,7 @@ async def event_friend_message(message):
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Something went wrong adding {joinedArguments}" + Fore.WHITE)
         if message.author.display_name not in data['FullAccess']:
             await message.reply(f"You don't have access to this command!")
+
     if "!remove" in args[0].lower() and message.author.display_name in data['FullAccess']:
         user = await client.fetch_profile(joinedArguments)
         friends = client.friends
@@ -579,6 +648,7 @@ async def event_friend_message(message):
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Something went wrong removing {joinedArguments} as a friend." + Fore.WHITE)
         if message.author.display_name not in data['FullAccess']:
             await message.reply(f"You don't have access to this command!")
+
     if "!showfriends" in args[0].lower() and message.author.display_name in data['FullAccess']:
         friends = client.friends
         onlineFriends = []
@@ -600,6 +670,7 @@ async def event_friend_message(message):
         await message.reply("Check the command window for the list of my friends.")   
         if message.author.display_name not in data['FullAccess']:
             await message.reply(f"You don't have access to this command!")
+
     if "!promote" in args[0].lower() and message.author.display_name in data['FullAccess']:
         if len(args) != 1:
             user = await client.fetch_profile(joinedArguments)
@@ -622,6 +693,7 @@ async def event_friend_message(message):
                 print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Failed to promote member as I don't have the required permissions." + Fore.WHITE)
         if message.author.display_name not in data['FullAccess']:
             await message.reply(f"You don't have access to this command!")
+
     if "Playlist_" in args[0]:
         try:
             await client.user.party.set_playlist(playlist=args[0])
@@ -630,6 +702,7 @@ async def event_friend_message(message):
             await message.reply(f"Couldn't set gamemode to {args[0]}, as I'm not party leader.")
             time = datetime.datetime.now().strftime('%H:%M:%S')
             print(Fore.RED + f" [PYBOT] [{time}] [ERROR] Failed to set gamemode as I don't have the required permissions." + Fore.WHITE)
+
     if "!platform" in args[0] and message.author.display_name in data['FullAccess']:
         await message.reply('Setting platform to ' + args[1] + '.')
         party_id = client.user.party.id
@@ -644,6 +717,7 @@ async def event_friend_message(message):
         else:
             if message.author.display_name not in data['FullAccess']:
                 await message.reply(f"You don't have access to this command!")
+
     if args[0] == "!id":
         user = await client.fetch_profile(joinedArguments, cache=False, raw=False)
         try:
@@ -654,6 +728,7 @@ async def event_friend_message(message):
             await message.reply(f"I couldn't find an Epic account with the name: {joinedArguments}.")
             time = datetime.datetime.now().strftime('%H:%M:%S')
             print(Fore.RED + f" [PYBOT] [{time}] [ERROR] I couldn't find an Epic account with the name: {joinedArguments}.")
+
 try:
     client.run()
 except fortnitepy.AuthException:
