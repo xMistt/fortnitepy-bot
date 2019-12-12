@@ -96,6 +96,8 @@ client = fortnitepy.Client(
 @client.event
 async def event_ready():
     print(crayons.green(f'[FORTNITEPY] [{getTime()}] Client ready as {client.user.display_name}.'))
+    print(crayons.red('AT THIS TIME, AS EPIC GAMES HAS UPDATED HOW THEIR PARTY SERVICES WORK; INVITES WILL NOT BE AUTO-ACCEPTED.'))
+    print(crayons.red('A WORK AROUND COULD BE JOINING THE BOT INSTEAD OF INVITING IT, ANY MORE ISSUES: https://discord.gg/JC5Tj99'))
 
 @client.event
 async def event_party_invite(invite):
@@ -289,6 +291,18 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to Checkered Renegade!')
+
+    elif "!mintyelf" in args[0].lower():
+        variants = client.user.party.me.create_variants(
+           material=2
+        )
+
+        await client.user.party.me.set_outfit(
+            asset='CID_051_Athena_Commando_M_HolidayElf',
+            variants=variants
+        )
+
+        await message.reply('Skin set to Minty Elf!')
 
     elif "EID_" in args[0]:
         await client.user.party.me.clear_emote()
