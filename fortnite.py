@@ -89,7 +89,8 @@ client = fortnitepy.Client(
     email=data['email'],
     password=data['password'],
     status=data['status'],
-    platform=fortnitepy.Platform(data['platform'])
+    platform=fortnitepy.Platform(data['platform']),
+    net_cl="10453562"
 )
 
 @client.event
@@ -98,14 +99,16 @@ async def event_ready():
 
 @client.event
 async def event_party_invite(invite):
-    await invite.accept()
-    print(f'[FORTNITEPY] [{getTime()}] Accepted party invite.')
+    print(crayons.red('AT THIS TIME, AS EPIC GAMES HAS UPDATED HOW THEIR PARTY SERVICES WORK; INVITES WILL NOT BE AUTO-ACCEPTED.'))
+    print(crayons.red('A WORK AROUND COULD BE JOINING THE BOT INSTEAD OF INVITING IT, ANY MORE ISSUES: https://discord.gg/JC5Tj99'))
+#   await invite.accept()
+#   print(f'[FORTNITEPY] [{getTime()}] Accepted party invite.')
 
 @client.event
 async def event_friend_request(request):
     print(f"[FORTNITEPY] [{getTime()}] Recieved friend request from: {request.display_name}.")
 
-    if data['friendaccept'].lower() == True:
+    if data['friendaccept'] == True:
         await request.accept()
         print(f"[FORTNITEPY] [{getTime()}] Accepted friend request from: {request.display_name}.")
     else:
