@@ -96,25 +96,21 @@ client = fortnitepy.Client(
 @client.event
 async def event_ready():
     print(crayons.green(f'[FORTNITEPY] [{getTime()}] Client ready as {client.user.display_name}.'))
-    print(crayons.red('AT THIS TIME, AS EPIC GAMES HAS UPDATED HOW THEIR PARTY SERVICES WORK; INVITES WILL NOT BE AUTO-ACCEPTED.'))
-    print(crayons.red('A WORK AROUND COULD BE JOINING THE BOT INSTEAD OF INVITING IT, ANY MORE ISSUES: https://discord.gg/JC5Tj99'))
 
 @client.event
 async def event_party_invite(invite):
-    print(crayons.red('AT THIS TIME, AS EPIC GAMES HAS UPDATED HOW THEIR PARTY SERVICES WORK; INVITES WILL NOT BE AUTO-ACCEPTED.'))
-    print(crayons.red('A WORK AROUND COULD BE JOINING THE BOT INSTEAD OF INVITING IT, ANY MORE ISSUES: https://discord.gg/JC5Tj99'))
-#   await invite.accept()
-#   print(f'[FORTNITEPY] [{getTime()}] Accepted party invite.')
+   await invite.accept()
+   print(f'[FORTNITEPY] [{getTime()}] Accepted party invite from {invite.sender}.')
 
 @client.event
 async def event_friend_request(request):
     print(f"[FORTNITEPY] [{getTime()}] Recieved friend request from: {request.display_name}.")
 
-    if data['friendaccept'] == True:
+    if data['friendaccept'] is True:
         await request.accept()
         print(f"[FORTNITEPY] [{getTime()}] Accepted friend request from: {request.display_name}.")
-    else:
-        await request.decline()
+    elif data['friendaccept'] is False::
+        await request.remove_or_decline_friend()
         print(f"[FORTNITEPY] [{getTime()}] Declined friend request from: {request.display_name}.")
 
 @client.event
