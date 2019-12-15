@@ -233,7 +233,7 @@ async def event_friend_message(message):
         await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
         print(f"[FORTNITEPY] [{getTime()}] Banner set to; {args[1]} {args[2]} {args[3]}")
 
-    elif "CID_" in args[0]:
+    elif "cid_" in args[0].lower():
         await client.user.party.me.set_outfit(
             asset=args[0]
         )
@@ -241,7 +241,7 @@ async def event_friend_message(message):
         await message.reply(f'Skin set to {args[0]}')
         await print(f'[FORTNITEPY] [{getTime()}] Skin set to {args[0]}')
 
-    elif "VTID_" in args[0]:
+    elif "vtid_" in args[0].lower():
         VTID = await setVTID(args[0])
         if VTID[1] == 'Particle':
             variants = client.user.party.me.create_variants(particle_config='Particle', particle=1)
@@ -254,19 +254,19 @@ async def event_friend_message(message):
     elif "!variants" in args[0]:
         args3 = int(args[3])
 
-        if 'CID' in args[1]:
+        if 'cid' in args[1].lower():
             variants = client.user.party.me.create_variants(**{args[2]: args3})
             await client.user.party.me.set_outfit(
                 asset=args[1],
                 variants=variants
             )
-        elif 'BID' in args[1]:
+        elif 'bid' in args[1].lower():
             variants = client.user.party.me.create_variants(item='AthenaBackpack', **{args[2]: args3})
             await client.user.party.me.set_backpack(
                 asset=args[1],
                 variants=variants
             )
-        elif 'PICKAXE_ID' in args[1]:
+        elif 'pickaxe_id' in args[1].lower():
             variants = client.user.party.me.create_variants(item='AthenaPickaxe', **{args[2]: args3})
             await client.user.party.me.set_pickaxe(
                 asset=args[1],
@@ -300,7 +300,7 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Minty Elf!')
 
-    elif "EID_" in args[0]:
+    elif "eid_" in args[0].lower():
         await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
             asset=args[0]
@@ -311,7 +311,7 @@ async def event_friend_message(message):
         await client.user.party.me.clear_emote()
         await message.reply('Stopped emoting.')
 
-    elif "BID_" in args[0]:
+    elif "bid_" in args[0].lower():
         await client.user.party.me.set_backpack(
             asset=args[0]
         )
@@ -328,12 +328,12 @@ async def event_friend_message(message):
 
         await message.reply(f'Pickaxe set to {args[0]}')
 
-    elif "PetCarrier_" in args[0]:
+    elif "petcarrier_" in args[0].lower():
         await client.user.party.me.set_backpack(
                 asset=f"/Game/Athena/Items/Cosmetics/PetCarriers/{args[0]}.{args[0]}"
         )
 
-    elif "Emoji_" in args[0]:
+    elif "emoji_" in args[0].lower():
         await client.user.party.me.set_emote(asset='EID_ClearEmote')
         await client.user.party.me.set_emote(
                 asset=f"/Game/Athena/Items/Cosmetics/Dances/Emoji/{args[0]}.{args[0]}"
