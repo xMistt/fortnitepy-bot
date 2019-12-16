@@ -89,8 +89,7 @@ client = fortnitepy.Client(
     email=data['email'],
     password=data['password'],
     status=data['status'],
-    platform=fortnitepy.Platform(data['platform']),
-    net_cl="10453562"
+    platform=fortnitepy.Platform(data['platform'])
 )
 
 @client.event
