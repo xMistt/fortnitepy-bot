@@ -99,7 +99,7 @@ async def event_ready():
 @client.event
 async def event_party_invite(invite):
    await invite.accept()
-   print(f'[FORTNITEPY] [{getTime()}] Accepted party invite from {invite.sender}.')
+   print(f'[FORTNITEPY] [{getTime()}] Accepted party invite from {invite.sender.display_name}.')
 
 @client.event
 async def event_friend_request(request):
@@ -456,4 +456,3 @@ try:
     client.run()
 except fortnitepy.AuthException:
     print(crayons.red(f"[FORTNITEPY] [{getTime()}] [ERROR] Invalid account credentials."))
-    
