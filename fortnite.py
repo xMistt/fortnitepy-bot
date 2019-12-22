@@ -71,7 +71,7 @@ with open('config.json') as f:
     data = json.load(f)
     
 if data['debug'] == True:
-    logger = logging.getLogger('fortnitepy.http')
+    logger = logging.getLogger('fortnitepy')
     logger.setLevel(level=logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('\u001b[36m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
@@ -251,10 +251,19 @@ async def event_friend_message(message):
         await message.reply(f'Variants set to {args[0]}.\n(Warning: This feature is not supported, please use !variants)')
 
     elif "!variants" in args[0]:
-        args3 = int(args[3])
+        try:
+            args3 = int(args[3])
+        except ValueError:
+            args3 = args[3]
 
-        if 'cid' in args[1].lower():
-            variants = client.user.party.me.create_variants(**{args[2]: args3})
+        if 'cid' in args[1].lower() and 'jersey_color' not in args[2]:
+            variants = client.user.party.me.create_variants(**{args[2]: args[3]})
+            await client.user.party.me.set_outfit(
+                asset=args[1],
+                variants=variants
+            )
+        elif 'cid' in args[1].lower() and 'jersey_color' in args[2]:
+            variants = client.user.party.me.create_variants(pattern=0, numeric=69, **{args[2]: args[3]})
             await client.user.party.me.set_outfit(
                 asset=args[1],
                 variants=variants
@@ -274,6 +283,30 @@ async def event_friend_message(message):
 
         await message.reply(f'Set variants of {args[1]} to {args[2]} {args[3]}.')
         print(f'[FORTNITEPY] [{getTime()}] Set variants of {args[1]} to {args[2]} {args[3]}.')
+
+    elif "!soccerskin" in args[0].lower():
+        me = client.user.party.me
+
+        variants = me.create_variants(
+            jersey_color='Norway'
+        )
+
+        await me.set_outfit(
+            asset='CID_149_Athena_Commando_F_SoccerGirlB',
+            variants=variants
+        )
+
+    elif "!soccerskin2" in args[0].lower():
+        me = client.user.party.me
+
+        variants = me.create_variants(
+            **{"jersey_color": "Norway"}
+        )
+
+        await me.set_outfit(
+            asset='CID_149_Athena_Commando_F_SoccerGirlB',
+            variants=variants
+        )
 
     elif "!checkeredrenegade" in args[0].lower():
         variants = client.user.party.me.create_variants(
