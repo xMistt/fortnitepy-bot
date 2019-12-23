@@ -1,4 +1,4 @@
-# fortnitepy-bot
+# PartyBot (previously fortnitepy-bot)
 A fortnite XMPP bot coded in Python with party capabilites.
 
 ## Discord Support
