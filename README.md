@@ -31,7 +31,7 @@ For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/C
 "level": 100,                                               - Sets the clients level.
 "bp_tier": 999999999,                                       - Sets the clients battle pass tier.
 "status": "Created by xMistt, enjoy! <3",                   - Sets the clients presence.
-"platform": "ANDROID",                                      - Sets the clients platform seen in the lobby.
+"platform": "AND",                                          - Sets the clients platform seen in the lobby.
 "debug": false,                                             - If you don't know what this means, ignore it.
 "friendaccept": true                                        - If the bot will accept every friend request.
 ```
