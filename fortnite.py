@@ -104,16 +104,16 @@ async def event_party_invite(invite):
     if data['joinoninvite'].lower() == 'true':
         try:
             await invite.accept()
-            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.author.display_name}.')
+            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.sender.display_name}.')
         except Exception as e:
             pass
     if data['joinoninvite'].lower() == 'false':
-        if invite.author.display_name in data['FullAccess']:
+        if invite.sender.display_name in data['FullAccess']:
             await invite.accept()
-            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.author.display_name}.')
+            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.sender.display_name}.')
         else:
-            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Never accepted party invite from {invite.author.display_name}.')
-            await invite.author.send(f"I can't join you right now.")
+            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Never accepted party invite from {invite.sender.display_name}.')
+            await invite.sender.send(f"I can't join you right now.")
 
 @client.event
 async def event_friend_request(request):
