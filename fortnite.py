@@ -83,7 +83,7 @@ if data['debug'] is True:
     handler.setFormatter(logging.Formatter('\u001b[35m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
     logger.addHandler(handler)
 else:
-    print(f"[PartyBot] [{time()}] Debug logging is off. (This isn't an error!)")
+    pass
 
 client = fortnitepy.Client(
     email=data['email'],
@@ -102,6 +102,13 @@ client = fortnitepy.Client(
 @client.event
 async def event_ready():
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
+
+    for pending in client.pending_friends:
+        friend = await pending.accept() if data["friendaccept"] else await pending.decline()
+        if isinstance(friend, fortnitepy.Friend):
+            print(f"[PartyBot] [{time()}] Accepted friend request from: {friend.display_name}.")
+        else:
+            print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
 
 @client.event
 async def event_party_invite(invite):
