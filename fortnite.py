@@ -47,6 +47,7 @@ try:
     import aiohttp
     import time
     import logging
+    import functools
     import sys
     import random
     from colorama import init
@@ -56,7 +57,6 @@ except ModuleNotFoundError:
     print(Fore.RED + f'[FORTNITEPY] [N/A] [ERROR] Failed to import 1 or more modules, run "INSTALL PACKAGES.bat".')
     exit()
 
-time = datetime.datetime.now().strftime('%H:%M:%S')
 print(f'  ')
 print(color.CYAN + f'   ██████╗ ██╗   ██╗     ██████╗  ██████╗ ████████╗')
 print(color.CYAN + f'   ██╔══██╗╚██╗ ██╔╝     ██╔══██╗██╔═══██╗╚══██╔══╝')
@@ -82,7 +82,8 @@ with open('config.json') as f:
     data = json.load(f)
     print(f' [PYBOT] [{getTime()}] Config loaded.')
     
-if data['debug'] == 'True':
+debug = 'False'
+if debug == 'True':
     print(f' [PYBOT] [{getTime()}] Debug logging is on.')
     debugOn()
 else:
@@ -92,7 +93,15 @@ client = fortnitepy.Client(
     email=data['email'],
     password=data['password'],
     status=data['status'],
-    platform=fortnitepy.Platform(data['platform'])
+    platform=fortnitepy.Platform(data['platform']),
+    default_party_member_config=[
+        functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=data['cid']),
+        functools.partial(fortnitepy.ClientPartyMember.set_backpack, data['bid']),
+        functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=data['banner'], color=data['banner_colour'], season_level=data['level']),
+        functools.partial(fortnitepy.ClientPartyMember.set_emote, data['eid']),
+        functools.partial(fortnitepy.ClientPartyMember.set_pickaxe, data['pid']),
+        functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
+    ]
 )
 
 @client.event
@@ -102,41 +111,45 @@ async def event_ready():
 @client.event
 async def event_party_invite(invite):
     if data['joinoninvite'].lower() == 'true':
-        try:
-            await invite.accept()
-            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.sender.display_name}.')
-        except Exception as e:
-            pass
+        if invite.sender.display_name not in data['BlockList']:
+            try:
+                await invite.accept()
+                print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.sender.display_name}')
+            except Exception as e:
+                pass
+        elif invite.sender.display_name in data['BlockList']:
+            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Never accepted party invite from' + Fore.RED + f' {invite.sender.display_name}')
     if data['joinoninvite'].lower() == 'false':
         if invite.sender.display_name in data['FullAccess']:
             await invite.accept()
-            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.sender.display_name}.')
+            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Accepted party invite from {invite.sender.display_name}')
         else:
-            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Never accepted party invite from {invite.sender.display_name}.')
+            print(Fore.GREEN + f' [PYBOT] [{getTime()}] Never accepted party invite from {invite.sender.display_name}')
             await invite.sender.send(f"I can't join you right now.")
 
 @client.event
 async def event_friend_request(request):
     if data['friendaccept'].lower() == 'true':
-        try:
-            await request.accept()
-            print(f" [PYBOT] [{getTime()}] Accepted friend request from: {request.display_name}.")
-        except Exception as e:
-            pass
+        if request.display_name not in data['BlockList']:
+            try:
+                await request.accept()
+                print(f" [PYBOT] [{getTime()}] Accepted friend request from: {request.display_name}")
+            except Exception as e:
+                pass
+        elif request.display_name in data['BlockList']:
+            print(f" [PYBOT] [{getTime()}] Never Accepted friend reqest from: " + Fore.RED + f"{request.display_name}")
     if data['friendaccept'].lower() == 'false':
-        print(f" [PYBOT] [{getTime()}] Never accepted friend request from: {request.display_name}.")
+        if request.display_name in data['FullAccess']:
+            try:
+                await request.accept()
+                print(f" [PYBOT] [{getTime()}] Accepted friend request from: {request.display_name}")
+            except Exception as e:
+                pass
+        else:
+            print(f" [PYBOT] [{getTime()}] Never accepted friend request from: {request.display_name}")
 
 @client.event
 async def event_party_member_join(member):
-    variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
-    await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
-    await client.user.party.me.set_backpack(asset=data['bid'])
-    await client.user.party.me.set_pickaxe(asset=data['pid'])
-    await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
-    delay.sleep(2)
-    await client.user.party.me.set_emote(asset=data['eid'])
-    await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
-    
     if client.user.display_name != member.display_name:
         print(f" [PYBOT] [{getTime()}] {member.display_name} has joined the lobby.")
 
@@ -148,273 +161,379 @@ async def event_friend_message(message):
     print(' [PYBOT] [' + getTime() + '] {0.author.display_name}: {0.content}'.format(message))
 
     if "!skin" in args[0].lower():
-        id = await BenBotAsync.getSkinId(joinedArguments)
-        if id == None:
-            await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.set_outfit(asset=id)
-            await message.reply('Skin set to ' + id)
-            print(f" [PYBOT] [{getTime()}] Set Skin to: " + id)
+            id = await BenBotAsync.getSkinId(joinedArguments)
+            if id == None:
+                await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
+            else:
+                await client.user.party.me.set_outfit(asset=id)
+                await message.reply('Skin set to ' + id)
+                print(f" [PYBOT] [{getTime()}] Set Skin to: " + id)
         
     if "!backpack" in args[0].lower():
-        if len(args) == 1:
-            await client.user.party.me.set_backpack(asset='none')
-            await message.reply('Backpack set to None')
-            print(f" [PYBOT] [{getTime()}] Set Backpack to None")
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
         else:
-            id = await BenBotAsync.getBackpackId(joinedArguments)
-            if id == None:
-                await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
+            if len(args) == 1:
+                await client.user.party.me.set_backpack(asset='none')
+                await message.reply('Backpack set to None')
+                print(f" [PYBOT] [{getTime()}] Set Backpack to None")
             else:
-                await client.user.party.me.set_backpack(asset=id)
-                await message.reply('Backpack set to ' + id)
-                print(f" [PYBOT] [{getTime()}] Set Backpack to: " + id)
+                id = await BenBotAsync.getBackpackId(joinedArguments)
+                if id == None:
+                    await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
+                else:
+                    await client.user.party.me.set_backpack(asset=id)
+                    await message.reply('Backpack set to ' + id)
+                    print(f" [PYBOT] [{getTime()}] Set Backpack to: " + id)
 
     if "!emote" in args[0].lower():
-        await client.user.party.me.clear_emote()
-        id = await BenBotAsync.getEmoteId(joinedArguments)
-        if id == None:
-            await message.reply(f"Couldn't find an emote with the name: {joinedArguments}")
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.set_emote(asset=id)
-            await message.reply('Emote set to ' + id)
-            print(f" [PYBOT] [{getTime()}] Set Emote to: " + id)
+            await client.user.party.me.clear_emote()
+            id = await BenBotAsync.getEmoteId(joinedArguments)
+            if id == None:
+                await message.reply(f"Couldn't find an emote with the name: {joinedArguments}")
+            else:
+                await client.user.party.me.set_emote(asset=id)
+                await message.reply('Emote set to ' + id)
+                print(f" [PYBOT] [{getTime()}] Set Emote to: " + id)
     
     if "!pickaxe" in args[0].lower():
-        id = await BenBotAsync.getPickaxeId(joinedArguments)
-        if id == None:
-            await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.set_pickaxe(asset=id)
-            await message.reply('Pickaxe set to ' + id)
-            print(f" [PYBOT] [{getTime()}] Set Pickaxe to: " + id)
+            id = await BenBotAsync.getPickaxeId(joinedArguments)
+            if id == None:
+                await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
+            else:
+                await client.user.party.me.set_pickaxe(asset=id)
+                await message.reply('Pickaxe set to ' + id)
+                print(f" [PYBOT] [{getTime()}] Set Pickaxe to: " + id)
 
     if "!point" in args[0].lower():
-        await client.user.party.me.clear_emote()
-        id = await BenBotAsync.getPickaxeId(joinedArguments)
-        if id == None:
-            await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.set_pickaxe(asset=id)
-            await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
-            await message.reply('Pointing with ' + id)
-            print(f" [PYBOT] [{getTime()}] Pointing a pickaxe with: " + id)
+            await client.user.party.me.clear_emote()
+            if len(args) == 1:
+                await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
+                await message.reply('Doing emote: Point It Out')
+            else:
+                id = await BenBotAsync.getPickaxeId(joinedArguments)
+                if id == None:
+                    await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
+                else:
+                    await client.user.party.me.set_pickaxe(asset=id)
+                    await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
+                    await message.reply('Pointing with ' + id)
+                    print(f" [PYBOT] [{getTime()}] Pointing a pickaxe with: " + id)
 
     if "!pet" in args[0].lower():
-        id = await BenBotAsync.getPetId(joinedArguments)
-        await client.user.party.me.set_backpack(
-                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            id = await BenBotAsync.getPetId(joinedArguments)
+            await client.user.party.me.set_backpack(
+                    asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
+            )
 
-        await message.reply('Pet set to ' + id)
-        print(f" [PYBOT] [{getTime()}] Client's PetCarrier set to: " + id)
+            await message.reply('Pet set to ' + id)
+            print(f" [PYBOT] [{getTime()}] Client's PetCarrier set to: " + id)
 
     if "!emoji" in args[0].lower():
-        id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
-        await client.user.party.me.clear_emote()
-        await client.user.party.me.set_emote(
-                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
+            await client.user.party.me.clear_emote()
+            await client.user.party.me.set_emote(
+                    asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
+            )
 
-        await message.reply('Emoji set to ' + id)
-        print(f" [PYBOT] [{getTime()}] Client's Emoji set to " + id)
+            await message.reply('Emoji set to ' + id)
+            print(f" [PYBOT] [{getTime()}] Client's Emoji set to " + id)
 
     if "!purpleskull" in args[0].lower():
-        variants = client.user.party.me.create_variants(
-           clothing_color=1
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            try:
+                variants = client.user.party.me.create_variants(
+                   clothing_color=1
+                )
 
-        await client.user.party.me.set_outfit(
-            asset='CID_030_Athena_Commando_M_Halloween',
-            variants=variants
-        )
+                await client.user.party.me.set_outfit(
+                    asset='CID_030_Athena_Commando_M_Halloween',
+                    variants=variants
+                )
 
-        await message.reply('Skin set to Purple Skull Trooper!')
-        print(f" [PYBOT] [{getTime()}] Client's Skin set to Purple Skull Trooper")
+                await message.reply('Skin set to Purple Skull Trooper!')
+                print(f" [PYBOT] [{getTime()}] Client's Skin set to Purple Skull Trooper")
+            except Exception as e:
+                pass
 
     if "!pinkghoul" in args[0].lower():
-        variants = client.user.party.me.create_variants(
-           material=3
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            try:
+                variants = client.user.party.me.create_variants(
+                   material=3
+                )
 
-        await client.user.party.me.set_outfit(
-            asset='CID_029_Athena_Commando_F_Halloween',
-            variants=variants
-        )
+                await client.user.party.me.set_outfit(
+                    asset='CID_029_Athena_Commando_F_Halloween',
+                    variants=variants
+                )
 
-        await message.reply('Skin set to Pink Ghoul Trooper!')
-        print(f" [PYBOT] [{getTime()}] Client's Skin set to Pink Ghoul Trooper")
+                await message.reply('Skin set to Pink Ghoul Trooper!')
+                print(f" [PYBOT] [{getTime()}] Client's Skin set to Pink Ghoul Trooper")
+            except Exception as e:
+                pass
 
     if "!brainiacghoul" in args[0].lower():
-        variants = client.user.party.me.create_variants(
-           material=2
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            try:
+                variants = client.user.party.me.create_variants(
+                   material=2
+                )
 
-        await client.user.party.me.set_outfit(
-            asset='CID_029_Athena_Commando_F_Halloween',
-            variants=variants
-        )
+                await client.user.party.me.set_outfit(
+                    asset='CID_029_Athena_Commando_F_Halloween',
+                    variants=variants
+                )
 
-        await message.reply('Skin set to Brainiac Ghoul Trooper!')
-        print(f" [PYBOT] [{getTime()}] Client's Skin set to Brainiac Ghoul Trooper")
-
-    if "!normalghoul" in args[0].lower():
-        variants = client.user.party.me.create_variants(
-           material=0
-        )
-
-        await client.user.party.me.set_outfit(
-            asset='CID_029_Athena_Commando_F_Halloween',
-            variants=variants
-        )
-
-        await message.reply('Skin set to Brainiac Ghoul Trooper!')
-        print(f" [PYBOT] [{getTime()}] Client's Skin set to Normal Ghoul Trooper")
+                await message.reply('Skin set to Brainiac Ghoul Trooper!')
+                print(f" [PYBOT] [{getTime()}] Client's Skin set to Brainiac Ghoul Trooper")
+            except Exception as e:
+                pass
 
     if "!purpleportal" in args[0].lower():
-        variants = client.user.party.me.create_variants(
-            item='AthenaBackpack',
-            particle_config='Particle',
-            particle=1
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            variants = client.user.party.me.create_variants(
+                item='AthenaBackpack',
+                particle_config='Particle',
+                particle=1
+            )
 
-        await client.user.party.me.set_backpack(
-            asset='BID_105_GhostPortal',
-            variants=variants
-        )
+            await client.user.party.me.set_backpack(
+                asset='BID_105_GhostPortal',
+                variants=variants
+            )
 
-        await message.reply('Backpack set to Purple Ghost Portal!')
-        print(f" [PYBOT] [{getTime()}] Client's Backpack set to Purple Ghost Portal")
+            await message.reply('Backpack set to Purple Ghost Portal!')
+            print(f" [PYBOT] [{getTime()}] Client's Backpack set to Purple Ghost Portal")
 
     if "!banner" in args[0].lower():
-        if len(args) == 1:
-            await message.reply('You need to specify which banner, color & level you want to set the banner as.')
-        if len(args) == 2:
-            await client.user.party.me.set_banner(icon=args[1], color=data['banner_colour'], season_level=data['level'])
-        if len(args) == 3:
-            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
-        if len(args) == 4:
-            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            if len(args) == 1:
+                await message.reply('You need to specify which banner, color & level you want to set the banner as.')
+            if len(args) == 2:
+                await client.user.party.me.set_banner(icon=args[1], color=data['banner_colour'], season_level=data['level'])
+            if len(args) == 3:
+                await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
+            if len(args) == 4:
+                await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
-        await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
-        print(f" [PYBOT] [{getTime()}] Banner set to; {args[1]} {args[2]} {args[3]}")
+            await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
+            print(f" [PYBOT] [{getTime()}] Banner set to; {args[1]} {args[2]} {args[3]}")
 
     if "CID_" in args[0]:
-        await client.user.party.me.set_outfit(
-            asset=args[0]
-        )
-        await message.reply(f'Skin set to {args[0]}')
-        print(f' [PYBOT] [{getTime()}] Skin set to ' + args[0])
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_outfit(
+                asset=args[0]
+            )
+            await message.reply(f'Skin set to {args[0]}')
+            print(f' [PYBOT] [{getTime()}] Skin set to ' + args[0])
 
     if "!variants" in args[0]:
-        args3 = int(args[3])
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            args3 = int(args[3])
 
-        if 'CID' in args[1]:
-            variants = client.user.party.me.create_variants(**{args[2]: args3})
-            await client.user.party.me.set_outfit(
-                asset=args[1],
-                variants=variants
-            )
-        elif 'BID' in args[1]:
-            variants = client.user.party.me.create_variants(item='AthenaBackpack', **{args[2]: args3})
-            await client.user.party.me.set_backpack(
-                asset=args[1],
-                variants=variants
-            )
-        elif 'PICKAXE_ID' in args[1]:
-            variants = client.user.party.me.create_variants(item='AthenaPickaxe', **{args[2]: args3})
-            await client.user.party.me.set_pickaxe(
-                asset=args[1],
-                variants=variants
-            )
+            if 'CID' in args[1]:
+                variants = client.user.party.me.create_variants(**{args[2]: args3})
+                await client.user.party.me.set_outfit(
+                    asset=args[1],
+                    variants=variants
+                )
+            elif 'BID' in args[1]:
+                variants = client.user.party.me.create_variants(item='AthenaBackpack', **{args[2]: args3})
+                await client.user.party.me.set_backpack(
+                    asset=args[1],
+                    variants=variants
+                )
+            elif 'PICKAXE_ID' in args[1]:
+                variants = client.user.party.me.create_variants(item='AthenaPickaxe', **{args[2]: args3})
+                await client.user.party.me.set_pickaxe(
+                    asset=args[1],
+                    variants=variants
+                )
 
-        await message.reply(f'Set variants of {args[1]} to {args[2]} {args[3]}.')
-        print(f' [PYBOT] [{getTime()}] Set variants of {args[1]} to {args[2]} {args[3]}.')
+            await message.reply(f'Set variants of {args[1]} to {args[2]} {args[3]}.')
+            print(f' [PYBOT] [{getTime()}] Set variants of {args[1]} to {args[2]} {args[3]}.')
 
     if "!checkeredrenegade" in args[0].lower():
-        variants = client.user.party.me.create_variants(
-           material=2
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            variants = client.user.party.me.create_variants(
+               material=2
+            )
 
-        await client.user.party.me.set_outfit(
-            asset='CID_028_Athena_Commando_F',
-            variants=variants
-        )
+            await client.user.party.me.set_outfit(
+                asset='CID_028_Athena_Commando_F',
+                variants=variants
+            )
 
-        await message.reply('Skin set to Checkered Renegade!')
-        print(f" [PYBOT] [{getTime()}] Client's Skin set to Checkered Renegade")
+            await message.reply('Skin set to Checkered Renegade!')
+            print(f" [PYBOT] [{getTime()}] Client's Skin set to Checkered Renegade")
+
+    if "!mintyelf" in args[0].lower():
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            variants = client.user.party.me.create_variants(
+                   material=2
+                )
+
+            await client.user.party.me.set_outfit(
+                asset='CID_051_Athena_Commando_M_HolidayElf',
+                variants=variants
+                )
+
+            await message.reply('Skin set to Minty Elf!')
+            print(f" [PYBOT] [{getTime()}] Client's Skin set to Minty Elf")
 
     if "EID_" in args[0]:
-        await client.user.party.me.clear_emote()
-        await client.user.party.me.set_emote(
-            asset=args[0]
-        )
-        await message.reply('Emote set to ' + args[0] + '!')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.clear_emote()
+            await client.user.party.me.set_emote(
+                asset=args[0]
+            )
+            await message.reply('Emote set to ' + args[0] + '!')
         
     if "!stop" in args[0].lower():
-        await client.user.party.me.clear_emote()
-        await message.reply('Stopped emoting.')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.clear_emote()
+            await message.reply('Stopped emoting.')
 
     if "BID_" in args[0]:
-        await client.user.party.me.set_backpack(
-            asset=args[0]
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_backpack(
+                asset=args[0]
+            )
 
-        await message.reply('Backbling set to ' + message.content + '!')
+            await message.reply('Backbling set to ' + message.content + '!')
 
     if "help" in args[0].lower():
-        await message.reply('Commands: !cosmetics - Lists Cosmetic Commands  |  !party - Lists Party Commands | You can view a more detailed commands list in my discord server!')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await message.reply('Commands: !cosmetics - Lists Cosmetic Commands  |  !party - Lists Party Commands | You can view a more detailed commands list in my discord server!')
 
     if "!cosmetics" in args[0].lower():
-        await message.reply('Cosmetic Commands: !skin (skin name), !backpack (backpack name), !emote (emote name) | !stop-to stop the emote, !pickaxe (pickaxe name), !point (pickaxe name), !pet (pet name), !emoji (emoji name), !variants (CID) (style type) (integer), !purpleskull, !pinkghoul, !brainiacghoul, !purpleportal, !checkeredrenegade, !banner (icon) (colour) (level), CID_, BID_, PICKAXE_ID_, EID_')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await message.reply('Cosmetic Commands: !skin (skin name), !backpack (backpack name), !emote (emote name) | !stop-to stop the emote, !pickaxe (pickaxe name), !point (pickaxe name), !pet (pet name), !emoji (emoji name), !variants (CID) (style type) (integer), !purpleskull, !pinkghoul, !brainiacghoul, !purpleportal, !checkeredrenegade, !banner (icon) (colour) (level), CID_, BID_, PICKAXE_ID_, EID_')
 
     if "!party" in args[0].lower():
-        await message.reply('Party Commands: !ready, !unready, !sitout, !sitin, !bp (tier), !level (level), !echo (message), !leave, !kick (username), Playlist_')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await message.reply('Party Commands: !ready, !unready, !sitout, !sitin, !bp (tier), !level (level), !echo (message), !leave, !kick (username), Playlist_')
 
     if "Pickaxe_" in args[0]:
-        await client.user.party.me.set_pickaxe(
-                asset=args[0]
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_pickaxe(
+                    asset=args[0]
+            )
 
-        await message.reply('Pickaxe set to ' + args[0] + '!')
+            await message.reply('Pickaxe set to ' + args[0] + '!')
 
     if "PetCarrier_" in args[0]:
-        await client.user.party.me.set_backpack(
-                asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + args[0] + "." + args[0]
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_backpack(
+                    asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + args[0] + "." + args[0]
+            )
 
     if "Emoji_" in args[0]:
-        await client.user.party.me.set_emote(asset='EID_ClearEmote')
-        await client.user.party.me.set_emote(
-                asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + args[0] + "." + args[0]
-        )
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_emote(asset='EID_ClearEmote')
+            await client.user.party.me.set_emote(
+                    asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + args[0] + "." + args[0]
+            )
 
     if "!ready" in args[0].lower():
-        await client.user.party.me.set_ready(True)
-        await message.reply('Ready!')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_ready(True)
+            await message.reply('Ready!')
 
     if ("!unready" in args[0].lower()) or ("!sitin" in args[0].lower()):
-        await client.user.party.me.set_ready(False)
-        await message.reply('Unready!')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_ready(False)
+            await message.reply('Unready!')
 
     if "!sitout" in args[0].lower():
-        await client.user.party.me.set_ready(None)
-        await message.reply('Sitting Out!')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_ready(None)
+            await message.reply('Sitting Out!')
 
     if "!bp" in args[0].lower():
-        await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
 
     if "!level" in args[0].lower():
-        await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
     
     if "!reset" in args[0].lower():
-        variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
-        await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
-        await client.user.party.me.set_backpack(asset=data['bid'])
-        await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
-        await client.user.party.me.set_pickaxe(asset=data['pid'])
-        await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
-        await message.reply(f"Reset to default cosmetic loadout.")
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
+            await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
+            await client.user.party.me.set_backpack(asset=data['bid'])
+            await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
+            await client.user.party.me.set_pickaxe(asset=data['pid'])
+            await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
+            await message.reply(f"Reset to default cosmetic loadout.")
 
     if "!echo" in args[0].lower():
         if message.author.display_name in data['FullAccess']:
@@ -446,7 +565,7 @@ async def event_friend_message(message):
                             with open('config.json', 'w') as f:
                                 json.dump(data, f, indent=4)
                                 print(f" [PYBOT] [{getTime()}] Added " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
-                        elif user.display_name in data['FullAccess']:
+                        elif user.display_name in data['FullAccess']:               
                             print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is already an admin")
                     elif args[1].lower() == 'remove':
                         if user.display_name in data['FullAccess']:
@@ -477,6 +596,76 @@ async def event_friend_message(message):
                     elif user.display_name in data['FullAccess']:
                         print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is already an admin")
                         await message.reply(f"{user.display_name} is already an admin.")
+            else:
+                await message.reply(f"You don't have access to this command!")
+
+    if "!blocklist" in args[0].lower():
+        if message.author.display_name in data['FullAccess']:
+            if len(args) == 1:
+                await message.reply('Please specify if you want to add or remove a user from the block list')
+                print(f' [PYBOT] [{getTime()}] Please specify if you want to add or remove a user from the admin list, using ' + color.GREEN + '!admin add ' + color.END + 'or ' + color.GREEN + '!admin remove' + color.END)
+            if len(args) == 2:
+                if args[1].lower() == 'add' or args[1].lower() == 'remove':
+                    await message.reply('Please specify the name of the user you want to add/remove from the block list')
+                    print(f' [PYBOT] [{getTime()}] Please specify the name of the user you want to add/remove from the block list')
+                else:
+                    await message.reply('Invalid usage, try !blocklist add <username> or !blocklist remove <username>')
+                    print(f' [PYBOT] [{getTime()}] Invalid usage, try ' + color.GREEN + '!BlockList add <username> ' + color.END + 'or ' + color.GREEN + '!BlockList remove <username>' + color.END)
+            if len(args) >= 3:
+                joinedArgumentsAdmin = " ".join(args[2:])
+                user = await client.fetch_profile(joinedArgumentsAdmin)
+                if args[1].lower() == 'add':
+                    if user.display_name not in data['FullAccess'] and user.display_name not in data['BlockList']:
+                        data['BlockList'].append(f"{user.display_name}")
+                        with open('config.json', 'w') as f:
+                            json.dump(data, f, indent=4)
+                            await message.reply(f"Added {user.display_name} to the blocked list.")
+                            print(f" [PYBOT] [{getTime()}] Added " + color.GREEN + f"{user.display_name}" + color.END + " to the blocked list.")
+                    elif user.display_name in data['FullAccess']:
+                        await message.reply(f"{user.display_name} can not be added to the blocked list.")
+                        print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " cannot be added to the blocked list.")
+                    elif user.display_name in data['BlockList']:               
+                        await message.reply(f"{user.display_name} is already on the blocked list.")
+                        print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is already on the blocked list.")
+                elif args[1].lower() == 'remove':
+                    if user.display_name in data['BlockList']:
+                        data['BlockList'].remove(user.display_name)
+                        with open('config.json', 'w') as f:
+                            json.dump(data, f, indent=4)
+                            print(f" [PYBOT] [{getTime()}] Removed " + color.GREEN + f"{user.display_name}" + color.END + " from the blocked list.")
+                    elif user.display_name not in data['BlockList']:
+                        print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is not on the blocked list.")
+        if message.author.display_name not in data['FullAccess']:
+            if len(args) >= 3 and args[1].lower() == 'add':
+                await message.reply(f"Password?")
+                res = await client.wait_for('friend_message')
+                content = res.content.lower()
+                joinedArgumentsAdmin = " ".join(args[2:])
+                user = await client.fetch_profile(joinedArgumentsAdmin)
+                if content in data['AdminPassword']:
+                    if user.display_name not in data['BlockList']:
+                        data['BlockList'].append(f"{user.display_name}")
+                        with open('config.json', 'w') as f:
+                            json.dump(data, f, indent=4)
+                            await message.reply(f"Correct. Added {user.display_name} to the blocked list.")
+                            print(f" [PYBOT] [{getTime()}] Added " + color.GREEN + f"{user.display_name}" + color.END + " to the blocked list.")
+                    elif user.display_name in data['BlockList']:
+                        print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is already on the blocked list.")
+                        await message.reply(f"{user.display_name} is already on the blocked list.")
+                elif args[1].lower() == 'remove':
+                    await message.reply(f"Password?")
+                    res = await client.wait_for('friend_message')
+                    content = res.content.lower()
+                    joinedArgumentsAdmin = " ".join(args[2:])
+                    user = await client.fetch_profile(joinedArgumentsAdmin)
+                    if content in data['AdminPassword']:
+                        if user.display_name in data['BlockList']:
+                            data['BlockList'].remove(user.display_name)
+                            with open('config.json', 'w') as f:
+                                json.dump(data, f, indent=4)
+                                print(f" [PYBOT] [{getTime()}] Removed " + color.GREEN + f"{user.display_name}" + color.END + " from the blocked list.")
+                        elif user.display_name not in data['BlockList']:
+                            print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is not on the blocked list.")
             else:
                 await message.reply(f"You don't have access to this command!")
 
@@ -586,7 +775,7 @@ async def event_friend_message(message):
         else:
             try:
                 if (user.id in friends):
-                    await client.remove_friend(user.id)
+                    await client.remove_or_decline_friend(user.id)
                     await message.reply(f"Sucessfully removed {user.display_name} as a friend.")
                     print(Fore.GREEN + f" [PYBOT] [{getTime()}] {client.user.display_name} removed {user.display_name} as a friend.")
                 else: 
@@ -602,19 +791,22 @@ async def event_friend_message(message):
         friends = client.friends
         onlineFriends = []
         offlineFriends = []
-        for f in friends:
-            friend = client.get_friend(f)
-            if friend.is_online:
-                onlineFriends.append(friend.display_name)
-            else:
-                offlineFriends.append(friend.display_name)
-        print(f" [PYBOT] [{getTime()}] " + Fore.WHITE + "Friends List: " + Fore.GREEN + f"{len(onlineFriends)} Online " + Fore.WHITE + "/" + Fore.LIGHTBLACK_EX + f" {len(offlineFriends)} Offline " + Fore.WHITE + "/" + Fore.LIGHTWHITE_EX + f" {len(onlineFriends) + len(offlineFriends)} Total")
-        for x in onlineFriends:
-            if x is not None:
-                print(Fore.GREEN + " " + x + Fore.WHITE)
-        for x in offlineFriends:
-            if x is not None:
-                print(Fore.LIGHTBLACK_EX + " " + x + Fore.WHITE)
+        try:
+            for f in friends:
+                friend = client.get_friend(f)
+                if friend.is_online():
+                    onlineFriends.append(friend.display_name)
+                else:
+                    offlineFriends.append(friend.display_name)
+            print(f" [PYBOT] [{getTime()}] " + Fore.WHITE + "Friends List: " + Fore.GREEN + f"{len(onlineFriends)} Online " + Fore.WHITE + "/" + Fore.LIGHTBLACK_EX + f" {len(offlineFriends)} Offline " + Fore.WHITE + "/" + Fore.LIGHTWHITE_EX + f" {len(onlineFriends) + len(offlineFriends)} Total")
+            for x in onlineFriends:
+                if x is not None:
+                    print(Fore.GREEN + " " + x + Fore.WHITE)
+            for x in offlineFriends:
+                if x is not None:
+                    print(Fore.LIGHTBLACK_EX + " " + x + Fore.WHITE)
+        except Exception as e:
+            pass
         await message.reply("Check the command window for the list of my friends.")   
         if message.author.display_name not in data['FullAccess']:
             await message.reply(f"You don't have access to this command!")
@@ -677,15 +869,18 @@ async def event_friend_message(message):
                 await message.reply(f"You don't have access to this command!")
 
     if args[0] == "!id":
-        user = await client.fetch_profile(joinedArguments, cache=False, raw=False)
-        try:
-            await message.reply(f"{joinedArguments}'s Epic ID is: {user.id}")
-            print(Fore.GREEN + f" [PYBOT] [{getTime()}] {joinedArguments}'s Epic ID is: {user.id}")
-        except AttributeError:
-            await message.reply(f"I couldn't find an Epic account with the name: {joinedArguments}.")
-            print(Fore.RED + f" [PYBOT] [{getTime()}] [ERROR] I couldn't find an Epic account with the name: {joinedArguments}.")
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            user = await client.fetch_profile(joinedArguments, cache=False, raw=False)
+            try:
+                await message.reply(f"{joinedArguments}'s Epic ID is: {user.id}")
+                print(Fore.GREEN + f" [PYBOT] [{getTime()}] {joinedArguments}'s Epic ID is: {user.id}")
+            except AttributeError:
+                await message.reply(f"I couldn't find an Epic account with the name: {joinedArguments}.")
+                print(Fore.RED + f" [PYBOT] [{getTime()}] [ERROR] I couldn't find an Epic account with the name: {joinedArguments}.")
 
 try:
     client.run()
 except fortnitepy.AuthException:
-    print(Fore.RED + f" [PYBOT] [{getTime()}] [ERROR] Couldn't log into the account, is config.json filled out?")
+    print(Fore.RED + f" [PYBOT] [{getTime()}] [ERROR] Couldn't log into the account, are the account credentials correct?")
