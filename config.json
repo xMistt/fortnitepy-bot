@@ -1,24 +1,24 @@
 {
     "email": "",
     "password": "",
-    "cid": "CID_029_Athena_Commando_F_Halloween",
-    "variants-type": "material",
-    "variants": 3,
-    "bid": "BID_023_Pinkbear",
-    "eid": "EID_ChairTime",
+    "cid": "CID_028_Athena_Commando_F",
+    "bid": "BID_004_BlackKnight",
+    "eid": "EID_Clapperboard",
     "pid": "Pickaxe_Lockjaw",
     "banner": "otherbanner28",
     "banner_colour": "defaultcolor22",
     "level": "999",
-    "bp_tier": 100,
-    "status": "In Battle Royale Lobby - 2184 / 16",
-    "platform": "AND",
-    "debug": "False",
+    "bp_tier": 999,
+    "status": "Battle Royale Lobby - 2184 / 16",
+    "platform": "PSN",
     "friendaccept": "True",
-    "joinoninvite": "False",
+    "joinoninvite": "True",
     "AdminPassword": "0001",
     "FullAccess": [
-        "Replace This With Your Epic Games Name",
-	"Or Anyone Else That You Want To Have Full Access"
+        "FaZe Sway",
+        "Duh"
+    ],
+    "BlockList": [
+        "Ninja"
     ]
 }
