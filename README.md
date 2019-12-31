@@ -1,4 +1,4 @@
--- Credits to xMistt for the source code and inspiration of this bot.
+-- BIG credits to xMistt for the source code and inspiration of this bot.
 
 # fortnitepy-bot
 A fortnite XMPP bot coded in Python with party capabilites.
@@ -13,7 +13,7 @@ A fortnite XMPP bot coded in Python with party capabilites.
 python3 -m pip install -U fortnitepy
 python3 -m pip install -U aiohttp
 python3 -m pip install -U colorama
-python3 -m pip install -U BenBotAsync
+python3 -m pip install -U BenBotAsync==1.0.1
 ```
 
 Then fill out ``config.json`` with your configuration & run the fortnite.py file!
@@ -25,9 +25,10 @@ For a list of commands, <a href="https://github.com/KaosDrip/fortnitepy-bot/wiki
 ```
 "email": "",                                                - The bot accounts email.
 "password": "",                                             - The bot accounts password.
-"cid": "CID_313_Athena_Commando_M_KpopFashion",             - The skin that the bot wears when it joins.
-"bid": "BID_138_Celestial",                                 - The backpack that the bot wears when it joins.
-"eid": "EID_DeepDab",                                       - The emote that the bot does when it joins.
+"cid": "CID_028_Athena_Commando_F",                         - The skin that the bot wears when it joins.
+"bid": "BID_004_BlackKnight",                               - The backpack that the bot wears when it joins.
+"eid": "EID_Clapperboard",                                  - The emote that the bot does when it joins.
+"pid": "Pickaxe_Lockjaw",                                   - The pickaxe that the bot has equiped.
 "banner": "otherbanner28",                                  - The banner icon the bot uses.
 "banner_colour": "defaultcolor15",                          - The colour of the banner icon.
 "level": "100",                                             - Sets the clients level.
@@ -41,9 +42,16 @@ For a list of commands, <a href="https://github.com/KaosDrip/fortnitepy-bot/wiki
  * WIN
  * IOS
  * AND
-"debug": "False",                                           - If you don't know what this means, ignore it.
-"friendaccept": "true"                                      - If the bot will accept every friend request.
-```
+"friendaccept": "True",                                     - If the bot will accept every friend request.
+"joinoninvite": "True",                                     - If the bot will join every party they are invited to.
+"AdminPassword": "0001",                                    - The password to use to add themselves the the admin list.
+"FullAccess": [                                             \
+    "(Your Epic Name)"                                       - Decides who has access to EVERY command.
+],                                                          /
+"BlockList": [                                              \
+    "(User's Epic Name)"                                     - Decides who doesn't have access to ANY command.
+]                                                           /
+```   
 
 ## Creative Commons License
 By downloading this, you agree to the Creative Commons license and that you're not allowed to sell this repository or any code from this repository. For more info see https://commonsclause.com/.
