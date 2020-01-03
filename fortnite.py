@@ -135,7 +135,8 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Skin set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set skin to: {cosmetic.id}.")
-            await client.party.user.me.set_outfit(asset=cosmetic.id)
+            print(client.user.party.me.edit_locked.locked())
+            await client.user.party.me.set_outfit(asset=cosmetic.id)
         
     elif "!backpack" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -150,7 +151,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Backpack set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set backpack to: {cosmetic.id}.")
-            await client.party.user.me.set_backpack(asset=cosmetic.id)
+            await client.user.party.me.set_backpack(asset=cosmetic.id)
 
     elif "!emote" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -165,7 +166,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Emote set to {cosmetic.displayName}.')
             print(f"[PartyBot] [{time()}] Set emote to: {cosmetic.displayName}.")
-            await client.party.user.me.set_emote(asset=cosmetic.id)
+            await client.user.party.me.set_emote(asset=cosmetic.id)
 
     elif "!pickaxe" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -180,7 +181,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Pickaxe set to {cosmetic.displayName}.')
             print(f"[PartyBot] [{time()}] Set pickaxe to: {cosmetic.displayName}.")
-            await client.party.user.me.set_pickaxe(asset=cosmetic.id)
+            await client.user.party.me.set_pickaxe(asset=cosmetic.id)
 
     elif "!pet" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -195,7 +196,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Pet set to {cosmetic.displayName}.')
             print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.displayName}.")
-            await client.party.user.me.set_backpack(asset=f'/Game/Athena/Items/Cosmetics/PetCarriers/{cosmetic.id}.{cosmetic.id}')
+            await client.user.party.me.set_backpack(asset=f'/Game/Athena/Items/Cosmetics/PetCarriers/{cosmetic.id}.{cosmetic.id}')
 
     elif "!emoji" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -210,7 +211,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Emoji set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set emoji to: {cosmetic.id}.")
-            await client.party.user.me.set_emote(asset=f'/Game/Athena/Items/Cosmetics/Dances/Emoji/{cosmetic.id}.{cosmetic.id}')
+            await client.user.party.me.set_emote(asset=f'/Game/Athena/Items/Cosmetics/Dances/Emoji/{cosmetic.id}.{cosmetic.id}')
 
     elif "!contrail" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -225,7 +226,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Contrail set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set contrail to: {cosmetic.id}.")
-            await client.party.user.me.set_contrail(cosmetic.id)
+            await client.user.party.me.set_contrail(cosmetic.id)
 
     elif "!purpleskull" in args[0].lower():
         variants = client.user.party.me.create_variants(
