@@ -135,7 +135,6 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Skin set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set skin to: {cosmetic.id}.")
-            print(client.user.party.me.edit_locked.locked())
             await client.user.party.me.set_outfit(asset=cosmetic.id)
         
     elif "!backpack" in args[0].lower():
