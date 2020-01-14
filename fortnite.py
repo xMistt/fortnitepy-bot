@@ -44,7 +44,6 @@ except ModuleNotFoundError as e:
 def time():
     return datetime.datetime.now().strftime('%H:%M:%S')
 
-print(BenBotAsync.version)
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
 
 with open('config.json') as f:
