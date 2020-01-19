@@ -11,5 +11,6 @@
     "status": "Created by xMistt, enjoy!\nSupport server: https://discord.gg/8heARRB",
     "platform": "WIN",
     "debug": false,
-    "friendaccept": true
+    "friendaccept": true,
+    "x-api-key": ""
 }

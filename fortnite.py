@@ -36,6 +36,7 @@ try:
     import sys
     import crayons
     import functools
+    import fortnite_api
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue.')
@@ -98,6 +99,11 @@ client = fortnitepy.Client(
     ]
 )
 
+api = fortnite_api.FortniteAPI(
+    api_key=data['x-api-key'],
+    run_async=True
+)
+
 @client.event
 async def event_ready():
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
@@ -142,110 +148,114 @@ async def event_friend_message(message):
     print(f'[PartyBot] [{time()}] {message.author.display_name}: {message.content}')
 
     if "!skin" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Outfit']
-        )
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                type='Outfit',
+                matchMethod='contains',
+                name=content
+            )
 
-        if cosmetic == None:
-            print('Hi, it equals none!')
-            await message.reply(f"Couldn't find a skin with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a skin with the name: {content}.")
-        else:
             await message.reply(f'Skin set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set skin to: {cosmetic.id}.")
             await client.user.party.me.set_outfit(asset=cosmetic.id)
+
+        except fortnite_api.errors.NotFound:
+            await message.reply(f"Couldn't find a skin with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a skin with the name: {content}.")
         
     elif "!backpack" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Back Bling']
-        )
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                type='Backpack',
+                matchMethod='contains',
+                name=content
+            )
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a backpack with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a backpack with the name: {content}.")
-        else:
             await message.reply(f'Backpack set to {cosmetic.id}.')
-            print(f"[PartyBot] [{time()}] Set backpack to: {cosmetic.id}.")
+            print(f"[PartyBot] [{time()}] Set Backpack to: {cosmetic.id}.")
             await client.user.party.me.set_backpack(asset=cosmetic.id)
 
-    elif "!emote" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Emote']
-        )
+        except fortnite_api.errors.NotFound:
+            await message.reply(f"Couldn't find a backpack with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a backpack with the name: {content}.")
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a emote with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a emote with the name: {content}.")
-        else:
-            await message.reply(f'Emote set to {cosmetic.displayName}.')
-            print(f"[PartyBot] [{time()}] Set emote to: {cosmetic.displayName}.")
+    elif "!emote" in args[0].lower():
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                type='Emote',
+                matchMethod='contains',
+                name=content
+            )
+
+            await message.reply(f'Emote set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set emote to: {cosmetic.id}.")
             await client.user.party.me.set_emote(asset=cosmetic.id)
 
-    elif "!pickaxe" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Harvesting Tool']
-        )
+        except fortnite_api.errors.NotFound:
+            await message.reply(f"Couldn't find an emote with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find an emote with the name: {content}.")
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a pickaxe with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a pickaxe with the name: {content}.")
-        else:
-            await message.reply(f'Pickaxe set to {cosmetic.displayName}.')
-            print(f"[PartyBot] [{time()}] Set pickaxe to: {cosmetic.displayName}.")
+    elif "!pickaxe" in args[0].lower():
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                type='Outfit',
+                matchMethod='contains',
+                name=content
+            )
+
+            await message.reply(f'Pickaxe set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set pickaxe to: {cosmetic.id}.")
             await client.user.party.me.set_pickaxe(asset=cosmetic.id)
 
-    elif "!pet" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.BACKEND_TYPE, 'AthenaPet']
-        )
+        except fortnite_api.errors.NotFound:
+            await message.reply(f"Couldn't find a pickaxe with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a pickaxe with the name: {content}.")
 
-        if cosmetic == None:
+    elif "!pet" in args[0].lower():
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                backend_type='AthenaPet',
+                matchMethod='contains',
+                name=content
+            )
+
+            await message.reply(f'Pet set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
+            await client.user.party.me.set_backpack(asset=f'/Game/Athena/Items/Cosmetics/PetCarriers/{cosmetic.id}.{cosmetic.id}')
+        except fortnite_api.errors.NotFound:
             await message.reply(f"Couldn't find a pet with the name: {content}.")
             print(f"[PartyBot] [{time()}] Couldn't find a pet with the name: {content}.")
-        else:
-            await message.reply(f'Pet set to {cosmetic.displayName}.')
-            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.displayName}.")
-            await client.user.party.me.set_backpack(asset=f'/Game/Athena/Items/Cosmetics/PetCarriers/{cosmetic.id}.{cosmetic.id}')
 
     elif "!emoji" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.BACKEND_TYPE, 'AthenaDance']
-        )
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                backend_type='AthenaDance',
+                matchMethod='contains',
+                name=content
+            )
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find an emoji with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find an emoji with the name: {content}.")
-        else:
-            await message.reply(f'Emoji set to {cosmetic.id}.')
-            print(f"[PartyBot] [{time()}] Set emoji to: {cosmetic.id}.")
+            await message.reply(f'Pet set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
             await client.user.party.me.set_emote(asset=f'/Game/Athena/Items/Cosmetics/Dances/Emoji/{cosmetic.id}.{cosmetic.id}')
+        except fortnite_api.errors.NotFound:
+            await message.reply(f"Couldn't find a pet with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a pet with the name: {content}.")
 
     elif "!contrail" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Contrail']
-        )
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                type='Contrail',
+                matchMethod='contains',
+                name=content
+            )
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a contrail with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find an contrail with the name: {content}.")
-        else:
             await message.reply(f'Contrail set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set contrail to: {cosmetic.id}.")
-            await client.user.party.me.set_contrail(cosmetic.id)
+            await client.user.party.me.set_contrail(asset=cosmetic.id)
+
+        except fortnite_api.errors.NotFound:
+            await message.reply(f"Couldn't find a contrail with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a contrail with the name: {content}.")
 
     elif "!purpleskull" in args[0].lower():
         variants = client.user.party.me.create_variants(
@@ -441,13 +451,18 @@ async def event_friend_message(message):
             await client.user.party.me.set_emote(asset='EID_IceKing')
             await message.reply(f'Pickaxe set to {args[1]} & Point it Out played.')
         else:
-            cosmetic = await BenBotAsync.get_cosmetic(content, params=BenBotAsync.Tags.NAME, filter=[BenBotAsync.Filters.TYPE, 'Harvesting Tool'])
-            if cosmetic == None:
-                await message.reply(f"Couldn't find a pickaxe with the name: {content}")
-            else:
+            try:
+                cosmetic = await api.cosmetics.search_first(
+                    type='Pickaxe',
+                    matchMethod='contains',
+                    name=content
+                )
+
                 await client.user.party.me.set_pickaxe(asset=cosmetic.id)
                 await client.user.party.me.set_emote(asset='EID_IceKing')
                 await message.reply(f'Pickaxe set to {content} & Point it Out played.')
+            except fortnite_api.errors.NotFound:
+                await message.reply(f"Couldn't find a pickaxe with the name: {content}")                
 
 
     elif "!ready" in args[0].lower():
