@@ -128,7 +128,7 @@ async def event_friend_request(request):
 @client.event
 async def event_party_member_join(member):
     await client.user.party.me.set_emote(asset=data['eid'])
-    await client.user.party.send(f"Welcome {member.display_name}, I'm a lobby bot made by xMistt/mistxoli! For help, list of commands or if you wanna host your own bot, join the discord: https://discord.gg/8beARRB")
+    await client.user.party.send(f"Welcome {member.display_name}, I'm a lobby bot made by xMistt/mistxoli! For help, list of commands or if you wanna host your own bot, join the discord: https://discord.gg/8heARRB")
 
     if client.user.display_name != member.display_name:
         print(f"[PartyBot] [{time()}] {member.display_name} has joined the lobby.")
