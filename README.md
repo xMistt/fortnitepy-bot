@@ -25,7 +25,7 @@ For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/C
 "password": "",                                             - The bot accounts password.
 "cid": "CID_313_Athena_Commando_M_KpopFashion",             - The skin that the bot wears when it joins.
 "bid": "BID_138_Celestial",                                 - The backpack that the bot wears when it joins.
-"eid": "EID_DeepDab",                                       - The emote that the bot does when it joins.
+"eid": "EID_Floss",                                         - The emote that the bot does when it joins.
 "banner": "otherbanner28",                                  - The banner icon the bot uses.
 "banner_colour": "defaultcolor15",                          - The colour of the banner icon.
 "level": 100,                                               - Sets the clients level.
