@@ -118,10 +118,10 @@ async def event_party_invite(invite):
 async def event_friend_request(request):
     print(f"[PartyBot] [{time()}] Recieved friend request from: {request.display_name}.")
 
-    if data['friendaccept'] is True:
+    if data['friendaccept'] == True:
         await request.accept()
         print(f"[PartyBot] [{time()}] Accepted friend request from: {request.display_name}.")
-    elif data['friendaccept'] is False:
+    else:
         await request.decline()
         print(f"[PartyBot] [{time()}] Declined friend request from: {request.display_name}.")
 
