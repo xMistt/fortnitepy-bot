@@ -522,6 +522,26 @@ async def event_friend_message(message):
         except AttributeError:
             await message.reply(f"I couldn't find an Epic account with the name: {content}.")
 
+    elif "!privacy" in args[0].lower():
+        try:
+            if 'public' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.PUBLIC)
+            elif 'private' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.PRIVATE)
+            elif 'friends' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.FRIENDS)
+            elif 'friends_allow_friends_of_friends' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.FRIENDS_ALLOW_FRIENDS_OF_FRIENDS)
+            elif 'private_allow_friends_of_friends' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.PRIVATE_ALLOW_FRIENDS_OF_FRIENDS)
+
+            await message.reply(f'Party privacy set to {client.user.party.privacy}.')
+            print(f'[PartyBot] [{time()}] Party privacy set to {client.user.party.privacy}.')
+
+        except fortnitepy.Forbidden:
+            await message.reply(f"Couldn't set party privacy to {args[1]}, as I'm not party leader.")
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to set party privacy as I don't have the required permissions."))
+
 try:
     client.run()
 except fortnitepy.AuthException:
