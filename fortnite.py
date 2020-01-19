@@ -44,6 +44,26 @@ except ModuleNotFoundError as e:
 def time():
     return datetime.datetime.now().strftime('%H:%M:%S')
 
+async def setVTID(VTID):
+    url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as r:
+            fileLocation = await r.json()
+
+            SkinCID = fileLocation['export_properties'][0]['cosmetic_item']
+            VariantChanelTag = fileLocation['export_properties'][0]['VariantChanelTag']['TagName']
+            VariantNameTag = fileLocation['export_properties'][0]['VariantNameTag']['TagName']
+
+            VariantType = VariantChanelTag.split('Cosmetics.Variant.Channel.')[1].split('.')[0]
+
+            VariantInt = int("".join(filter(lambda x: x.isnumeric(), VariantNameTag)))
+
+            if VariantType == 'ClothingColor':
+                return SkinCID, 'clothing_color', VariantInt
+            else:
+                return SkinCID, VariantType, VariantInt
+
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
 
 with open('config.json') as f:
@@ -293,7 +313,7 @@ async def event_friend_message(message):
         await print(f'[PartyBot] [{time()}] Skin set to {args[0]}')
 
     elif "vtid_" in args[0].lower():
-        VTID = await BenBotAsync.vtid_to_variants(args[0])
+        VTID = await setVTID(args[0])
         if VTID[1] == 'Particle':
             variants = client.user.party.me.create_variants(particle_config='Particle', particle=1)
         else:
