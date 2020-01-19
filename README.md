@@ -4,6 +4,9 @@ A fortnite XMPP bot coded in Python with party capabilites.
 ## Discord Support
 <a href="https://discord.gg/8heARRB"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
 
+## Important
+For this (fortnite-api) version of the bot, you will require an api key from [fortnite-api.com](https://fortnite-api.com/documentation) and put it in ``x-api-key`` inside of your config.json file.
+
 ## How do I get started?
 
 * Install [Python 3.6](https://www.python.org/downloads/release/python-360/ "Python 3.6 Download") (suggested, any 3.x version *should* work, **APART FROM 3.8 DO NOT USE 3.8 OR ELSE YOU'LL GET A LOT OF ERRORS**.)
@@ -33,7 +36,8 @@ For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/C
 "status": "Created by xMistt, enjoy! <3",                   - Sets the clients presence.
 "platform": "AND",                                          - Sets the clients platform seen in the lobby.
 "debug": false,                                             - If you don't know what this means, ignore it.
-"friendaccept": true                                        - If the bot will accept every friend request.
+"friendaccept": true,                                       - If the bot will accept every friend request.
+"x-api-key": ""                                             - Api key from fortnite-api.com
 ```
 
 If you need help with ``!variants``, check out the variants wiki page: https://github.com/xMistt/fortnitepy-bot/wiki/Variants Any further help you need, feel free to join our discord support server.
