@@ -1,3 +1,4 @@
 fortnitepy
 BenBotAsync
 crayons
+fortnite-api
