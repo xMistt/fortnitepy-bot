@@ -130,7 +130,7 @@ async def event_party_member_join(member):
     await client.user.party.me.set_emote(asset=data['eid'])
 
     if client.user.display_name != member.display_name:
-    print(f"[PartyBot] [{time()}] {member.display_name} has joined the lobby.")
+        print(f"[PartyBot] [{time()}] {member.display_name} has joined the lobby.")
 
     async with aiohttp.ClientSession() as session:
         async with session.get(
