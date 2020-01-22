@@ -215,7 +215,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Pet set to {cosmetic.displayName}.')
             print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.displayName}.")
-            await client.user.party.me.set_backpack(asset=f'/Game/Athena/Items/Cosmetics/PetCarriers/{cosmetic.id}.{cosmetic.id}')
+            await client.user.party.me.set_pet(asset=cosmetic.id)
 
     elif "!emoji" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -230,7 +230,7 @@ async def event_friend_message(message):
         else:
             await message.reply(f'Emoji set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set emoji to: {cosmetic.id}.")
-            await client.user.party.me.set_emote(asset=f'/Game/Athena/Items/Cosmetics/Dances/Emoji/{cosmetic.id}.{cosmetic.id}')
+            await client.user.party.me.set_emoji(asset=cosmetic.id)
 
     elif "!contrail" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -409,16 +409,16 @@ async def event_friend_message(message):
         await message.reply(f'Pickaxe set to {args[0]}')
 
     elif "petcarrier_" in args[0].lower():
-        await client.user.party.me.set_backpack(
-                asset=f"/Game/Athena/Items/Cosmetics/PetCarriers/{args[0]}.{args[0]}"
+        await client.user.party.me.set_pet(
+                asset=args[0]
         )
 
         await message.reply(f'Pet set to {args[0]}!')
 
     elif "emoji_" in args[0].lower():
-        await client.user.party.me.set_emote(asset='EID_ClearEmote')
+        await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
-                asset=f"/Game/Athena/Items/Cosmetics/Dances/Emoji/{args[0]}.{args[0]}"
+                asset=args[0]
         )
 
         await message.reply(f'Emoji set to {args[0]}!')
@@ -561,6 +561,23 @@ async def event_friend_message(message):
         except fortnitepy.Forbidden:
             await message.reply(f"Couldn't set party privacy to {args[1]}, as I'm not party leader.")
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to set party privacy as I don't have the required permissions."))
+
+    elif "!copy" in args[0].lower():
+        if len(args) >= 1:
+            member = client.user.party.members.get(message.author.id)
+        else:
+            user = await client.fetch_profile(content)
+            member = client.user.party.members.get(user.id)
+
+        await client.user.party.me.edit(
+            functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=member.outfit),
+            functools.partial(fortnitepy.ClientPartyMember.set_backpack, asset=member.backpack),
+            functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=member.banner[0], color=member.banner[1], season_level=member.banner[2]),
+            functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=member.battlepass_info[1], self_boost_xp='0', friend_boost_xp='0')
+        )
+
+        await client.user.party.me.set_emote(asset=member.emote)
+
 
 try:
     client.run()
