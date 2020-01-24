@@ -599,8 +599,8 @@ async def event_friend_message(message):
 
         await client.user.party.me.set_emote(asset=member.emote)
 
-
-try:
-    client.run()
-except fortnitepy.AuthException:
-    print(red(f"[PartyBot] [{time()}] [ERROR] Invalid account credentials."))
+# Done to try and see why people are experiencing werid errors.
+#try:
+client.run()
+#except fortnitepy.AuthException:
+#    print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Invalid account credentials."))
