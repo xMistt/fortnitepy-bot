@@ -25,18 +25,24 @@ License: Apache 2.0
 """
 
 try:
-    import fortnitepy, fortnitepy.errors, BenBotAsync, json, logging, functools, aiohttp
-    from crayons import cyan, red, green
-    from asyncio import sleep
-    from datetime import datetime
-    from sys import stdout
+    import fortnitepy
+    import fortnitepy.errors
+    import BenBotAsync
+    import asyncio
+    import aiohttp
+    import datetime
+    import json
+    import logging
+    import sys
+    import crayons
+    import functools
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
     exit()
 
 def time():
-    return datetime.now().strftime('%H:%M:%S')
+    return datetime.datetime.now().strftime('%H:%M:%S')
 
 async def setVTID(VTID):
     url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
@@ -58,7 +64,7 @@ async def setVTID(VTID):
             else:
                 return SkinCID, VariantType, VariantInt
 
-print(cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
+print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
 
 with open('config.json') as f:
     data = json.load(f)
@@ -66,13 +72,13 @@ with open('config.json') as f:
 if data['debug'] is True:
     logger = logging.getLogger('fortnitepy.http')
     logger.setLevel(level=logging.DEBUG)
-    handler = logging.StreamHandler(stdout)
+    handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('\u001b[36m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
     logger.addHandler(handler)
 
     logger = logging.getLogger('fortnitepy.xmpp')
     logger.setLevel(level=logging.DEBUG)
-    handler = logging.StreamHandler(stdout)
+    handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('\u001b[35m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
     logger.addHandler(handler)
 else:
@@ -94,7 +100,7 @@ client = fortnitepy.Client(
 
 @client.event
 async def event_ready():
-    print(green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
+    print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
     for pending in client.pending_friends:
         friend = await pending.accept() if data["friendaccept"] else await pending.decline()
@@ -500,7 +506,7 @@ async def event_friend_message(message):
 
     elif "!leave" in args[0].lower():
         await client.user.party.me.set_emote('EID_Wave')
-        await sleep(2)
+        await asyncio.sleep(2)
         await client.user.party.me.leave()
         await message.reply('Bye!')
         print(f'[PartyBot] [{time()}] Left the party as I was requested.')
@@ -517,7 +523,7 @@ async def event_friend_message(message):
                 print(f"[PartyBot] [{time()}] Kicked user: {member.display_name}")
             except fortnitepy.Forbidden:
                 await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
-                print(red(f"[PartyBot] [{time()}] [ERROR] Failed to kick member as I don't have the required permissions."))
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to kick member as I don't have the required permissions."))
 
     elif "!promote" in args[0].lower():
         if len(args) != 1:
@@ -536,14 +542,14 @@ async def event_friend_message(message):
                 print(f"[PartyBot] [{time()}] Promoted user: {member.display_name}")
             except fortnitepy.Forbidden:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
-                print(red(f"[PartyBot] [{time()}] [ERROR] Failed to promote member as I don't have the required permissions."))
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to promote member as I don't have the required permissions."))
 
     elif "playlist_" in args[0].lower():
         try:
             await client.user.party.set_playlist(playlist=args[0])
         except fortnitepy.Forbidden:
             await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
-            print(red(f"[PartyBot] [{time()}] [ERROR] Failed to set gamemode as I don't have the required permissions."))
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to set gamemode as I don't have the required permissions."))
 
     elif "!platform" in args[0].lower():
         await message.reply(f'Setting platform to {args[0]}')
@@ -581,7 +587,7 @@ async def event_friend_message(message):
 
         except fortnitepy.Forbidden:
             await message.reply(f"Couldn't set party privacy to {args[1]}, as I'm not party leader.")
-            print(red(f"[PartyBot] [{time()}] [ERROR] Failed to set party privacy as I don't have the required permissions."))
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to set party privacy as I don't have the required permissions."))
 
     elif "!copy" in args[0].lower():
         if len(args) >= 1:
