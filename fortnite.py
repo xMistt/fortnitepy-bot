@@ -1,4 +1,3 @@
-# This Python file uses the following encoding: utf-8
 """
 “Commons Clause” License Condition v1.0
 Copyright Oli 2019
