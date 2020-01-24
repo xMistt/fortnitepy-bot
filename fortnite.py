@@ -1,3 +1,4 @@
+# This Python file uses the following encoding: utf-8
 """
 “Commons Clause” License Condition v1.0
 Copyright Oli 2019
@@ -32,7 +33,7 @@ try:
     from sys import stdout
 except ModuleNotFoundError as e:
     print(e)
-    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue.')
+    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
     exit()
 
 def time():
@@ -313,6 +314,8 @@ async def event_friend_message(message):
             await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
         elif len(args) == 4:
             await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
+        else:
+            await message.reply('You entered too many arguments!')
 
         await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
         print(f"[PartyBot] [{time()}] Banner set to; {args[1]} {args[2]} {args[3]}")
@@ -418,7 +421,7 @@ async def event_friend_message(message):
         await message.reply(f'Backbling set to {args[0]}!')
 
     elif "!help" in args[0].lower():
-        await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot')
+        await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot/wiki/Commands')
 
     elif "PICKAXE_ID_" in args[0].lower():
         await client.user.party.me.set_pickaxe(
