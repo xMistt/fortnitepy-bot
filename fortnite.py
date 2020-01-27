@@ -49,6 +49,7 @@ try:
     import logging
     import functools
     import sys
+    import os
     import random
     from colorama import init
     init(autoreset=True)
@@ -89,9 +90,28 @@ if debug == 'True':
 else:
     print(f' [PYBOT] [{getTime()}] Debug logging is off.')
 
+def get_device_auth_details():
+    if os.path.isfile('auths.json'):
+        with open('auths.json', 'r') as fp:
+            return json.load(fp)
+    return {}
+
+def store_device_auth_details(email, details):
+    existing = get_device_auth_details()
+    existing[email] = details
+
+    with open('auths.json', 'w') as fp:
+        json.dump(existing, fp)
+
+device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
-    email=data['email'],
-    password=data['password'],
+    auth=fortnitepy.AdvancedAuth(
+        email=data['email'],
+        password=data['password'],
+        prompt_exchange_code=True,
+        delete_existing_device_auths=True,
+        **device_auth_details
+    ),
     status=data['status'],
     platform=fortnitepy.Platform(data['platform']),
     default_party_member_config=[
@@ -103,6 +123,10 @@ client = fortnitepy.Client(
         functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
     ]
 )
+
+@client.event
+async def event_device_auth_geenerate(details, email):
+    store_device_auth_details(email, details)
 
 @client.event
 async def event_ready():
@@ -882,5 +906,5 @@ async def event_friend_message(message):
 
 try:
     client.run()
-except fortnitepy.AuthException:
-    print(Fore.RED + f" [PYBOT] [{getTime()}] [ERROR] Couldn't log into the account, are the account credentials correct?")
+except fortnitepy.AuthException as e:
+    print(Fore.RED + f" [PYBOT] [{getTime()}] [ERROR] {e}")
