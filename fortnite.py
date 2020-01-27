@@ -36,6 +36,7 @@ try:
     import sys
     import crayons
     import functools
+    import os
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
@@ -43,6 +44,19 @@ except ModuleNotFoundError as e:
 
 def time():
     return datetime.datetime.now().strftime('%H:%M:%S')
+
+def get_device_auth_details():
+    if os.path.isfile('device_auths.json'):
+        with open('device_auths.json', 'r') as fp:
+            return json.load(fp)
+    return {}
+
+def store_device_auth_details(email, details):
+    existing = get_device_auth_details()
+    existing[email] = details
+
+    with open('device_auths.json', 'w') as fp:
+        json.dump(existing, fp, sort_keys=False, indent=4)
 
 async def setVTID(VTID):
     url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
@@ -84,9 +98,15 @@ if data['debug'] is True:
 else:
     pass
 
+device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
-    email=data['email'],
-    password=data['password'],
+    auth=fortnitepy.AdvancedAuth(
+        email=data['email'],
+        password=data['password'],
+        prompt_exchange_code=True,
+        delete_existing_device_auths=True,
+        **device_auth_details
+    ),
     status=data['status'],
     platform=fortnitepy.Platform(data['platform']),
     default_party_member_config=[
@@ -97,6 +117,10 @@ client = fortnitepy.Client(
         functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
     ]
 )
+
+@client.event
+async def event_device_auth_generate(details, email):
+    store_device_auth_details(email, details)
 
 @client.event
 async def event_ready():
@@ -597,7 +621,7 @@ async def event_friend_message(message):
             member = client.user.party.members.get(user.id)
 
         await client.user.party.me.edit(
-            functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=member.outfit, variants=outfit_variants),
+            functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=member.outfit, variants=member.outfit_variants),
             functools.partial(fortnitepy.ClientPartyMember.set_backpack, asset=member.backpack, variants=member.backpack_variants),
             functools.partial(fortnitepy.ClientPartyMember.set_pickaxe, asset=member.pickaxe, variants=member.pickaxe_variants),
             functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=member.banner[0], color=member.banner[1], season_level=member.banner[2]),
@@ -607,10 +631,9 @@ async def event_friend_message(message):
         await client.user.party.me.set_emote(asset=member.emote)
 
 if data['email'] and data['password']:
-# Done to try and see why people are experiencing werid errors.
-#   try:
-    client.run()
-#   except fortnitepy.AuthException:
-#   print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Invalid account credentials."))
+    try:
+        client.run()
+    except fortnitepy.AuthException as e:
+        print(crayons.red(f"[PartyBot] [{time()}] [ERROR] {e}"))
 else:
     print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to login as no account details provided."))
