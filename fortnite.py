@@ -25,18 +25,21 @@ License: Apache 2.0
 """
 
 try:
-    import fortnitepy
-    import fortnitepy.errors
-    import BenBotAsync
+    # Standard library imports
     import asyncio
     import aiohttp
     import datetime
     import json
     import logging
     import sys
-    import crayons
     import functools
     import os
+
+    # Related third party imports
+    import crayons
+    import fortnitepy
+    import fortnitepy.errors
+    import BenBotAsync
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
