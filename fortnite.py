@@ -145,7 +145,7 @@ async def event_party_invite(invite):
 async def event_friend_request(request):
     print(f"[PartyBot] [{time()}] Recieved friend request from: {request.display_name}.")
 
-    if data['friendaccept'] == True:
+    if data['friendaccept']:
         await request.accept()
         print(f"[PartyBot] [{time()}] Accepted friend request from: {request.display_name}.")
     else:
