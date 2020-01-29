@@ -49,7 +49,7 @@ As of 27th January, when you start your bot, it may ask you for an exchange code
 > https://www.epicgames.com/id/logout?lang=en-US&redirectUrl=https%3A//www.epicgames.com/id/login%3FredirectUrl%3Dhttps%253A%252F%252Fwww.epicgames.com%252Fid%252Fapi%252Fexchange&lang=en-US
 
 ## How can I contribute?
-Fork this repo, add/fix what you want to do and then submit a pull request back.
+Fork this repo, add/fix what you want to do and then submit a pull request back. Please do note, whatever you're writing must comply with PEP 8 Styling, more information on this styling can be found here https://www.python.org/dev/peps/pep-0008
 
 ## Commons Clause License
 By downloading this, you agree to the Commons Clause license and that you're not allowed to sell this repository or any code from this repository. For more info see https://commonsclause.com/.
