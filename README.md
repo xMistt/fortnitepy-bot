@@ -42,6 +42,16 @@ For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/C
 
 If you need help with ``!variants``, check out the variants wiki page: https://github.com/xMistt/fortnitepy-bot/wiki/Variants Any further help you need, feel free to join our discord support server.
 
+## When I start my bot, it asks for for an exchange code?
+As of 27th January, when you start your bot, it may ask you for an exchange code. Here is an FAQ provided by Terbau.
+
+**What is an exchange code?**
+> An exchange code is a one time usable code that can be used to log into your account. The code expires after 5 minutes. Never share this code with anyone!
+
+**How can I get an exchange code for my account?**
+> You can get an exchange code by clicking the link below, logging in and then copying the visible code. You can generate a new exchange code by refreshing the page if needed.<br>
+> https://www.epicgames.com/id/logout?lang=en-US&redirectUrl=https%3A//www.epicgames.com/id/login%3FredirectUrl%3Dhttps%253A%252F%252Fwww.epicgames.com%252Fid%252Fapi%252Fexchange&lang=en-US
+
 ## How can I contribute?
 Fork this repo, add/fix what you want to do and then submit a pull request back.
 
