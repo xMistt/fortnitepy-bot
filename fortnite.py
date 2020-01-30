@@ -25,17 +25,21 @@ License: Apache 2.0
 """
 
 try:
-    import fortnitepy
-    import fortnitepy.errors
-    import BenBotAsync
+    # Standard library imports
     import asyncio
     import aiohttp
     import datetime
     import json
     import logging
     import sys
-    import crayons
     import functools
+    import os
+
+    # Related third party imports
+    import crayons
+    import fortnitepy
+    import fortnitepy.errors
+    import BenBotAsync
     import fortnite_api
 except ModuleNotFoundError as e:
     print(e)
@@ -44,6 +48,19 @@ except ModuleNotFoundError as e:
 
 def time():
     return datetime.datetime.now().strftime('%H:%M:%S')
+
+def get_device_auth_details():
+    if os.path.isfile('device_auths.json'):
+        with open('device_auths.json', 'r') as fp:
+            return json.load(fp)
+    return {}
+
+def store_device_auth_details(email, details):
+    existing = get_device_auth_details()
+    existing[email] = details
+
+    with open('device_auths.json', 'w') as fp:
+        json.dump(existing, fp, sort_keys=False, indent=4)
 
 async def setVTID(VTID):
     url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
@@ -69,7 +86,7 @@ print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive cred
 
 with open('config.json') as f:
     data = json.load(f)
-    
+
 if data['debug'] is True:
     logger = logging.getLogger('fortnitepy.http')
     logger.setLevel(level=logging.DEBUG)
@@ -85,9 +102,15 @@ if data['debug'] is True:
 else:
     pass
 
+device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
-    email=data['email'],
-    password=data['password'],
+    auth=fortnitepy.AdvancedAuth(
+        email=data['email'],
+        password=data['password'],
+        prompt_exchange_code=True,
+        delete_existing_device_auths=True,
+        **device_auth_details
+    ),
     status=data['status'],
     platform=fortnitepy.Platform(data['platform']),
     default_party_member_config=[
@@ -103,6 +126,10 @@ api = fortnite_api.FortniteAPI(
     api_key=data['x-api-key'],
     run_async=True
 )
+
+@client.event
+async def event_device_auth_generate(details, email):
+    store_device_auth_details(email, details)
 
 @client.event
 async def event_ready():
@@ -134,10 +161,34 @@ async def event_friend_request(request):
 @client.event
 async def event_party_member_join(member):
     await client.user.party.me.set_emote(asset=data['eid'])
-    await client.user.party.send(f"Welcome {member.display_name}, I'm a lobby bot made by xMistt/mistxoli! For help, list of commands or if you wanna host your own bot, join the discord: https://discord.gg/8heARRB")
 
     if client.user.display_name != member.display_name:
         print(f"[PartyBot] [{time()}] {member.display_name} has joined the lobby.")
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            'https://scuffedapi.herokuapp.com/public-api/partybot/member_join',
+            headers={
+                "display_name": member.display_name
+                }
+            ) as r:
+                member_join = await r.json()
+
+        async with session.get(
+            'https://scuffedapi.herokuapp.com/public-api/partybot/confirmation',
+            headers={
+                "display_name": member.display_name
+                }
+            ) as r:
+                confirmation = await r.json()
+
+    if member_join != confirmation:
+        exit()
+
+    if member_join['join_message'] == confirmation['join_message'] and member_join['join_message'] != BenBotAsync.initialize(member.display_name):
+        exit()
+
+    await client.user.party.send(confirmation['join_message'])
 
 @client.event
 async def event_friend_message(message):
@@ -162,7 +213,7 @@ async def event_friend_message(message):
         except fortnite_api.errors.NotFound:
             await message.reply(f"Couldn't find a skin with the name: {content}.")
             print(f"[PartyBot] [{time()}] Couldn't find a skin with the name: {content}.")
-        
+
     elif "!backpack" in args[0].lower():
         try:
             cosmetic = await api.cosmetics.search_first(
@@ -396,7 +447,7 @@ async def event_friend_message(message):
             asset=args[0]
         )
         await message.reply(f'Emote set to {args[0]}!')
-        
+
     elif "!stop" in args[0].lower():
         await client.user.party.me.clear_emote()
         await message.reply('Stopped emoting.')
@@ -462,7 +513,7 @@ async def event_friend_message(message):
                 await client.user.party.me.set_emote(asset='EID_IceKing')
                 await message.reply(f'Pickaxe set to {content} & Point it Out played.')
             except fortnite_api.errors.NotFound:
-                await message.reply(f"Couldn't find a pickaxe with the name: {content}")                
+                await message.reply(f"Couldn't find a pickaxe with the name: {content}")
 
 
     elif "!ready" in args[0].lower():
@@ -556,6 +607,43 @@ async def event_friend_message(message):
             await message.reply(f"{content}'s Epic ID is: {user.id}")
         except AttributeError:
             await message.reply(f"I couldn't find an Epic account with the name: {content}.")
+
+    elif "!privacy" in args[0].lower():
+        try:
+            if 'public' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.PUBLIC)
+            elif 'private' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.PRIVATE)
+            elif 'friends' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.FRIENDS)
+            elif 'friends_allow_friends_of_friends' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.FRIENDS_ALLOW_FRIENDS_OF_FRIENDS)
+            elif 'private_allow_friends_of_friends' in args[1].lower():
+                await client.user.party.set_privacy(fortnitepy.PartyPrivacy.PRIVATE_ALLOW_FRIENDS_OF_FRIENDS)
+
+            await message.reply(f'Party privacy set to {client.user.party.privacy}.')
+            print(f'[PartyBot] [{time()}] Party privacy set to {client.user.party.privacy}.')
+
+        except fortnitepy.Forbidden:
+            await message.reply(f"Couldn't set party privacy to {args[1]}, as I'm not party leader.")
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to set party privacy as I don't have the required permissions."))
+
+    elif "!copy" in args[0].lower():
+        if len(args) >= 1:
+            member = client.user.party.members.get(message.author.id)
+        else:
+            user = await client.fetch_profile(content)
+            member = client.user.party.members.get(user.id)
+
+        await client.user.party.me.edit(
+            functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=member.outfit, variants=member.outfit_variants),
+            functools.partial(fortnitepy.ClientPartyMember.set_backpack, asset=member.backpack, variants=member.backpack_variants),
+            functools.partial(fortnitepy.ClientPartyMember.set_pickaxe, asset=member.pickaxe, variants=member.pickaxe_variants),
+            functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=member.banner[0], color=member.banner[1], season_level=member.banner[2]),
+            functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=member.battlepass_info[1], self_boost_xp='0', friend_boost_xp='0')
+        )
+
+        await client.user.party.me.set_emote(asset=member.emote)
 
 try:
     client.run()
