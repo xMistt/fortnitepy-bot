@@ -36,10 +36,10 @@ try:
     import os
 
     # Related third party imports
+    import crayons
     import fortnitepy
     import fortnitepy.errors
     import BenBotAsync
-    import crayons
     import fortnite_api
 except ModuleNotFoundError as e:
     print(e)
