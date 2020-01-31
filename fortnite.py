@@ -505,15 +505,15 @@ async def event_friend_message(message):
 
 
     elif "!ready" in args[0].lower():
-        await client.user.party.me.set_ready(True)
+        await client.user.party.me.set_ready(fortnitepy.ReadyState.READY)
         await message.reply('Ready!')
 
     elif ("!unready" in args[0].lower()) or ("!sitin" in args[0].lower()):
-        await client.user.party.me.set_ready(False)
+        await client.user.party.me.set_ready(fortnitepy.ReadyState.NOT_READY)
         await message.reply('Unready!')
 
     elif "!sitout" in args[0].lower():
-        await client.user.party.me.set_ready(None)
+        await client.user.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
         await message.reply('Sitting Out!')
 
     elif "!bp" in args[0].lower():
