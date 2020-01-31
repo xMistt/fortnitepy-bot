@@ -633,7 +633,7 @@ async def event_friend_message(message):
 
         await client.user.party.me.set_emote(asset=member.emote)
 
-if data['email'] and data['password']:
+if (data['email'] and data['password']) or (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
     except fortnitepy.AuthException as e:
