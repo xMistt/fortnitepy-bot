@@ -82,6 +82,7 @@ async def setVTID(VTID):
                 return SkinCID, VariantType, VariantInt
 
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
+print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
 
 with open('config.json') as f:
     data = json.load(f)
