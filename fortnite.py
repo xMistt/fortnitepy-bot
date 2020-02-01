@@ -473,19 +473,7 @@ async def event_friend_message(message):
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            await message.reply('Commands: !cosmetics - Lists Cosmetic Commands  |  !party - Lists Party Commands | You can view a more detailed commands list in my discord server!')
-
-    if "!cosmetics" in args[0].lower():
-        if message.author.display_name in data['BlockList']:
-            await message.reply("You don't have access to this command!")
-        else:
-            await message.reply('Cosmetic Commands: !skin (skin name), !backpack (backpack name), !emote (emote name) | !stop-to stop the emote, !pickaxe (pickaxe name), !point (pickaxe name), !pet (pet name), !emoji (emoji name), !variants (CID) (style type) (integer), !purpleskull, !pinkghoul, !brainiacghoul, !purpleportal, !checkeredrenegade, !banner (icon) (colour) (level), CID_, BID_, PICKAXE_ID_, EID_')
-
-    if "!party" in args[0].lower():
-        if message.author.display_name in data['BlockList']:
-            await message.reply("You don't have access to this command!")
-        else:
-            await message.reply('Party Commands: !ready, !unready, !sitout, !sitin, !bp (tier), !level (level), !echo (message), !leave, !kick (username), Playlist_')
+            await message.reply('List of all commands coming soon.')
 
     if "Pickaxe_" in args[0]:
         if message.author.display_name in data['BlockList']:
@@ -518,22 +506,22 @@ async def event_friend_message(message):
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.set_ready(True)
-            await message.reply('Ready!')
+            await client.user.party.me.set_ready(fortnitepy.ReadyState.READY)
+            await message.reply('Now Ready!')
 
     if ("!unready" in args[0].lower()) or ("!sitin" in args[0].lower()):
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.set_ready(False)
-            await message.reply('Unready!')
+            await client.user.party.me.set_ready(fortnitepy.ReadyState.NOT_READY)
+            await message.reply('Now Unready!')
 
     if "!sitout" in args[0].lower():
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.set_ready(None)
-            await message.reply('Sitting Out!')
+            await client.user.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
+            await message.reply('Now Sitting Out!')
 
     if "!bp" in args[0].lower():
         if message.author.display_name in data['BlockList']:
