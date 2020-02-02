@@ -83,6 +83,7 @@ async def setVTID(VTID):
                 return SkinCID, VariantType, VariantInt
 
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
+print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
 
 with open('config.json') as f:
     data = json.load(f)
@@ -517,15 +518,15 @@ async def event_friend_message(message):
 
 
     elif "!ready" in args[0].lower():
-        await client.user.party.me.set_ready(True)
+        await client.user.party.me.set_ready(fortnitepy.ReadyState.READY)
         await message.reply('Ready!')
 
     elif ("!unready" in args[0].lower()) or ("!sitin" in args[0].lower()):
-        await client.user.party.me.set_ready(False)
+        await client.user.party.me.set_ready(fortnitepy.ReadyState.NOT_READY)
         await message.reply('Unready!')
 
     elif "!sitout" in args[0].lower():
-        await client.user.party.me.set_ready(None)
+        await client.user.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
         await message.reply('Sitting Out!')
 
     elif "!bp" in args[0].lower():
@@ -645,7 +646,10 @@ async def event_friend_message(message):
 
         await client.user.party.me.set_emote(asset=member.emote)
 
-try:
-    client.run()
-except fortnitepy.AuthException:
-    print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Invalid account credentials."))
+if (data['email'] and data['password']) or (data['email'] != 'email@email.com' and data['password'] != 'password1'):
+    try:
+        client.run()
+    except fortnitepy.AuthException as e:
+        print(crayons.red(f"[PartyBot] [{time()}] [ERROR] {e}"))
+else:
+    print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to login as no account details provided."))
