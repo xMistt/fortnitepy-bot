@@ -634,10 +634,17 @@ async def event_friend_message(message):
 
         await client.user.party.me.set_emote(asset=member.emote)
 
+    elif "!hologram" in args[0].lower():
+        await client.user.party.me.set_outfit(
+            asset='CID_VIP_Athena_Commando_M_GalileoGondola_SG'
+        )
+
+        await message.reply('Skin set to Star Wars Hologram!')
+
 if (data['email'] and data['password']) or (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
     except fortnitepy.AuthException as e:
         print(crayons.red(f"[PartyBot] [{time()}] [ERROR] {e}"))
 else:
-    print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to login as no account details provided."))
+    print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to login as no (or default) account details provided."))
