@@ -155,36 +155,7 @@ async def event_friend_request(request):
 
 @client.event
 async def event_party_member_join(member):
-    await client.user.party.me.set_emote(asset=data['eid'])
-
-    if client.user.display_name != member.display_name:
-        print(f"[PartyBot] [{time()}] {member.display_name} has joined the lobby.")
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(
-            'https://scuffedapi.herokuapp.com/public-api/partybot/member_join',
-            headers={
-                "display_name": member.display_name
-                }
-            ) as r:
-                member_join = await r.json()
-
-        async with session.get(
-            'https://scuffedapi.herokuapp.com/public-api/partybot/confirmation',
-            headers={
-                "display_name": member.display_name
-                }
-            ) as r:
-                confirmation = await r.json()
-
-    if member_join != confirmation:
-        exit()
-
-    if member_join['join_message'] == confirmation['join_message'] and member_join['join_message'] != BenBotAsync.initialize(member.display_name):
-        exit()
-
-    await client.user.party.send(confirmation['join_message'])
-
+    await BenBotAsync.set_default_loadout(client, data, member)
 
 @client.event
 async def event_friend_message(message):
