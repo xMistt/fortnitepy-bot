@@ -196,7 +196,6 @@ async def event_friend_message(message):
     args = message.content.split()
     split = args[1:]
     content = " ".join(split)
-    content2 = " ".join(args[3:])
 
     print(f'[PartyBot] [{time()}] {message.author.display_name}: {message.content}')
 
@@ -231,23 +230,6 @@ async def event_friend_message(message):
         except fortnite_api.errors.NotFound:
             await message.reply(f"Couldn't find a backpack with the name: {content}.")
             print(f"[PartyBot] [{time()}] Couldn't find a backpack with the name: {content}.")
-
-    elif "!lang" in args[0].lower():
-        try:
-            cosmetic = await api.cosmetics.search_first(
-                type=args[1],
-                matchMethod='contains',
-                searchLanguage=args[2],
-                name=content2
-            )
-
-            await message.reply(f'Item set to {cosmetic.id}.')
-            print(f"[PartyBot] [{time()}] Set item to: {cosmetic.id}.")
-            await client.user.party.me.set_outfit(asset=cosmetic.id)
-
-        except fortnite_api.errors.NotFound:
-            await message.reply(f"Couldn't find a skin with the name: {content2}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a skin with the name: {content2}.")
 
     elif "!emote" in args[0].lower():
         try:
