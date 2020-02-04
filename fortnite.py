@@ -612,7 +612,7 @@ async def event_friend_message(message):
 
         await message.reply('Skin set to Star Wars Hologram!')
 
-if (data['email'] and data['password']) or (data['email'] != 'email@email.com' and data['password'] != 'password1'):
+if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
     except fortnitepy.AuthException as e:
