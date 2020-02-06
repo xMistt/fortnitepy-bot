@@ -175,7 +175,7 @@ async def event_friend_message(message):
         try:
             cosmetic = await api.cosmetics.search_first(
                 type='Outfit',
-                matchMethod='contains',
+                match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
@@ -191,7 +191,7 @@ async def event_friend_message(message):
         try:
             cosmetic = await api.cosmetics.search_first(
                 type='Backpack',
-                matchMethod='contains',
+                match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
@@ -207,7 +207,7 @@ async def event_friend_message(message):
         try:
             cosmetic = await api.cosmetics.search_first(
                 type='Emote',
-                matchMethod='contains',
+                match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
@@ -223,7 +223,7 @@ async def event_friend_message(message):
         try:
             cosmetic = await api.cosmetics.search_first(
                 type='Outfit',
-                matchMethod='contains',
+                match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
@@ -239,7 +239,7 @@ async def event_friend_message(message):
         try:
             cosmetic = await api.cosmetics.search_first(
                 backend_type='AthenaPet',
-                matchMethod='contains',
+                match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
@@ -254,7 +254,7 @@ async def event_friend_message(message):
         try:
             cosmetic = await api.cosmetics.search_first(
                 backend_type='AthenaDance',
-                matchMethod='contains',
+                match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
@@ -269,7 +269,7 @@ async def event_friend_message(message):
         try:
             cosmetic = await api.cosmetics.search_first(
                 type='Contrail',
-                matchMethod='contains',
+                match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
