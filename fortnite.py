@@ -34,12 +34,14 @@ try:
     import sys
     import functools
     import os
+    import time
 
     # Related third party imports
     import crayons
     import fortnitepy
     import fortnitepy.errors
     import BenBotAsync
+    #import pypresence
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
@@ -102,6 +104,8 @@ if data['debug'] is True:
 else:
     pass
 
+#rpc = pypresence.AioPresence('677207575867031552')
+
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
     auth=fortnitepy.AdvancedAuth(
@@ -128,6 +132,8 @@ async def event_device_auth_generate(details, email):
 
 @client.event
 async def event_ready():
+    #await start_discord_rich_presence()
+
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
     for pending in client.pending_friends:
@@ -136,6 +142,25 @@ async def event_ready():
             print(f"[PartyBot] [{time()}] Accepted friend request from: {friend.display_name}.")
         else:
             print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
+
+#async def start_discord_rich_presence():
+#    try:
+#        await rpc.connect()
+#    except Exception as e:
+#        print(crayons.yellow(f"[PartyBot] [{time()}] [WARN] Discord not found, skipping Rich Presence connection."))
+#
+#    while True:
+#        await rpc.update(
+#            large_image="skulltrooper",
+#            large_text="discord.gg/fnpy",
+#            small_image="jonesy",
+#            small_text=f"{client.user.party.me.outfit}",
+#            state="Fortnite Lobby",
+#            details=f"{client.user.party.leader}'s party.",
+#            party_size=[client.user.party.member_count, 16]
+#        )
+#
+#        await asyncio.sleep(20)
 
 @client.event
 async def event_party_invite(invite):
@@ -611,6 +636,13 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to Star Wars Hologram!')
+
+    elif "!gift" in args[0].lower():
+        await client.user.party.me.set_emote(
+            asset='EID_NeverGonna'
+        )
+
+        await message.reply('What did you think would happen?')
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
