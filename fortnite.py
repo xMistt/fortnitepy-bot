@@ -222,6 +222,8 @@ async def event_friend_message(message):
             await client.user.party.me.set_backpack(asset=cosmetic.id)
 
     elif "!emote" in args[0].lower():
+        await client.user.party.me.clear_emote()
+
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
@@ -267,6 +269,8 @@ async def event_friend_message(message):
             await client.user.party.me.set_pet(asset=cosmetic.id)
 
     elif "!emoji" in args[0].lower():
+        await client.user.party.me.clear_emote()
+
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
@@ -638,6 +642,8 @@ async def event_friend_message(message):
         await message.reply('Skin set to Star Wars Hologram!')
 
     elif "!gift" in args[0].lower():
+        await client.user.party.me.clear_emote()
+
         await client.user.party.me.set_emote(
             asset='EID_NeverGonna'
         )
