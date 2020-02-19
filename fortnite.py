@@ -650,6 +650,13 @@ async def event_friend_message(message):
 
         await message.reply('What did you think would happen?')
 
+    elif "!matchmakingcode" in args[0].lower():
+        await client.user.party.set_custom_key(
+            key=content
+        )
+
+        await message.reply(f'Custom matchmaking code set to: {content}')
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
