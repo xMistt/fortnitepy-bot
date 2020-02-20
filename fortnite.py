@@ -657,6 +657,20 @@ async def event_friend_message(message):
 
         await message.reply(f'Custom matchmaking code set to: {content}')
 
+    elif "!ninja" in args[0].lower():
+        await client.user.party.me.set_outfit(
+            asset='CID_605_Athena_Commando_M_TourBus'
+        )
+
+        await message.reply('Skin set to Ninja!')
+
+    elif "!ponpon" in args[0].lower():
+        await client.user.party.me.set_emote(
+            asset='EID_TourBus'
+        )
+
+        await message.reply('Emote set to Ninja Style!')
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
