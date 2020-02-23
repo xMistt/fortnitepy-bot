@@ -88,7 +88,7 @@ print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fn
 
 with open('config.json') as f:
     data = json.load(f)
-    
+
 if data['debug'] is True:
     logger = logging.getLogger('fortnitepy.http')
     logger.setLevel(level=logging.DEBUG)
@@ -205,7 +205,7 @@ async def event_friend_message(message):
             await message.reply(f'Skin set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set skin to: {cosmetic.id}.")
             await client.user.party.me.set_outfit(asset=cosmetic.id)
-        
+
     elif "!backpack" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
@@ -284,6 +284,23 @@ async def event_friend_message(message):
             await message.reply(f'Emoji set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set emoji to: {cosmetic.id}.")
             await client.user.party.me.set_emoji(asset=cosmetic.id)
+
+    elif "!shout" in args[0].lower():
+        await client.user.party.me.clear_emote()
+
+        cosmetic = await BenBotAsync.get_cosmetic(
+            content,
+            params=BenBotAsync.Tags.NAME,
+            filter=[BenBotAsync.Filters.BACKEND_TYPE, 'AthenaDance']
+        )
+
+        if cosmetic == None:
+            await message.reply(f"Couldn't find a shout with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a shout with the name: {content}.")
+        else:
+            await message.reply(f'Shout set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set shout to: {cosmetic.id}.")
+            await client.user.party.me.set_emoji(asset=f"/Game/Athena/Items/Cosmetics/Dances/Shouts/{cosmetic.id}.{cosmetic.id}")
 
     elif "!contrail" in args[0].lower():
         cosmetic = await BenBotAsync.get_cosmetic(
@@ -441,7 +458,7 @@ async def event_friend_message(message):
             asset=args[0]
         )
         await message.reply(f'Emote set to {args[0]}!')
-        
+
     elif "!stop" in args[0].lower():
         await client.user.party.me.clear_emote()
         await message.reply('Stopped emoting.')
@@ -472,11 +489,19 @@ async def event_friend_message(message):
 
     elif "emoji_" in args[0].lower():
         await client.user.party.me.clear_emote()
-        await client.user.party.me.set_emote(
+        await client.user.party.me.set_emoji(
                 asset=args[0]
         )
 
         await message.reply(f'Emoji set to {args[0]}!')
+
+    elif "shout_" in args[0].lower():
+        await client.user.party.me.clear_emote()
+        await client.user.party.me.set_emote(
+                asset=f"/Game/Athena/Items/Cosmetics/Dances/Shouts/{args[0]}.{args[0]}"
+        )
+
+        await message.reply(f'Shout set to {args[0]}!')
 
     elif "trails_" in args[0].lower():
         await client.user.party.me.set_contrail(asset=args[0])
