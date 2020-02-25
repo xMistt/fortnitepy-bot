@@ -161,7 +161,11 @@ async def event_ready():
 
 async def start_discord_rich_presence():
     print('Attemping to connect to discord.')
-    await rpc.connect()
+    try:
+        await rpc.connect()
+    except Exception as e:
+        print('There was an error {}'.format(e))
+        
     print('Connected to discord.')
 
     while True:
