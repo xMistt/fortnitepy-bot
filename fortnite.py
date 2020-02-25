@@ -35,13 +35,14 @@ try:
     import functools
     import os
     import time
+    import psutil
 
     # Related third party imports
     import crayons
     import fortnitepy
     import fortnitepy.errors
     import BenBotAsync
-    #import pypresence
+    import pypresence
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
@@ -63,7 +64,7 @@ def store_device_auth_details(email, details):
     with open('device_auths.json', 'w') as fp:
         json.dump(existing, fp, sort_keys=False, indent=4)
 
-async def setVTID(VTID):
+async def setVTID(VTID: str) -> list:
     url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
 
     async with aiohttp.ClientSession() as session:
@@ -82,6 +83,15 @@ async def setVTID(VTID):
                 return SkinCID, 'clothing_color', VariantInt
             else:
                 return SkinCID, VariantType, VariantInt
+
+def check_if_process_running(name: str) -> bool:
+    for proc in psutil.process_iter():
+        try:
+            if name.lower() in proc.name().lower():
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+    return False
 
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
 print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
@@ -104,7 +114,7 @@ if data['debug'] is True:
 else:
     pass
 
-#rpc = pypresence.AioPresence('677207575867031552')
+rpc = pypresence.AioPresence('677207575867031552')
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
@@ -132,7 +142,13 @@ async def event_device_auth_generate(details, email):
 
 @client.event
 async def event_ready():
-    #await start_discord_rich_presence()
+    discord_exists = await client.loop.run_in_executor(None, check_if_process_running, 'Discord')
+
+    if discord_exists:
+        print('Discord is running. (Beta tester, please tell me if this is incorrect.)')
+        client.loop.create_task(start_discord_rich_presence())
+    else:
+        print("Discord isn't running. (Beta tester, please tell me if this is incorrect.)")
 
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
@@ -143,24 +159,21 @@ async def event_ready():
         else:
             print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
 
-#async def start_discord_rich_presence():
-#    try:
-#        await rpc.connect()
-#    except Exception as e:
-#        print(crayons.yellow(f"[PartyBot] [{time()}] [WARN] Discord not found, skipping Rich Presence connection."))
-#
-#    while True:
-#        await rpc.update(
-#            large_image="skulltrooper",
-#            large_text="discord.gg/fnpy",
-#            small_image="jonesy",
-#            small_text=f"{client.user.party.me.outfit}",
-#            state="Fortnite Lobby",
-#            details=f"{client.user.party.leader}'s party.",
-#            party_size=[client.user.party.member_count, 16]
-#        )
-#
-#        await asyncio.sleep(20)
+async def start_discord_rich_presence():
+    await rpc.connect()
+
+    while True:
+        await rpc.update(
+            large_image="skulltrooper",
+            large_text="discord.gg/fnpy",
+            small_image="jonesy",
+            small_text=f"{client.user.party.me.outfit}",
+            state=f"{client.user.party.leader}'s party.",
+            details=f"Logged in as {client.user.display_name}.",
+            party_size=[client.user.party.member_count, 16]
+        )
+
+        await asyncio.sleep(20)
 
 @client.event
 async def event_party_invite(invite):
@@ -299,6 +312,23 @@ async def event_friend_message(message):
             await message.reply(f'Contrail set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set contrail to: {cosmetic.id}.")
             await client.user.party.me.set_contrail(cosmetic.id)
+
+    elif "!shout" in args[0].lower():
+        await client.user.party.me.clear_emote()
+
+        cosmetic = await BenBotAsync.get_cosmetic(
+            content,
+            params=BenBotAsync.Tags.NAME,
+            filter=[BenBotAsync.Filters.TYPE, 'Contrail']
+        )
+
+        if cosmetic == None:
+            await message.reply(f"Couldn't find a shout with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find an shout with the name: {content}.")
+        else:
+            await message.reply(f'Shout set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set shout to: {cosmetic.id}.")
+            await client.user.party.me.set_shout(cosmetic.id)
 
     elif "!purpleskull" in args[0].lower():
         variants = client.user.party.me.create_variants(
@@ -482,6 +512,19 @@ async def event_friend_message(message):
         await client.user.party.me.set_contrail(asset=args[0])
 
         await message.reply(f'Contrail set to {args[0]}!')
+
+    elif "shout_" in args[0].lower():
+        await client.user.party.me.clear_emote()
+
+        await client.user.party.me.set_emote(
+                asset=f"/Game/Athena/Items/Cosmetics/Dances/Shouts/{args[0]}.{args[0]}"
+        )
+
+        await client.user.party.me.set_emote(
+                asset=f"/Game/Athena/Items/Cosmetics/Dances/Shouts/{args[0]}.{args[0]}"
+        )
+
+        await message.reply(f'Shout set to {args[0]}!')
 
     elif "!legacypickaxe" in args[0].lower():
         await client.user.party.me.set_pickaxe(
