@@ -160,9 +160,12 @@ async def event_ready():
             print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
 
 async def start_discord_rich_presence():
+    print('Attemping to connect to discord.')
     await rpc.connect()
+    print('Connected to discord.')
 
     while True:
+        print('Loop starting.')
         await rpc.update(
             large_image="skulltrooper",
             large_text="discord.gg/fnpy",
