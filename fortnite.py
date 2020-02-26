@@ -114,6 +114,9 @@ if data['debug'] is True:
 else:
     pass
 
+async def exception_handler(exception, future):
+    print(exception)
+
 rpc = pypresence.AioPresence(
     client_id='677207575867031552',
     handler=exception_handler()
@@ -161,9 +164,6 @@ async def event_ready():
             print(f"[PartyBot] [{time()}] Accepted friend request from: {friend.display_name}.")
         else:
             print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
-
-async def exception_handler(exception, future):
-    print(exception)
 
 async def start_discord_rich_presence():
     print('Attemping to connect to discord.')
