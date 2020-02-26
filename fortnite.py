@@ -119,7 +119,7 @@ async def exception_handler(exception, future):
 
 rpc = pypresence.AioPresence(
     client_id='677207575867031552',
-    handler=exception_handler()
+    handler=exception_handler(exception, future)
 )
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
