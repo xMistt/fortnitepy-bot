@@ -117,11 +117,6 @@ else:
 async def exception_handler(exception, future):
     print(exception)
 
-rpc = pypresence.AioPresence(
-    client_id='677207575867031552',
-    handler=exception_handler
-)
-
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
     auth=fortnitepy.AdvancedAuth(
@@ -166,6 +161,12 @@ async def event_ready():
             print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
 
 async def start_discord_rich_presence():
+    rpc = pypresence.AioPresence(
+        client_id='677207575867031552',
+        loop=client.loop,
+        handler=exception_handler
+    )
+
     print('Attemping to connect to discord.')
     try:
         await rpc.connect()
