@@ -511,6 +511,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                 await message.reply(f"Couldn't find a pickaxe with the name: {content}")
             else:
                 await client.user.party.me.set_pickaxe(asset=cosmetic.id)
+                await client.user.party.me.clear_emote()
                 await client.user.party.me.set_emote(asset='EID_IceKing')
                 await message.reply(f'Pickaxe set to {content} & Point it Out played.')
 
