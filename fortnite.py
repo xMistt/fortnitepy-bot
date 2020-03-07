@@ -41,6 +41,7 @@ try:
     import fortnitepy.errors
     import BenBotAsync
     import fortnite_api
+    #import pypresence
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue.')
@@ -143,6 +144,25 @@ async def event_ready():
         else:
             print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
 
+#async def start_discord_rich_presence():
+#    try:
+#        await rpc.connect()
+#    except Exception as e:
+#        print(crayons.yellow(f"[PartyBot] [{time()}] [WARN] Discord not found, skipping Rich Presence connection."))
+#
+#    while True:
+#        await rpc.update(
+#            large_image="skulltrooper",
+#            large_text="discord.gg/fnpy",
+#            small_image="jonesy",
+#            small_text=f"{client.user.party.me.outfit}",
+#            state="Fortnite Lobby",
+#            details=f"{client.user.party.leader}'s party.",
+#            party_size=[client.user.party.member_count, 16]
+#        )
+#
+#        await asyncio.sleep(20)
+
 @client.event
 async def event_party_invite(invite):
    await invite.accept()
@@ -205,6 +225,7 @@ async def event_friend_message(message):
 
     elif "!emote" in args[0].lower():
         try:
+            await client.user.party.me.clear_emote()
             cosmetic = await api.cosmetics.search_first(
                 type='Emote',
                 match_method=fortnite_api.MatchMethod.CONTAINS,
@@ -222,7 +243,7 @@ async def event_friend_message(message):
     elif "!pickaxe" in args[0].lower():
         try:
             cosmetic = await api.cosmetics.search_first(
-                type='Outfit',
+                type='Pickaxe',
                 match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
@@ -252,18 +273,19 @@ async def event_friend_message(message):
 
     elif "!emoji" in args[0].lower():
         try:
+            await client.user.party.me.clear_emote()
             cosmetic = await api.cosmetics.search_first(
                 backend_type='AthenaDance',
                 match_method=fortnite_api.MatchMethod.CONTAINS,
                 name=content
             )
 
-            await message.reply(f'Pet set to {cosmetic.id}.')
-            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
+            await message.reply(f'Emoji set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Emoji set to: {cosmetic.id}.")
             await client.user.party.me.set_emote(asset=f'/Game/Athena/Items/Cosmetics/Dances/Emoji/{cosmetic.id}.{cosmetic.id}')
         except fortnite_api.errors.NotFound:
-            await message.reply(f"Couldn't find a pet with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a pet with the name: {content}.")
+            await message.reply(f"Couldn't find an emoji with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find an emoji with the name: {content}.")
 
     elif "!contrail" in args[0].lower():
         try:
@@ -450,9 +472,9 @@ async def event_friend_message(message):
         await message.reply(f'Pet set to {args[0]}!')
 
     elif "emoji_" in args[0].lower():
-        await client.user.party.me.set_emote(asset='EID_ClearEmote')
+        await client.user.party.me.clear_emote()
         await client.user.party.me.set_emote(
-                asset=f"/Game/Athena/Items/Cosmetics/Dances/Emoji/{args[0]}.{args[0]}"
+                asset=args[0]
         )
 
         await message.reply(f'Emoji set to {args[0]}!')
@@ -478,7 +500,7 @@ async def event_friend_message(message):
             try:
                 cosmetic = await api.cosmetics.search_first(
                     type='Pickaxe',
-                    matchMethod='contains',
+                    match_method=fortnite_api.MatchMethod.CONTAINS,
                     name=content
                 )
 
@@ -624,6 +646,70 @@ async def event_friend_message(message):
         )
 
         await message.reply('Skin set to Star Wars Hologram!')
+    elif "!gift" in args[0].lower():
+        await client.user.party.me.clear_emote()
+
+        await client.user.party.me.set_emote(
+            asset='EID_NeverGonna'
+        )
+
+        await message.reply('What did you think would happen?')
+
+    elif "!matchmakingcode" in args[0].lower():
+        await client.user.party.set_custom_key(
+            key=content
+        )
+
+        await message.reply(f'Custom matchmaking code set to: {content}')
+
+    elif "!ninja" in args[0].lower():
+        await client.user.party.me.set_outfit(
+            asset='CID_605_Athena_Commando_M_TourBus'
+        )
+
+        await message.reply('Skin set to Ninja!')
+
+    elif "!ponpon" in args[0].lower():
+        await client.user.party.me.set_emote(
+            asset='EID_TourBus'
+        )
+
+        await message.reply('Emote set to Ninja Style!')
+
+    elif "!lang" in args[0]:
+        lang_content = " ".join(args[2:])
+        language = fortnite_api.GameLanguage(args[1])
+        try:
+            cosmetic = await api.cosmetics.search_first(
+                match_method=fortnite_api.MatchMethod.CONTAINS,
+                search_language=language,
+                name=lang_content
+            )
+
+            if 'AthenaCharacter' in cosmetic.backend_type:
+                await message.reply(f'Skin set to {cosmetic.id}.')
+                print(f"[PartyBot] [{time()}] Set skin to: {cosmetic.id}.")
+                await client.user.party.me.set_outfit(asset=cosmetic.id)
+            elif 'AthenaBackpack' in cosmetic.backend_type:
+                await message.reply(f'Backpack set to {cosmetic.id}.')
+                print(f"[PartyBot] [{time()}] Set Backpack to: {cosmetic.id}.")
+                await client.user.party.me.set_backpack(asset=cosmetic.id)
+            elif 'AthenaPet' in cosmetic.backend_type:
+                await message.reply(f'Pet set to {cosmetic.id}.')
+                print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
+                await client.user.party.me.set_backpack(asset=f'/Game/Athena/Items/Cosmetics/PetCarriers/{cosmetic.id}.{cosmetic.id}')
+            elif 'AthenaDance' in cosmetic.backend_type:
+                await message.reply(f'Emote set to {cosmetic.id}.')
+                print(f"[PartyBot] [{time()}] Emote set to: {cosmetic.id}.")
+                await client.user.party.me.set_emote(asset=cosmetic.id)
+            elif 'AthenaPickaxe' in cosmetic.backend_type:
+                await message.reply(f'Pickaxe set to {cosmetic.id}.')
+                print(f"[PartyBot] [{time()}] Set pickaxe to: {cosmetic.id}.")
+                await client.user.party.me.set_pickaxe(asset=cosmetic.id)
+
+        except fortnite_api.errors.NotFound:
+            await message.reply(f"Couldn't find an item with the name: {lang_content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find an item with the name: {lang_content}.")
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
