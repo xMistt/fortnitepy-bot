@@ -41,47 +41,61 @@ try:
     import fortnitepy
     import fortnitepy.errors
     import BenBotAsync
-    #import pypresence
+
 except ModuleNotFoundError as e:
     print(e)
-    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
+    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat"'
+        'might fix the issue, if not please create an issue or join'
+        'the support server.')
     exit()
 
-def time():
+
+def time() -> datetime.datetime:
     return datetime.datetime.now().strftime('%H:%M:%S')
 
-def get_device_auth_details():
+
+def get_device_auth_details() -> None:
     if os.path.isfile('device_auths.json'):
         with open('device_auths.json', 'r') as fp:
             return json.load(fp)
     return {}
 
-def store_device_auth_details(email, details):
+
+def store_device_auth_details(email, details) -> None:
     existing = get_device_auth_details()
     existing[email] = details
 
     with open('device_auths.json', 'w') as fp:
         json.dump(existing, fp, sort_keys=False, indent=4)
 
-async def setVTID(VTID):
-    url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
 
+async def set_vtid(VTID: str) -> list:
     async with aiohttp.ClientSession() as session:
-        async with session.get(url) as r:
-            fileLocation = await r.json()
+        async with session.get('http://benbotfn.tk:8080/api/assetProperties',
+            params={
+                'file': ('FortniteGame/Content/Athena/'
+                    f'Items/CosmeticVariantTokens/{VTID}.uasset')
+                    }) as r:
 
-            SkinCID = fileLocation['export_properties'][0]['cosmetic_item']
-            VariantChanelTag = fileLocation['export_properties'][0]['VariantChanelTag']['TagName']
-            VariantNameTag = fileLocation['export_properties'][0]['VariantNameTag']['TagName']
+            file_location = await r.json()['export_properties'][0]
 
-            VariantType = VariantChanelTag.split('Cosmetics.Variant.Channel.')[1].split('.')[0]
+            skin_cid = file_location['cosmetic_item']
+            variant_channel_tag = file_location['VariantChanelTag']['TagName']
+            variant_name_tag = file_location['VariantNameTag']['TagName']
 
-            VariantInt = int("".join(filter(lambda x: x.isnumeric(), VariantNameTag)))
+            variant_type = variant_channel_tag.split(
+                'Cosmetics.Variant.Channel.'
+                )[1].split('.')[0]
 
-            if VariantType == 'ClothingColor':
-                return SkinCID, 'clothing_color', VariantInt
+            variant_int = int("".join(filter(
+                lambda x: x.isnumeric(), variant_name_tag
+            )))
+
+            if variant_type == 'ClothingColor':
+                return skin_cid, 'clothing_color', variant_int
             else:
-                return SkinCID, VariantType, VariantInt
+                return skin_cid, variant_type, variant_int
+
 
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
 print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
@@ -89,7 +103,7 @@ print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fn
 with open('config.json') as f:
     data = json.load(f)
     
-if data['debug'] is True:
+if data['debug']:
     logger = logging.getLogger('fortnitepy.http')
     logger.setLevel(level=logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
@@ -104,7 +118,6 @@ if data['debug'] is True:
 else:
     pass
 
-#rpc = pypresence.AioPresence('677207575867031552')
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
@@ -126,14 +139,13 @@ client = fortnitepy.Client(
     ]
 )
 
+
 @client.event
-async def event_device_auth_generate(details, email):
+async def event_device_auth_generate(details, email) -> None:
     store_device_auth_details(email, details)
 
 @client.event
-async def event_ready():
-    #await start_discord_rich_presence()
-
+async def event_ready() -> None:
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
     for pending in client.pending_friends:
@@ -143,32 +155,15 @@ async def event_ready():
         else:
             print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
 
-#async def start_discord_rich_presence():
-#    try:
-#        await rpc.connect()
-#    except Exception as e:
-#        print(crayons.yellow(f"[PartyBot] [{time()}] [WARN] Discord not found, skipping Rich Presence connection."))
-#
-#    while True:
-#        await rpc.update(
-#            large_image="skulltrooper",
-#            large_text="discord.gg/fnpy",
-#            small_image="jonesy",
-#            small_text=f"{client.user.party.me.outfit}",
-#            state="Fortnite Lobby",
-#            details=f"{client.user.party.leader}'s party.",
-#            party_size=[client.user.party.member_count, 16]
-#        )
-#
-#        await asyncio.sleep(20)
 
 @client.event
-async def event_party_invite(invite):
+async def event_party_invite(invite) -> None:
    await invite.accept()
    print(f'[PartyBot] [{time()}] Accepted party invite from {invite.sender.display_name}.')
 
+
 @client.event
-async def event_friend_request(request):
+async def event_friend_request(request) -> None:
     print(f"[PartyBot] [{time()}] Recieved friend request from: {request.display_name}.")
 
     if data['friendaccept']:
@@ -178,12 +173,14 @@ async def event_friend_request(request):
         await request.decline()
         print(f"[PartyBot] [{time()}] Declined friend request from: {request.display_name}.")
 
-@client.event
-async def event_party_member_join(member):
-    await BenBotAsync.set_default_loadout(client, data, member)
 
 @client.event
-async def event_friend_message(message):
+async def event_party_member_join(member) -> None:
+    await BenBotAsync.set_default_loadout(client, data, member)
+
+
+@client.event
+async def event_friend_message(message) -> None:
     args = message.content.split()
     split = args[1:]
     content = " ".join(split)
@@ -368,7 +365,7 @@ async def event_friend_message(message):
         await print(f'[PartyBot] [{time()}] Skin set to {args[0]}')
 
     elif "vtid_" in args[0].lower():
-        VTID = await setVTID(args[0])
+        VTID = await set_vtid(args[0])
         if VTID[1] == 'Particle':
             variants = client.user.party.me.create_variants(particle_config='Particle', particle=1)
         else:
@@ -670,6 +667,25 @@ async def event_friend_message(message):
         )
 
         await message.reply('Emote set to Ninja Style!')
+
+    elif "!enlightened" in args[0].lower():
+        prop = client.user.party.me.meta.set_cosmetic_loadout(
+            character=("AthenaCharacterItemDefinition'/Game/Athena/Items/"
+                        f"Cosmetics/Characters/{args[1]}.{args[1]}'"),
+            character_ekey=None,
+            variants=client.user.party.me.create_variants(progressive=4),
+            scratchpad=[
+                {
+                    "t": args[2],
+                    "v": args[3]
+                }
+            ]
+        )
+
+        await client.user.party.me.patch(updated=prop)
+
+        await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
+
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
