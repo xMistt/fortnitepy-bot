@@ -478,7 +478,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
 
     elif "emoji_" in args[0].lower():
         await client.user.party.me.clear_emote()
-        await client.user.party.me.set_emote(
+        await client.user.party.me.set_emoji(
             asset=args[0]
         )
 
