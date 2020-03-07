@@ -728,21 +728,8 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
 
     elif "!rareskins" in args[0].lower():
+        rare_skins = ('CID_028_Athena_Commando_F', 'CID_017_Athena_Commando_M', 'CID_022_Athena_Commando_F')
         await message.reply('Showing all rare skins now.')
-
-        await client.user.party.me.set_outfit(
-            asset='CID_028_Athena_Commando_F'
-        )
-
-        await message.reply('Skin set to Renegade Raider!')
-        await asyncio.sleep(2)
-
-        await client.user.party.me.set_outfit(
-            asset='CID_017_Athena_Commando_M'
-        )
-
-        await message.reply('Skin set to Aerial Assault Trooper!')
-        await asyncio.sleep(2)
 
         await client.user.party.me.set_outfit(
             asset='CID_030_Athena_Commando_M_Halloween',
@@ -760,11 +747,12 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply('Skin set to Pink Ghoul Trooper!')
         await asyncio.sleep(2)
 
-        await client.user.party.me.set_outfit(
-            asset='CID_022_Athena_Commando_F'
-        )
+        for skin in rare_skins:
+            await client.user.party.me.set_outfit(
+                asset=skin
+            )
 
-        await message.reply('Skin set to Recon Expert!')
+            await message.reply(f'Skin set to {skin}!')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
