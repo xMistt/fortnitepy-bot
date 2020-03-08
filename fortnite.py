@@ -77,7 +77,8 @@ async def set_vtid(vtid: str) -> Tuple[str, str, int]:
                                            f'Items/CosmeticVariantTokens/{vtid}.uasset'
                                }) as r:
 
-            file_location = await r.json()['export_properties'][0]
+            response = await r.json()
+            file_location = response['export_properties'][0]
 
             skin_cid = file_location['cosmetic_item']
             variant_channel_tag = file_location['VariantChanelTag']['TagName']
