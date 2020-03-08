@@ -204,7 +204,6 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         if cosmetic is None:
-            print('Hi, it equals none!')
             await message.reply(f"Couldn't find a skin with the name: {content}.")
             print(f"[PartyBot] [{time()}] Couldn't find a skin with the name: {content}.")
         else:
