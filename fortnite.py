@@ -34,6 +34,7 @@ try:
     import sys
     import functools
     import os
+    from typing import Tuple
 
     # Related third party imports
     import crayons
