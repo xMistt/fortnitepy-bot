@@ -71,31 +71,33 @@ def store_device_auth_details(email: str, details: dict) -> None:
 
 async def set_vtid(vtid: str) -> Tuple[str, str, int]:
     async with aiohttp.ClientSession() as session:
-        async with session.get('http://benbotfn.tk:8080/api/assetProperties',
-                               params={
-                                   'file': 'FortniteGame/Content/Athena/'
-                                           f'Items/CosmeticVariantTokens/{vtid}.uasset'
-                               }) as r:
+        async with session.get(
+                'http://benbotfn.tk:8080/api/assetProperties',
+                params={
+                    'file': 'FortniteGame/Content/Athena/'
+                            f'Items/CosmeticVariantTokens/{vtid}.uasset'
+                }) as r:
 
             response = await r.json()
-            file_location = response['export_properties'][0]
 
-            skin_cid = file_location['cosmetic_item']
-            variant_channel_tag = file_location['VariantChanelTag']['TagName']
-            variant_name_tag = file_location['VariantNameTag']['TagName']
+    file_location = response['export_properties'][0]
 
-            variant_type = variant_channel_tag.split(
-                'Cosmetics.Variant.Channel.'
-            )[1].split('.')[0]
+    skin_cid = file_location['cosmetic_item']
+    variant_channel_tag = file_location['VariantChanelTag']['TagName']
+    variant_name_tag = file_location['VariantNameTag']['TagName']
 
-            variant_int = int("".join(filter(
-                lambda x: x.isnumeric(), variant_name_tag
-            )))
+    variant_type = variant_channel_tag.split(
+        'Cosmetics.Variant.Channel.'
+    )[1].split('.')[0]
 
-            if variant_type == 'ClothingColor':
-                return skin_cid, 'clothing_color', variant_int
-            else:
-                return skin_cid, variant_type, variant_int
+    variant_int = int("".join(filter(
+        lambda x: x.isnumeric(), variant_name_tag
+    )))
+
+    if variant_type == 'ClothingColor':
+        return skin_cid, 'clothing_color', variant_int
+    else:
+        return skin_cid, variant_type, variant_int
 
 
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt.'
@@ -117,8 +119,6 @@ if data['debug']:
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('\u001b[35m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
     logger.addHandler(handler)
-else:
-    pass
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
@@ -132,19 +132,31 @@ client = fortnitepy.Client(
     status=data['status'],
     platform=fortnitepy.Platform(data['platform']),
     default_party_member_config=[
-        functools.partial(fortnitepy.ClientPartyMember.set_outfit, data['cid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_backpack, data['bid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_banner,
-                          icon=data['banner'],
-                          color=data['banner_colour'],
-                          season_level=data['level']
-                          ),
-        functools.partial(fortnitepy.ClientPartyMember.set_emote, data['eid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info,
-                          has_purchased=True, level=data['bp_tier'],
-                          self_boost_xp='0',
-                          friend_boost_xp='0'
-                          )
+        functools.partial(
+            fortnitepy.ClientPartyMember.set_outfit,
+            data['cid']
+        ),
+        functools.partial(
+            fortnitepy.ClientPartyMember.set_backpack,
+            data['bid']
+        ),
+        functools.partial(
+            fortnitepy.ClientPartyMember.set_banner,
+            icon=data['banner'],
+            color=data['banner_colour'],
+            season_level=data['level']
+        ),
+        functools.partial(
+            fortnitepy.ClientPartyMember.set_emote,
+            data['eid']
+        ),
+        functools.partial(
+            fortnitepy.ClientPartyMember.set_battlepass_info,
+            has_purchased=True,
+            level=data['bp_tier'],
+            self_boost_xp='0',
+            friend_boost_xp='0'
+        )
     ]
 )
 
@@ -346,16 +358,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply('Backpack set to Purple Ghost Portal!')
 
     elif "!banner" in args[0].lower():
-        if len(args) == 1:
-            await message.reply('You need to specify which banner, color & level you want to set the banner as.')
-        elif len(args) == 2:
-            await client.user.party.me.set_banner(icon=args[1], color=data['banner_colour'], season_level=data['level'])
-        elif len(args) == 3:
-            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
-        elif len(args) == 4:
-            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
-        else:
-            await message.reply('You entered too many arguments!')
+        await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
         await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
         print(f"[PartyBot] [{time()}] Banner set to; {args[1]} {args[2]} {args[3]}")
@@ -530,17 +533,19 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply('Sitting Out!')
 
     elif "!bp" in args[0].lower():
-        await client.user.party.me.set_battlepass_info(has_purchased=True,
-                                                       level=args[1],
-                                                       self_boost_xp='0',
-                                                       friend_boost_xp='0'
-                                                       )
+        await client.user.party.me.set_battlepass_info(
+            has_purchased=True,
+            level=args[1],
+            self_boost_xp='0',
+            friend_boost_xp='0'
+        )
 
     elif "!level" in args[0].lower():
-        await client.user.party.me.set_banner(icon=client.user.party.me.banner[0],
-                                              color=client.user.party.me.banner[1],
-                                              season_level=args[1]
-                                              )
+        await client.user.party.me.set_banner(
+            icon=client.user.party.me.banner[0],
+            color=client.user.party.me.banner[1],
+            season_level=args[1]
+        )
 
     elif "!echo" in args[0].lower():
         await client.user.party.send(content)
@@ -648,29 +653,34 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             member = client.user.party.members.get(user.id)
 
         await client.user.party.me.edit(
-            functools.partial(fortnitepy.ClientPartyMember.set_outfit,
-                              asset=member.outfit,
-                              variants=member.outfit_variants
-                              ),
-            functools.partial(fortnitepy.ClientPartyMember.set_backpack,
-                              asset=member.backpack,
-                              variants=member.backpack_variants
-                              ),
-            functools.partial(fortnitepy.ClientPartyMember.set_pickaxe,
-                              asset=member.pickaxe,
-                              variants=member.pickaxe_variants
-                              ),
-            functools.partial(fortnitepy.ClientPartyMember.set_banner,
-                              icon=member.banner[0],
-                              color=member.banner[1],
-                              season_level=member.banner[2]
-                              ),
-            functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info,
-                              has_purchased=True,
-                              level=member.battlepass_info[1],
-                              self_boost_xp='0',
-                              friend_boost_xp='0'
-                              )
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_outfit,
+                asset=member.outfit,
+                variants=member.outfit_variants
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_backpack,
+                asset=member.backpack,
+                variants=member.backpack_variants
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_pickaxe,
+                asset=member.pickaxe,
+                variants=member.pickaxe_variants
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_banner,
+                icon=member.banner[0],
+                color=member.banner[1],
+                season_level=member.banner[2]
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_battlepass_info,
+                has_purchased=True,
+                level=member.battlepass_info[1],
+                self_boost_xp='0',
+                friend_boost_xp='0'
+            )
         )
 
         await client.user.party.me.set_emote(asset=member.emote)
