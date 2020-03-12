@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 “Commons Clause” License Condition v1.0
 Copyright Oli 2019
@@ -722,20 +724,11 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply('Emote set to Ninja Style!')
 
     elif "!enlightened" in args[0].lower():
-        prop = client.user.party.me.meta.set_cosmetic_loadout(
-            character=("AthenaCharacterItemDefinition'/Game/Athena/Items/"
-                       f"Cosmetics/Characters/{args[1]}.{args[1]}'"),
-            character_ekey=None,
+        await client.user.party.me.set_outfit(
+            asset=args[1],
             variants=client.user.party.me.create_variants(progressive=4),
-            scratchpad=[
-                {
-                    "t": args[2],
-                    "v": args[3]
-                }
-            ]
+            enlightenment=(args[2], args[3])
         )
-
-        await client.user.party.me.patch(updated=prop)
 
         await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
 
@@ -765,6 +758,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             )
 
             await message.reply(f'Skin set to {skin}!')
+            await asyncio.sleep(2)
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
