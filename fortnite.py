@@ -51,6 +51,14 @@ except ModuleNotFoundError as e:
           'the support server.')
     exit()
 
+# Imports uvloop and uses it if installed (Unix only).
+try:
+    import uvloop 
+except (ImportError, ModuleNotFoundError):
+    pass
+else:
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def time() -> str:
     return datetime.datetime.now().strftime('%H:%M:%S')
