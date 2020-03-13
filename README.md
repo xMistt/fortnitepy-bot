@@ -16,6 +16,12 @@ python3 -m pip install -U -r requirements.txt
 
 Then fill out ``config.json`` with your configuration & run the fortnite.py file!
 
+The bot will automatically use uvloop (fastest event loop) if it's installed. To install uvloop, enter this into terminal:
+```
+python3 -m pip install -U uvloop
+```
+uvloop is exclusive to unix - darwin (mac), linux, etc. 
+
 ## Commands
 For a list of commands, <a href="https://github.com/xMistt/fortnitepy-bot/wiki/Commands">click here.</a>
 

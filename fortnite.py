@@ -54,7 +54,7 @@ except ModuleNotFoundError as e:
 # Imports uvloop and uses it if installed (Unix only).
 try:
     import uvloop 
-except (ImportError, ModuleNotFoundError):
+except ImportError:
     pass
 else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
@@ -81,14 +81,15 @@ def store_device_auth_details(email: str, details: dict) -> None:
 
 async def set_vtid(vtid: str) -> Tuple[str, str, int]:
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-                'http://benbotfn.tk:8080/api/assetProperties',
-                params={
-                    'file': 'FortniteGame/Content/Athena/'
-                            f'Items/CosmeticVariantTokens/{vtid}.uasset'
-                }) as r:
+        request = await session.request(
+            method='GET',
+            url='http://benbotfn.tk:8080/api/assetProperties',
+            params={
+                'file': 'FortniteGame/Content/Athena/'
+                        f'Items/CosmeticVariantTokens/{vtid}.uasset'
+            })
 
-            response = await r.json()
+        response = await request.json()
 
     file_location = response['export_properties'][0]
 
@@ -163,9 +164,7 @@ client = fortnitepy.Client(
         functools.partial(
             fortnitepy.ClientPartyMember.set_battlepass_info,
             has_purchased=True,
-            level=data['bp_tier'],
-            self_boost_xp='0',
-            friend_boost_xp='0'
+            level=data['bp_tier']
         )
     ]
 )
@@ -369,8 +368,8 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
     elif "!banner" in args[0].lower():
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
-        await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
-        print(f"[PartyBot] [{time()}] Banner set to; {args[1]} {args[2]} {args[3]}")
+        await message.reply(f'Banner set to: {args[1]}, {args[2]}, {args[3]}.')
+        print(f"[PartyBot] [{time()}] Banner set to: {args[1]}, {args[2]}, {args[3]}.")
 
     elif "cid_" in args[0].lower():
         if 'banner' not in args[0]:
@@ -397,7 +396,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply(f'Variants set to {args[0]}.\n'
                             '(Warning: This feature is not supported, please use !variants)')
 
-    elif "!variants" in args[0]:
+    elif "!variants" in args[0].lower():
         try:
             args3 = int(args[3])
         except ValueError:
@@ -545,8 +544,6 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await client.user.party.me.set_battlepass_info(
             has_purchased=True,
             level=args[1],
-            self_boost_xp='0',
-            friend_boost_xp='0'
         )
 
     elif "!level" in args[0].lower():
@@ -626,7 +623,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         except fortnitepy.Forbidden:
             await message.reply('Failed to join back as party is set to private.')
 
-    elif args[0].lower() == "!id":
+    elif "!id" in args[0].lower():
         user = await client.fetch_profile(content, cache=False, raw=False)
         try:
             await message.reply(f"{content}'s Epic ID is: {user.id}")
@@ -686,9 +683,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             functools.partial(
                 fortnitepy.ClientPartyMember.set_battlepass_info,
                 has_purchased=True,
-                level=member.battlepass_info[1],
-                self_boost_xp='0',
-                friend_boost_xp='0'
+                level=member.battlepass_info[1]
             )
         )
 
