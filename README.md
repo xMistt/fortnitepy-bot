@@ -1,6 +1,5 @@
 [![Downloads](https://pepy.tech/badge/benbotasync)](https://pepy.tech/project/benbotasync)
 [![Python Versions](https://img.shields.io/pypi/pyversions/fortnitepy.svg)](https://www.python.org/downloads/release/python-360/) 
-[![Stars](https://img.shields.io/github/stars/xMistt/fortnitepy-bot?style=social)](https://img.shields.io/github/stars/xMistt/fortnitepy-bot?style=social)
 
 
 # PartyBot (previously fortnitepy-bot)
