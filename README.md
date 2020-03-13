@@ -20,12 +20,12 @@ fortnitepy-bot requires Python 3.6 or greater. If you need Python 3.6+, you can 
 
 3. Launch the fortnite.py file and enjoy.
 
-4. *This step is optional and will not work on Windows* - <br>The bot will automatically use uvloop (fastest event loop) if it's installed. To install uvloop, enter this into terminal:
+4. ***This step is optional and will not work on Windows*** <br>The bot will automatically use uvloop (fastest event loop) if it's installed. To install uvloop, enter this into terminal:
 
-```
-python3 -m pip install -U uvloop
-```
-uvloop is exclusive to unix - darwin (mac), linux, etc. 
+    ```
+    python3 -m pip install -U uvloop
+    ```
+    uvloop is exclusive to unix - darwin (mac), linux, etc. 
 
 ## License
 By downloading this, you agree to the Commons Clause license and that you're not allowed to sell this repository or any code from this repository. For more info see https://commonsclause.com/.
