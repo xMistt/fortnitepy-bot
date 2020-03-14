@@ -763,6 +763,15 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             await message.reply(f'Skin set to {skin}!')
             await asyncio.sleep(2)
 
+    elif "!goldenpeely" in args[0].lower():
+        await client.user.party.me.set_outfit(
+            asset='CID_701_Athena_Commando_M_BananaAgent',
+            variants=client.user.party.me.create_variants(progressive=4),
+            enlightenment=(2, 350)
+        )
+
+        await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
+
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
