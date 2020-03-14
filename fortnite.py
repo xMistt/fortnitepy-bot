@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 “Commons Clause” License Condition v1.0
 Copyright Oli 2019
@@ -50,6 +52,14 @@ except ModuleNotFoundError as e:
           'the support server.')
     exit()
 
+# Imports uvloop and uses it if installed (Unix only).
+try:
+    import uvloop
+except ImportError:
+    pass
+else:
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
 
 def time() -> str:
     return datetime.datetime.now().strftime('%H:%M:%S')
@@ -72,14 +82,15 @@ def store_device_auth_details(email: str, details: dict) -> None:
 
 async def set_vtid(vtid: str) -> Tuple[str, str, int]:
     async with aiohttp.ClientSession() as session:
-        async with session.get(
-                'http://benbotfn.tk:8080/api/assetProperties',
-                params={
-                    'file': 'FortniteGame/Content/Athena/'
-                            f'Items/CosmeticVariantTokens/{vtid}.uasset'
-                }) as r:
+        request = await session.request(
+            method='GET',
+            url='http://benbotfn.tk:8080/api/assetProperties',
+            params={
+                'file': 'FortniteGame/Content/Athena/'
+                        f'Items/CosmeticVariantTokens/{vtid}.uasset'
+            })
 
-            response = await r.json()
+        response = await request.json()
 
     file_location = response['export_properties'][0]
 
@@ -120,8 +131,6 @@ if data['debug']:
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('\u001b[35m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
     logger.addHandler(handler)
-else:
-    pass
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
@@ -778,20 +787,11 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             print(f"[PartyBot] [{time()}] Couldn't find an item with the name: {lang_content}.")
 
     elif "!enlightened" in args[0].lower():
-        prop = client.user.party.me.meta.set_cosmetic_loadout(
-            character=("AthenaCharacterItemDefinition'/Game/Athena/Items/"
-                       f"Cosmetics/Characters/{args[1]}.{args[1]}'"),
-            character_ekey=None,
+        await client.user.party.me.set_outfit(
+            asset=args[1],
             variants=client.user.party.me.create_variants(progressive=4),
-            scratchpad=[
-                {
-                    "t": args[2],
-                    "v": args[3]
-                }
-            ]
+            enlightenment=(args[2], args[3])
         )
-
-        await client.user.party.me.patch(updated=prop)
 
         await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
 

@@ -2,3 +2,4 @@ fortnitepy
 BenBotAsync
 crayons
 fortnite-api
+typing
