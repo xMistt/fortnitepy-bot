@@ -1,7 +1,7 @@
 # PartyBot
 
 [![Downloads](https://pepy.tech/badge/benbotasync)](https://pepy.tech/project/benbotasync)
-[![Python Versions](https://img.shields.io/pypi/pyversions/fortnitepy.svg)](https://www.python.org/downloads/release/python-360/) 
+[![Python Versions](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)](https://www.python.org/downloads/release/python-360/) 
 
 A fortnite HTTP/XMPP bot coded in Python with party capabilites.
 
