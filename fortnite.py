@@ -111,7 +111,7 @@ async def set_vtid(vtid: str) -> Tuple[str, str, int]:
         return skin_cid, variant_type, variant_int
 
 
-print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt.'
+print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
                    'Massive credit to Terbau for creating the library.'))
 print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
 
@@ -141,32 +141,7 @@ client = fortnitepy.Client(
         **device_auth_details
     ),
     status=data['status'],
-    platform=fortnitepy.Platform(data['platform']),
-    default_party_member_config=[
-        functools.partial(
-            fortnitepy.ClientPartyMember.set_outfit,
-            data['cid']
-        ),
-        functools.partial(
-            fortnitepy.ClientPartyMember.set_backpack,
-            data['bid']
-        ),
-        functools.partial(
-            fortnitepy.ClientPartyMember.set_banner,
-            icon=data['banner'],
-            color=data['banner_colour'],
-            season_level=data['level']
-        ),
-        functools.partial(
-            fortnitepy.ClientPartyMember.set_emote,
-            data['eid']
-        ),
-        functools.partial(
-            fortnitepy.ClientPartyMember.set_battlepass_info,
-            has_purchased=True,
-            level=data['bp_tier']
-        )
-    ]
+    platform=fortnitepy.Platform(data['platform'])
 )
 
 
@@ -222,7 +197,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Outfit']
+            check=(BenBotAsync.Filters.TYPE, 'Outfit')
         )
 
         if cosmetic is None:
@@ -237,7 +212,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Back Bling']
+            check=(BenBotAsync.Filters.TYPE, 'Back Bling')
         )
 
         if cosmetic is None:
@@ -254,7 +229,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Emote']
+            check=(BenBotAsync.Filters.TYPE, 'Emote')
         )
 
         if cosmetic is None:
@@ -269,7 +244,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Harvesting Tool']
+            check=(BenBotAsync.Filters.TYPE, 'Harvesting Tool')
         )
 
         if cosmetic is None:
@@ -284,7 +259,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.BACKEND_TYPE, 'AthenaPet']
+            check=(BenBotAsync.Filters.BACKEND_TYPE, 'AthenaPet')
         )
 
         if cosmetic is None:
@@ -301,7 +276,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.BACKEND_TYPE, 'AthenaDance']
+            check=(BenBotAsync.Filters.BACKEND_TYPE, 'AthenaDance')
         )
 
         if cosmetic is None:
@@ -316,7 +291,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         cosmetic = await BenBotAsync.get_cosmetic(
             content,
             params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Contrail']
+            check=(BenBotAsync.Filters.TYPE, 'Contrail')
         )
 
         if cosmetic is None:
@@ -518,7 +493,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             cosmetic = await BenBotAsync.get_cosmetic(
                 content,
                 params=BenBotAsync.Tags.NAME,
-                filter=[BenBotAsync.Filters.TYPE, 'Harvesting Tool']
+                check=(BenBotAsync.Filters.TYPE, 'Harvesting Tool')
             )
             if cosmetic is None:
                 await message.reply(f"Couldn't find a pickaxe with the name: {content}")
@@ -770,7 +745,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             enlightenment=(2, 350)
         )
 
-        await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
+        await message.reply(f'Skin set to Golden Peely.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
