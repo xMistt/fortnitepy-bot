@@ -188,13 +188,19 @@ async def event_friend_message(message):
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            id = await BenBotAsync.getSkinId(joinedArguments)
-            if id == None:
-                await message.reply(f"Couldn't find a skin with the name: {joinedArguments}")
-            else:
-                await client.user.party.me.set_outfit(asset=id)
-                await message.reply('Skin set to ' + id)
-                print(f" [PYBOT] [{getTime()}] Set Skin to: " + id)
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaCharacter"
+                )
+                await client.user.party.me.set_outfit(asset=cosmetic.id)
+                await message.reply('Skin set to ' + f'{joinedArguments}')
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find a skin named: {joinedArguments}')
+                
         
     if "!backpack" in args[0].lower():
         if message.author.display_name in data['BlockList']:
@@ -203,40 +209,54 @@ async def event_friend_message(message):
             if len(args) == 1:
                 await client.user.party.me.set_backpack(asset='none')
                 await message.reply('Backpack set to None')
-                print(f" [PYBOT] [{getTime()}] Set Backpack to None")
             else:
-                id = await BenBotAsync.getBackpackId(joinedArguments)
-                if id == None:
-                    await message.reply(f"Couldn't find a backpack with the name: {joinedArguments}")
-                else:
-                    await client.user.party.me.set_backpack(asset=id)
-                    await message.reply('Backpack set to ' + id)
-                    print(f" [PYBOT] [{getTime()}] Set Backpack to: " + id)
+                try:
+                    cosmetic = await BenBotAsync.get_cosmetic(
+                        lang="en",
+                        searchLang="en",
+                        matchMethod="contains",
+                        name=joinedArguments,
+                        backendType="AthenaBackpack"
+                    )
+                    await client.user.party.me.set_backpack(asset=cosmetic.id)
+                    await message.reply('Backpack set to ' + f'{joinedArguments}')
+                except BenBotAsync.exceptions.NotFound:
+                    await message.reply(f'Could not find a backpack named: {joinedArguments}')
 
     if "!emote" in args[0].lower():
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            await client.user.party.me.clear_emote()
-            id = await BenBotAsync.getEmoteId(joinedArguments)
-            if id == None:
-                await message.reply(f"Couldn't find an emote with the name: {joinedArguments}")
-            else:
-                await client.user.party.me.set_emote(asset=id)
-                await message.reply('Emote set to ' + id)
-                print(f" [PYBOT] [{getTime()}] Set Emote to: " + id)
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaDance"
+                )
+                await client.user.party.me.clear_emote()
+                await client.user.party.me.set_emote(asset=cosmetic.id)
+                await message.reply('Emote set to ' + f'{joinedArguments}')
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find an emote named: {joinedArguments}')
     
     if "!pickaxe" in args[0].lower():
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            id = await BenBotAsync.getPickaxeId(joinedArguments)
-            if id == None:
-                await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
-            else:
-                await client.user.party.me.set_pickaxe(asset=id)
-                await message.reply('Pickaxe set to ' + id)
-                print(f" [PYBOT] [{getTime()}] Set Pickaxe to: " + id)
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaPickaxe"
+                )
+                await client.user.party.me.set_pickaxe(asset=cosmetic.id)
+                await message.reply('Pickaxe set to ' + f'{joinedArguments}')
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find a pickaxe named: {joinedArguments}')
 
     if "!point" in args[0].lower():
         if message.author.display_name in data['BlockList']:
@@ -247,39 +267,54 @@ async def event_friend_message(message):
                 await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
                 await message.reply('Doing emote: Point It Out')
             else:
-                id = await BenBotAsync.getPickaxeId(joinedArguments)
-                if id == None:
-                    await message.reply(f"Couldn't find a pickaxe with the name: {joinedArguments}")
-                else:
-                    await client.user.party.me.set_pickaxe(asset=id)
+                try:
+                    cosmetic = await BenBotAsync.get_cosmetic(
+                        lang="en",
+                        searchLang="en",
+                        matchMethod="contains",
+                        name=joinedArguments,
+                        backendType="AthenaPickaxe"
+                    )
+                    await client.user.party.me.set_pickaxe(asset=cosmetic.id)
+                    await client.user.party.me.clear_emote()
                     await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
-                    await message.reply('Pointing with ' + id)
-                    print(f" [PYBOT] [{getTime()}] Pointing a pickaxe with: " + id)
+                    await message.reply('Pointing with ' + f'{joinedArguments}')
+                except BenBotAsync.exceptions.NotFound:
+                    await message.reply(f'Could not find a pickaxe named: {joinedArguments}')
 
     if "!pet" in args[0].lower():
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            id = await BenBotAsync.getPetId(joinedArguments)
-            await client.user.party.me.set_backpack(
-                    asset="/Game/Athena/Items/Cosmetics/PetCarriers/" + id + "." + id
-            )
-
-            await message.reply('Pet set to ' + id)
-            print(f" [PYBOT] [{getTime()}] Client's PetCarrier set to: " + id)
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaPet"
+                )
+                await client.user.party.me.set_pet(asset=cosmetic.id)
+                await message.reply('Pet set to ' + f'{joinedArguments}')
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find a pet named: {joinedArguments}')
 
     if "!emoji" in args[0].lower():
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
-            id = await fetch_cosmetic_id(' '.join(split), 'AthenaDance')
-            await client.user.party.me.clear_emote()
-            await client.user.party.me.set_emote(
-                    asset="/Game/Athena/Items/Cosmetics/Dances/Emoji/" + id + "." + id
-            )
-
-            await message.reply('Emoji set to ' + id)
-            print(f" [PYBOT] [{getTime()}] Client's Emoji set to " + id)
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaEmoji"
+                )
+                await client.user.party.me.set_emoji(asset=cosmetic.id)
+                await message.reply('Emoji set to ' + f'{joinedArguments}')
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find an emoji named: {joinedArguments}')
 
     if "!purpleskull" in args[0].lower():
         if message.author.display_name in data['BlockList']:
@@ -318,6 +353,17 @@ async def event_friend_message(message):
                 print(f" [PYBOT] [{getTime()}] Client's Skin set to Pink Ghoul Trooper")
             except Exception as e:
                 pass
+               
+    if "!goldpeely" in args[0].lower():
+        await client.user.party.me.set_outfit(
+            asset='CID_701_Athena_Commando_M_BananaAgent',
+            variants=client.user.party.me.create_variants(
+                progressive=4
+                ),
+            enlightenment=(2, 350)
+        )
+
+        await message.reply(f'Skin set to Golden Peely')
 
     if "!brainiacghoul" in args[0].lower():
         if message.author.display_name in data['BlockList']:
