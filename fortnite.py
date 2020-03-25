@@ -49,7 +49,7 @@ except ModuleNotFoundError as e:
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat"'
           'might fix the issue, if not please create an issue or join'
           'the support server.')
-    exit()
+    sys.exit()
 
 # Imports uvloop and uses it if installed (Unix only).
 try:
