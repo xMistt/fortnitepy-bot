@@ -154,7 +154,7 @@ async def event_device_auth_generate(details: dict, email: str) -> None:
 async def event_ready() -> None:
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
-    for pending in list(client.pending_friends.values()).copy():
+    for pending in list(client.pending_friends.values()):
         if pending.direction == 'INBOUND':
             friend = await pending.accept() if data["friendaccept"] else await pending.decline()
             if isinstance(friend, fortnitepy.Friend):
