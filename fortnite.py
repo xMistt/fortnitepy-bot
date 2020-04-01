@@ -83,9 +83,9 @@ async def set_vtid(vtid: str) -> Tuple[str, str, int]:
     async with aiohttp.ClientSession() as session:
         request = await session.request(
             method='GET',
-            url='http://benbotfn.tk:8080/api/assetProperties',
+            url='https://benbotfn.tk/api/v1/assetProperties',
             params={
-                'file': 'FortniteGame/Content/Athena/'
+                'path': 'FortniteGame/Content/Athena/'
                         f'Items/CosmeticVariantTokens/{vtid}.uasset'
             })
 
