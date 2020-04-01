@@ -37,6 +37,7 @@ try:
     import functools
     import os
     from typing import Tuple
+    import random
 
     # Related third party imports
     import crayons
@@ -366,18 +367,18 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         print(f"[PartyBot] [{time()}] Banner set to: {args[1]}, {args[2]}, {args[3]}.")
 
     elif "cid_" in args[0].lower():
-        if 'banner' not in args[0]:
+        if 'banner' not in args[0].lower():
             await client.user.party.me.set_outfit(
                 asset=args[0]
             )
         else:
             await client.user.party.me.set_outfit(
                 asset=args[0],
-                variants=client.user.party.me.create_variants(profilebanner='ProfileBanner')
+                variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
             )
 
         await message.reply(f'Skin set to {args[0]}')
-        await print(f'[PartyBot] [{time()}] Skin set to {args[0]}')
+        print(f'[PartyBot] [{time()}] Skin set to {args[0]}')
 
     elif "vtid_" in args[0].lower():
         vtid = await set_vtid(args[0])
@@ -578,7 +579,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                 print(f"[PartyBot] [{time()}] Kicked user: {member.display_name}")
             except fortnitepy.Forbidden:
                 await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
-                print(crayons.red(f"[PartyBot] [{time()}] [ERROR]"
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                                   "Failed to kick member as I don't have the required permissions."))
 
     elif "!promote" in args[0].lower():
@@ -598,7 +599,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                 print(f"[PartyBot] [{time()}] Promoted user: {member.display_name}")
             except fortnitepy.Forbidden:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
-                print(crayons.red(f"[PartyBot] [{time()}] [ERROR]"
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                                   "Failed to kick member as I don't have the required permissions."))
 
     elif "playlist_" in args[0].lower():
@@ -606,7 +607,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             await client.user.party.set_playlist(playlist=args[0])
         except fortnitepy.Forbidden:
             await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
-            print(crayons.red(f"[PartyBot] [{time()}] [ERROR]"
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                               "Failed to set gamemode as I don't have the required permissions."))
 
     elif "!platform" in args[0].lower():
@@ -645,7 +646,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
 
         except fortnitepy.Forbidden:
             await message.reply(f"Couldn't set party privacy to {args[1]}, as I'm not party leader.")
-            print(crayons.red(f"[PartyBot] [{time()}] [ERROR]"
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                               "Failed to set party privacy as I don't have the required permissions."))
 
     elif "!copy" in args[0].lower():
@@ -769,27 +770,21 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
 
         await message.reply(f'Skin set to Golden Peely.')
 
-    elif "!avatar" in args[0].lower():
-        print('Firing !avatar command.')
-        response = await client.http.graphql_request(fortnitepy.http.GraphQLRequest(
-            query="""
-            mutation UpdateUserSetting($key: String!, $value: String!) {
-                UserSettings {
-                    updateSetting(key: $key, value: $value) {
-                        success
-                    }
-                }
-            }
-            """,
-            variables={
-                'key': 'avatar',
-                'value': args[1],
-                'avatarBackground': 0x00FF00
-            }
-        ))
-        print(f'GraphQL response: {response}')
+    elif "!random" in args[0].lower():
+        outfits = await BenBotAsync.get_cosmetics(
+            lang="en",
+            searchLang="en",
+            backendType="AthenaCharacter"
+        )
 
-        await message.reply(str(response))
+        skin = random.choice(outfits).id
+
+        await client.user.party.me.set_outfit(
+            asset=skin,
+            variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
+        )
+
+        await message.reply(f'Skin randomly set to {skin}.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
