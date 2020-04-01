@@ -2,7 +2,7 @@
 
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019
+Copyright Oli 2019-2020
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -49,7 +49,7 @@ except ModuleNotFoundError as e:
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat"'
           'might fix the issue, if not please create an issue or join'
           'the support server.')
-    exit()
+    sys.exit()
 
 # Imports uvloop and uses it if installed (Unix only).
 try:
@@ -83,9 +83,9 @@ async def set_vtid(vtid: str) -> Tuple[str, str, int]:
     async with aiohttp.ClientSession() as session:
         request = await session.request(
             method='GET',
-            url='http://benbotfn.tk:8080/api/assetProperties',
+            url='https://benbotfn.tk/api/v1/assetProperties',
             params={
-                'file': 'FortniteGame/Content/Athena/'
+                'path': 'FortniteGame/Content/Athena/'
                         f'Items/CosmeticVariantTokens/{vtid}.uasset'
             })
 
@@ -154,7 +154,7 @@ async def event_device_auth_generate(details: dict, email: str) -> None:
 async def event_ready() -> None:
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
-    for pending in client.pending_friends.values():
+    for pending in list(client.pending_friends.values()):
         if pending.direction == 'INBOUND':
             friend = await pending.accept() if data["friendaccept"] else await pending.decline()
             if isinstance(friend, fortnitepy.Friend):
