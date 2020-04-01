@@ -769,6 +769,28 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
 
         await message.reply(f'Skin set to Golden Peely.')
 
+    elif "!avatar" in args[0].lower():
+        print('Firing !avatar command.')
+        response = await client.http.graphql_request(fortnitepy.http.GraphQLRequest(
+            query="""
+            mutation UpdateUserSetting($key: String!, $value: String!) {
+                UserSettings {
+                    updateSetting(key: $key, value: $value) {
+                        success
+                    }
+                }
+            }
+            """,
+            variables={
+                'key': 'avatar',
+                'value': args[1],
+                'avatarBackground': 0x00FF00
+            }
+        ))
+        print(f'GraphQL response: {response}')
+
+        await message.reply(str(response))
+
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
