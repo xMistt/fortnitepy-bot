@@ -785,6 +785,12 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply(f'Skin randomly set to {skin}.')
+        
+    elif "!nobackpack" in args[0].lower():
+        await client.user.party.me.clear_backpack()
+        
+    elif "!nopet" in args[0].lower():
+        await client.user.party.me.clear_pet()
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
