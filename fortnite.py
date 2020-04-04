@@ -60,131 +60,6 @@ else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 
-def CommandHelp(input):
-    if "skin" == input:
-        return "Sets the outfit of the client using the outfits name. Usage:\n!skin <skin name>\nExample:\n!skin Nog Ops"
-    
-    elif "backpack" == input:
-        return "Sets the backpack of the client using the backpacks name. Usage:\n!backpack <backpack name>\nExample:\n!backpack Black Shield"
-    
-    elif "emote" == input:
-        return "Sets the emote of the client using the emotes name. Usage:\n!emote <emote name>\nExample:\n!emote Windmill Floss"
-
-    elif "pickaxe" == input:
-        return "Sets the pickaxe of the client using the pickaxe name. Usage:\n!pickaxe <pickaxe name>\nExample:\n!pickaxe Raider's Revenge"
-
-    elif "pet" == input:
-        return "Sets the pet (backpack) of the client using the pets name. Usage:\n!pet <pet name>\nExample:\n!pet Bonesy"
-
-    elif "emoji" == input:
-        return "Sets the emoji of the client using the emojis name. Usage:\n!emoji <emoji name>\nExample:\n!emoji Snowball"
-
-    elif "variants" == input:
-        return "Creates the variants list by the variants you set. Usage:\n!variants <CID> <style type> <integer>\nExample:\n!variants CID_030_Athena_Commando_M_Halloween clothing_color 1"
-
-    elif "contrail" == input:
-        return "Sets the contrail of the client using the contrail name. Usage:\n!contrail <contrail name>\nExample:\n!contrail Holly and Divey"
-
-    elif "purpleskull" == input:
-        return "Sets the outfit of the client to Purple Skull Trooper. Usage:\n!purpleskull\nExample:\n!purpleskull"
-
-    elif "pinkghoul" == input:
-        return "Sets the outfit of the client to Pink Ghoul Trooper. Usage:\n!pinkghoul\nExample:\n!pinkghoul"
-
-    elif "purpleportal" == input:
-        return "Sets the backpack of the client to Purple Ghost Portal. Usage:\n!purpleportal\nExample:\n!purpleportal"
-
-    elif "checkeredrenegade" == input:
-        return "Sets the outfit of the client to Checkered Renegade. Usage:\n!checkeredrenegade\nExample:\n!checkeredrenegade"
-
-    elif "banner" == input:
-        return "Sets the banner of the client. Usage:\n!banner <icon> <colour> <level>\nExample:\n!banner BRSeason01 defaultcolor15 100"
-
-    elif "cid" == input:
-        return "Sets the outfit of the client using CID. Usage:\n<CID>\nExample:\nCID_047_Athena_Commando_F_HolidayReindeer"
-
-    elif "bid" == input:
-        return "Sets the backpack of the client using BID. Usage:\n<BID>\nExample:\nBID_023_Pinkbear"
-
-    elif "pickaxe_id" == input:
-        return "Sets the pickaxe of the client using PICKAXE_ID. Usage:\n<PICKAXE_ID>\nExample:\nPickaxe_ID_073_Balloon"
-
-    elif "eid" == input:
-        return "Sets the emote of the client using EID. Usage:\n<EID>\nExample:\nEID_Floss"
-
-    elif "petcarrier" == input:
-        return "Sets the pet of the client using PetCarrier_. Usage:\n<PetCarrier_>\nExample:\nPetCarrier_002_Chameleon"
-
-    elif "trails" == input:
-        return "Sets the contrail of the client using Trails_. Usage:\n<Trails_>\nExample:\nTrails_ID_075_Celestial"
-
-    elif "stop" == input:
-        return "Clears/stops the emote currently playing. Usage:\n!stop\nExample:\n!stop"
-
-    elif "legacypickaxe" == input:
-        return "Sets the pickaxe of the client using Pickaxe_ Usage:\n!legacypickaxe <pickaxe>\nExample:\n!legacypickaxe HalloweenScythe"
-
-    elif "point" == input:
-        return "Sets pickaxe using PICKAXE_ID or display name & does 'Point it Out' Usage:\n!point <PICKAXE_ID>\nExample:\n!point Pickaxe_ID_029_Assassin"
-
-    elif "copy" == input:
-        return "Copies the cosmetic loadout of the defined user. If user is left blank, the message author will be used. Usage:\n!copy <name [optional]>\nExample:\n!copy Terbau"
-
-    elif "hologram" == input:
-        return "Shortcut for equipping the skin CID_VIP_Athena_Commando_M_GalileoGondola_SG. Usage:\n!hologram\nExample:\n!hologram"
-
-    elif "ninja" == input:
-        return "Shortcut for equipping the skin CID_605_Athena_Commando_M_TourBus. Usage:\n!ninja\nExample:\n!ninja"
-
-    elif "ponpon" == input:
-        return "Shortcut for equipping the emote EID_TourBus. Usage:\n!ponpon\nExample:\n!ponpon"
-
-    elif "enlightened" == input:
-        return "Sets the enlightened value of a skin (used for skins such as glitched Scratch or Golden Peely). Usage:\n!enlightened <cid> <season> <level>\nExample:\n!enlightened CID_701_Athena_Commando_M_BananaAgent 2 350"
-
-    elif "goldenpeely" == input:
-        return "Sets the outfit of the client to Golden Peely (shortcut for !enlightened CID_701_Athena_Commando_M_BananaAgent 2 350). Usage:\n!goldenpeely\nExample:\n!goldenpeely"
-
-    elif "ready" == input:
-        return "Sets the readiness of the client to ready. Usage:\n!ready\nExample:\n!ready"
-
-    elif "unready" == input  or "sitin" == input:
-        return "Sets the readiness of the client to unready. Usage:\n!unready\nExample:\n!unready"
-
-    elif "sitout" == input:
-        return "Sets the readiness of the client to SittingOut. Usage:\n!sitout\nExample:\n!sitout"
-
-    elif "bp" == input:
-        return "Sets the battlepass info of the client. Usage:\n!bp <level> <xp boost> <friend xp boost>\nExample:\n!bp 100 0 0"
-
-    elif "echo" == input:
-        return "Sends message to party chat with the given content. Usage:\n!echo <message>\nExample:\n!echo Rusty Buckets!"
-
-    elif "status" == input:
-        return "Sends and sets the status. Usage:\n!status <text>\nExample:\n!status Presence Unknown"
-
-    elif "leave" == input:
-        return "Leaves the current party. Usage:\n!leave\nExample:\n!leave"
-
-    elif "kick" == input:
-        return "Kicks the inputted user. Usage:\n!kick <username>\nExample:\n!kick Cxnyaa"
-
-    elif "playslist" == input:
-        return "Sets the lobbies selected playlist. Usage:\n<Playlist ID>\nExample:\nPlaylist_Tank_Solo"
-
-    elif "platform" == input:
-        return "Sets the clients platform. Usage:\n!platform <platform>\nExample:\n!platform PSN"
-
-    elif "gift" == input:
-        return "Gift is a joke command."
-
-    elif "matchmakingcode" == input:
-        return "Sets the parties custom matchmaking code. Usage:\n!matchmakingcode <code>\nExample:\n!matchmakingcode solo123"
-
-    else:
-        return "For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot/wiki/Commands"
-        
-
 def time() -> str:
     return datetime.datetime.now().strftime('%H:%M:%S')
 
@@ -318,10 +193,8 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
     content = " ".join(split)
 
     print(f'[PartyBot] [{time()}] {message.author.display_name}: {message.content}')
-
-    if '!help' in args[0].lower():
-        
-        await message.reply(CommandHelp(args[1].lower()))
+    if "!reset" in args[0].lower():
+        await BenBotAsync.set_default_loadout(client, data, fortnitepy.PartyMember)
 
     if "!skin" in args[0].lower():
         try:
@@ -594,6 +467,9 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply(f'Backbling set to {args[0]}!')
+
+    elif "!help" in args[0].lower():
+        await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot/wiki/Commands')
 
     elif "PICKAXE_ID_" in args[0].lower():
         await client.user.party.me.set_pickaxe(
