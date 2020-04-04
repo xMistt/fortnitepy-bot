@@ -543,6 +543,8 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             has_purchased=True,
             level=args[1],
         )
+        
+        await message.reply(f'Set battle pass tier to {args[1]}.')
 
     elif "!level" in args[0].lower():
         await client.user.party.me.set_banner(
@@ -550,9 +552,12 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             color=client.user.party.me.banner[1],
             season_level=args[1]
         )
+        
+        await message.reply(f'Set level to {args[1]}.')
 
     elif "!echo" in args[0].lower():
         await client.user.party.send(content)
+        await message.reply('Sent message to party chat.')
 
     elif "!status" in args[0].lower():
         await client.set_status(content)
@@ -605,6 +610,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
     elif "playlist_" in args[0].lower():
         try:
             await client.user.party.set_playlist(playlist=args[0])
+            await message.reply(f'Gamemode set to {args[0]}')
         except fortnitepy.Forbidden:
             await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
@@ -686,6 +692,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await client.user.party.me.set_emote(asset=member.emote)
+        await message.reply(f'Copied the loadout of {member.display_name}.')
 
     elif "!hologram" in args[0].lower():
         await client.user.party.me.set_outfit(
