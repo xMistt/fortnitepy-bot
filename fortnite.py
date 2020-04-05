@@ -805,6 +805,32 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await client.user.party.me.clear_contrail()
         await message.reply('Removed contrail.')
 
+    elif "!match" in args[0].lower():
+        async def _set_prop(schema_key: str, new_value: str) -> None:
+            prop = {schema_key: client.user.party.me.meta.set_prop(schema_key, new_value)}
+
+            await client.user.party.me.patch(updated=prop)
+
+        await _set_prop('Location_s', 'InGame')
+        await _set_prop('NumAthenaPlayersLeft_U', args[1] if len(args) == 2 else 0)
+        await _set_prop('HasPreloadedAthena_b', True)
+        await _set_prop('SpectateAPartyMemberAvailable_b', 'true')
+
+        await message.reply(f'Set state to in-game in a match with {args[1] if len(args) == 2 else 0} players, '
+                            '\nUse the command: !lobby to revert back to normal.')
+
+    elif "!lobby" in args[0].lower():
+        async def _set_prop(schema_key: str, new_value: str) -> None:
+            prop = {schema_key: client.user.party.me.meta.set_prop(schema_key, new_value)}
+
+            await client.user.party.me.patch(updated=prop)
+
+        await _set_prop('Location_s', 'PreLobby')
+        await _set_prop('NumAthenaPlayersLeft_U', '0')
+        await _set_prop('HasPreloadedAthena_b', False)
+        await _set_prop('SpectateAPartyMemberAvailable_b', 'false')
+
+        await message.reply('Set state to the pre-game lobby.')
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
