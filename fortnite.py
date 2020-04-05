@@ -830,6 +830,29 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await _set_prop('SpectateAPartyMemberAvailable_b', 'false')
 
         await message.reply('Set state to the pre-game lobby.')
+        
+    elif "!join" in args[0].lower():
+        if len(args) == 1:
+            friend = client.get_friend(message.author.id)
+        else:
+            user = await client.fetch_profile(content)
+
+            if user is not None:
+                friend = client.get_friend(user.id)
+            else:
+                friend = None
+                await message.reply(f'Failed to find user with the name: {content}.')
+
+        if isinstance(friend, fortnitepy.Friend):
+            try:
+                await friend.join_party()
+                await message.reply(f'Joined the party of {friend.display_name}.')
+            except fortnitepy.Forbidden:
+                await message.reply('Failed to join party since it is private.')
+            except fortnitepy.PartyError:
+                await message.reply('Party not found, are you sure Fortnite is open?')
+        else:
+            await message.reply('Cannot join party as the friend is not found.')
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
