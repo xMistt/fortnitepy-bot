@@ -11,5 +11,6 @@
     "status": "Created by xMistt, enjoy!\nSupport server: https://discord.gg/fnpy",
     "platform": "WIN",
     "debug": false,
-    "friendaccept": true
+    "friendaccept": true,
+    "resetonjoin": true
 }
