@@ -168,6 +168,7 @@ async def event_ready() -> None:
 async def event_party_invite(invite: fortnitepy.PartyInvitation) -> None:
     await invite.accept()
     print(f'[PartyBot] [{time()}] Accepted party invite from {invite.sender.display_name}.')
+    await BenBotAsync.set_default_loadout(client, data, fortnitepy.PartyMember)
 
 
 @client.event
@@ -184,7 +185,8 @@ async def event_friend_request(request: fortnitepy.PendingFriend) -> None:
 
 @client.event
 async def event_party_member_join(member: fortnitepy.PartyMember) -> None:
-    await BenBotAsync.set_default_loadout(client, data, member)
+    if data['resetonjoin']:
+        await BenBotAsync.set_default_loadout(client, data, member)
 
 
 @client.event
