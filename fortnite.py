@@ -656,7 +656,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                               "Failed to set party privacy as I don't have the required permissions."))
 
     elif "!copy" in args[0].lower():
-        if len(args) >= 1:
+        if len(args) == 1:
             member = client.user.party.members.get(message.author.id)
         else:
             user = await client.fetch_profile(content)
@@ -811,11 +811,17 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             await client.user.party.me.patch(updated=prop)
 
         await _set_prop('Location_s', 'InGame')
-        await _set_prop('NumAthenaPlayersLeft_U', args[1] if len(args) == 2 else 0)
+        await _set_prop('NumAthenaPlayersLeft_U', args[1] if len(args) >= 2 else 0)
         await _set_prop('HasPreloadedAthena_b', True)
         await _set_prop('SpectateAPartyMemberAvailable_b', 'true')
 
-        await message.reply(f'Set state to in-game in a match with {args[1] if len(args) == 2 else 0} players, '
+        match_time = str(fortnitepy.Client.to_iso(
+            datetime.datetime.utcnow() - datetime.timedelta(minutes=int(args[2]) if len(args) >= 2 else 0)
+        ))[slice(23)]
+
+        await _set_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+
+        await message.reply(f'Set state to in-game in a match with {args[1] if len(args) >= 2 else 0} players.'
                             '\nUse the command: !lobby to revert back to normal.')
 
     elif "!lobby" in args[0].lower():
@@ -828,6 +834,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await _set_prop('NumAthenaPlayersLeft_U', '0')
         await _set_prop('HasPreloadedAthena_b', False)
         await _set_prop('SpectateAPartyMemberAvailable_b', 'false')
+        await _set_prop('UtcTimeStartedMatchAthena_s', '0001-01-01T00:00:00.000Z')
 
         await message.reply('Set state to the pre-game lobby.')
         
