@@ -154,7 +154,7 @@ async def event_device_auth_generate(details: dict, email: str) -> None:
 @client.event
 async def event_ready() -> None:
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
-
+    await BenBotAsync.set_default_loadout(client, data, fortnitepy.PartyMember)
     for pending in list(client.pending_friends.values()):
         if pending.direction == 'INBOUND':
             friend = await pending.accept() if data["friendaccept"] else await pending.decline()
