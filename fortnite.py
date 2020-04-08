@@ -816,7 +816,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await _set_prop('SpectateAPartyMemberAvailable_b', 'true')
 
         match_time = str(fortnitepy.Client.to_iso(
-            datetime.datetime.utcnow() - datetime.timedelta(minutes=int(args[2]) if len(args) >= 2 else 0)
+            datetime.datetime.utcnow() - datetime.timedelta(minutes=int(args[2]) if len(args) >= 3 else 0)
         ))[slice(23)]
 
         await _set_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
