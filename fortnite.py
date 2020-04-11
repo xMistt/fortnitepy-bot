@@ -117,10 +117,10 @@ client = fortnitepy.Client(
     default_party_member_config=[
         functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=data['cid']),
         functools.partial(fortnitepy.ClientPartyMember.set_backpack, data['bid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=data['banner'], color=data['banner_color'], season_level=data['level']),
+        functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=data['banner'], color=data['banner_colour'], season_level=data['level']),
         functools.partial(fortnitepy.ClientPartyMember.set_emote, data['eid']),
         functools.partial(fortnitepy.ClientPartyMember.set_pickaxe, data['pid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['level'], self_boost_xp='0', friend_boost_xp='0')
+        functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
     ]
 )
 
@@ -682,13 +682,18 @@ async def event_friend_message(message):
         else:
             await client.user.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
             await message.reply('Now Sitting Out!')
-
+    
+    if "!bp" in args[0].lower():
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
+    
     if "!level" in args[0].lower():
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
             await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
-            await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
     
     if "!reset" in args[0].lower():
         if message.author.display_name in data['BlockList']:
