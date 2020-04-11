@@ -29,11 +29,11 @@ License: Apache 2.0
 try:
     # Standard library imports
     import asyncio
+    import sys
     import aiohttp
     import datetime
     import json
     import logging
-    import sys
     import functools
     import os
     from typing import Tuple
