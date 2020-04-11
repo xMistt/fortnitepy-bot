@@ -70,8 +70,9 @@ def get_device_auth_details() -> dict:
         with open('device_auths.json', 'r') as fp:
             return json.load(fp)
     else:
-        file = open('device_auths.json', 'w+')
-        file.write('{}')
+        with open('device_auths.json', 'w+') as fp:
+            fp.write('{}')
+            
     return {}
 
 
