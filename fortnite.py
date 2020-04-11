@@ -116,8 +116,15 @@ print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
                    'Massive credit to Terbau for creating the library.'))
 print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
 
-with open('config.json') as f:
-    data = json.load(f)
+def loadConfig():
+    try:
+        with open('config.json') as f:
+            global data
+            data = json.load(f)
+    except:
+        print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  "Cannot find 'config.json'."))
+loadConfig()
 
 if data['debug']:
     logger = logging.getLogger('fortnitepy.http')
@@ -860,6 +867,18 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                 await message.reply('Party not found, are you sure Fortnite is open?')
         else:
             await message.reply('Cannot join party as the friend is not found.')
+
+    elif "!reload" in args[0].lower():
+        await message.reply(f'Reloading config...')
+        try:
+            loadConfig()
+            await message.reply(f'Config reload successfully')
+            print(f"[PartyBot] [{time()}] [ERROR] Config reload successfully.")
+        except:
+            await message.reply(f'Cannot reload config.')
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  "Failed to reload config."))
+            
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
