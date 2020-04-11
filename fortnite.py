@@ -117,10 +117,10 @@ client = fortnitepy.Client(
     default_party_member_config=[
         functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=data['cid']),
         functools.partial(fortnitepy.ClientPartyMember.set_backpack, data['bid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=data['banner'], color=data['banner_colour'], season_level=data['level']),
+        functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=data['banner'], color=data['banner_color'], season_level=data['level']),
         functools.partial(fortnitepy.ClientPartyMember.set_emote, data['eid']),
         functools.partial(fortnitepy.ClientPartyMember.set_pickaxe, data['pid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
+        functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['level'], self_boost_xp='0', friend_boost_xp='0')
     ]
 )
 
@@ -197,7 +197,7 @@ async def event_friend_message(message):
                     backendType="AthenaCharacter"
                 )
                 await client.user.party.me.set_outfit(asset=cosmetic.id)
-                await message.reply('Skin set to ' + f'{joinedArguments}')
+                await message.reply('Skin set to ' + f'{cosmetic.name}')
             except BenBotAsync.exceptions.NotFound:
                 await message.reply(f'Could not find a skin named: {joinedArguments}')
                 
@@ -219,9 +219,105 @@ async def event_friend_message(message):
                         backendType="AthenaBackpack"
                     )
                     await client.user.party.me.set_backpack(asset=cosmetic.id)
-                    await message.reply('Backpack set to ' + f'{joinedArguments}')
+                    await message.reply('Backpack set to ' + f'{cosmetic.name}')
                 except BenBotAsync.exceptions.NotFound:
                     await message.reply(f'Could not find a backpack named: {joinedArguments}')
+
+    if "!random" in args[0].lower():
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            if len(args) == 1:
+                skins = await BenBotAsync.get_cosmetics(
+                    lang="en",
+                    searchLang="en",
+                    backendType="AthenaCharacter"
+                )
+                skin = random.choice(skins)
+
+                backpacks = await BenBotAsync.get_cosmetics(
+                    lang="en",
+                    searchLang="en",
+                    backendType="AthenaBackpack"
+                )
+                backpack = random.choice(backpacks)
+
+                pickaxes = await BenBotAsync.get_cosmetics(
+                    lang="en",
+                    searchLang="en",
+                    backendType="AthenaPickaxe"
+                )
+                pickaxe = random.choice(pickaxes)
+
+                await client.user.party.me.set_outfit(
+                    asset=skin.id
+                )
+
+                await client.user.party.me.set_backpack(
+                    asset=backpack.id
+                )
+
+                await client.user.party.me.set_pickaxe(
+                    asset=pickaxe.id
+                )
+
+                await message.reply(f'Loadout set to: {skin.name}, {backpack.name}, {pickaxe.name}')
+            if len(args) == 2:
+                if args[1].lower() == 'skin':
+                    skins = await BenBotAsync.get_cosmetics(
+                    lang="en",
+                    searchLang="en",
+                    backendType="AthenaCharacter"
+                    )
+                    skin = random.choice(skins)
+
+                    await client.user.party.me.set_outfit(
+                        asset=skin.id
+                    )
+
+                    await message.reply(f"Skin set to: {skin.name}")
+
+                if args[1].lower() == 'backpack':
+                    backpacks = await BenBotAsync.get_cosmetics(
+                    lang="en",
+                    searchLang="en",
+                    backendType="AthenaBackpack"
+                    )
+                    backpack = random.choice(backpacks)
+
+                    await client.user.party.me.set_backpack(
+                        asset=backpack.id
+                    )
+
+                    await message.reply(f"Backpack set to: {backpack.name}")
+
+                if args[1].lower() == 'emote':
+                    emotes = await BenBotAsync.get_cosmetics(
+                    lang="en",
+                    searchLang="en",
+                    backendType="AthenaDance"
+                    )
+                    emote = random.choice(emotes)
+
+                    await client.user.party.me.set_emote(
+                        asset=emote.id
+                    )
+
+                    await message.reply(f"Emote set to: {emote.name}")
+
+                if args[1].lower() == 'pickaxe':
+                    pickaxes = await BenBotAsync.get_cosmetics(
+                    lang="en",
+                    searchLang="en",
+                    backendType="AthenaPickaxe"
+                    )
+                    pickaxe = random.choice(pickaxes)
+
+                    await client.user.party.me.set_pickaxe(
+                        asset=pickaxe.id
+                    )
+
+                    await message.reply(f"Pickaxe set to: {pickaxe.name}")
 
     if "!emote" in args[0].lower():
         if message.author.display_name in data['BlockList']:
@@ -237,7 +333,7 @@ async def event_friend_message(message):
                 )
                 await client.user.party.me.clear_emote()
                 await client.user.party.me.set_emote(asset=cosmetic.id)
-                await message.reply('Emote set to ' + f'{joinedArguments}')
+                await message.reply('Emote set to ' + f'{cosmetic.name}')
             except BenBotAsync.exceptions.NotFound:
                 await message.reply(f'Could not find an emote named: {joinedArguments}')
     
@@ -254,7 +350,7 @@ async def event_friend_message(message):
                     backendType="AthenaPickaxe"
                 )
                 await client.user.party.me.set_pickaxe(asset=cosmetic.id)
-                await message.reply('Pickaxe set to ' + f'{joinedArguments}')
+                await message.reply('Pickaxe set to ' + f'{cosmetic.name}')
             except BenBotAsync.exceptions.NotFound:
                 await message.reply(f'Could not find a pickaxe named: {joinedArguments}')
 
@@ -267,20 +363,38 @@ async def event_friend_message(message):
                 await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
                 await message.reply('Doing emote: Point It Out')
             else:
-                try:
-                    cosmetic = await BenBotAsync.get_cosmetic(
+                if len(args) == 2:
+                    if args[1].lower() == 'random':
+                        pickaxes = await BenBotAsync.get_cosmetics(
                         lang="en",
                         searchLang="en",
-                        matchMethod="contains",
-                        name=joinedArguments,
                         backendType="AthenaPickaxe"
-                    )
-                    await client.user.party.me.set_pickaxe(asset=cosmetic.id)
-                    await client.user.party.me.clear_emote()
-                    await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
-                    await message.reply('Pointing with ' + f'{joinedArguments}')
-                except BenBotAsync.exceptions.NotFound:
-                    await message.reply(f'Could not find a pickaxe named: {joinedArguments}')
+                        )
+                        pickaxe = random.choice(pickaxes)
+
+                        await client.user.party.me.set_pickaxe(
+                            asset=pickaxe.id
+                        )
+
+                        await client.user.party.me.clear_emote()
+                        await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
+
+                        await message.reply(f"Pointing with: {pickaxe.name}")
+                    else:
+                        try:
+                            cosmetic = await BenBotAsync.get_cosmetic(
+                                lang="en",
+                                searchLang="en",
+                                matchMethod="contains",
+                                name=joinedArguments,
+                                backendType="AthenaPickaxe"
+                            )
+                            await client.user.party.me.set_pickaxe(asset=cosmetic.id)
+                            await client.user.party.me.clear_emote()
+                            await client.user.party.me.set_emote(asset="/Game/Athena/Items/Cosmetics/Dances/EID_IceKing.EID_IceKing")
+                            await message.reply('Pointing with: ' + f'{cosmetic.name}')
+                        except BenBotAsync.exceptions.NotFound:
+                            await message.reply(f'Could not find a pickaxe named: {joinedArguments}')
 
     if "!pet" in args[0].lower():
         if message.author.display_name in data['BlockList']:
@@ -295,7 +409,7 @@ async def event_friend_message(message):
                     backendType="AthenaPet"
                 )
                 await client.user.party.me.set_pet(asset=cosmetic.id)
-                await message.reply('Pet set to ' + f'{joinedArguments}')
+                await message.reply('Pet set to ' + f'{cosmetic.name}')
             except BenBotAsync.exceptions.NotFound:
                 await message.reply(f'Could not find a pet named: {joinedArguments}')
 
@@ -312,7 +426,7 @@ async def event_friend_message(message):
                     backendType="AthenaEmoji"
                 )
                 await client.user.party.me.set_emoji(asset=cosmetic.id)
-                await message.reply('Emoji set to ' + f'{joinedArguments}')
+                await message.reply('Emoji set to ' + f'{cosmetic.name}')
             except BenBotAsync.exceptions.NotFound:
                 await message.reply(f'Could not find an emoji named: {joinedArguments}')
 
@@ -409,7 +523,7 @@ async def event_friend_message(message):
             if len(args) == 1:
                 await message.reply('You need to specify which banner, color & level you want to set the banner as.')
             if len(args) == 2:
-                await client.user.party.me.set_banner(icon=args[1], color=data['banner_colour'], season_level=data['level'])
+                await client.user.party.me.set_banner(icon=args[1], color=data['banner_color'], season_level=data['level'])
             if len(args) == 3:
                 await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
             if len(args) == 4:
@@ -569,17 +683,12 @@ async def event_friend_message(message):
             await client.user.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
             await message.reply('Now Sitting Out!')
 
-    if "!bp" in args[0].lower():
-        if message.author.display_name in data['BlockList']:
-            await message.reply("You don't have access to this command!")
-        else:
-            await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
-
     if "!level" in args[0].lower():
         if message.author.display_name in data['BlockList']:
             await message.reply("You don't have access to this command!")
         else:
             await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
+            await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
     
     if "!reset" in args[0].lower():
         if message.author.display_name in data['BlockList']:
@@ -588,7 +697,7 @@ async def event_friend_message(message):
             variants = client.user.party.me.create_variants(**{data['variants-type']: data['variants']})
             await client.user.party.me.set_outfit(asset=data['cid'], variants=variants)
             await client.user.party.me.set_backpack(asset=data['bid'])
-            await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_colour'], season_level=data['level'])
+            await client.user.party.me.set_banner(icon=data['banner'], color=data['banner_color'], season_level=data['level'])
             await client.user.party.me.set_pickaxe(asset=data['pid'])
             await client.user.party.me.set_battlepass_info(has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
             await message.reply(f"Reset to default cosmetic loadout.")
