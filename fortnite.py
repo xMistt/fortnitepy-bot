@@ -54,7 +54,7 @@ except ModuleNotFoundError as e:
 
 # Imports uvloop and uses it if installed (Unix only).
 try:
-    import uvloop 
+    import uvloop
 except ImportError:
     pass
 else:
@@ -69,6 +69,9 @@ def get_device_auth_details() -> dict:
     if os.path.isfile('device_auths.json'):
         with open('device_auths.json', 'r') as fp:
             return json.load(fp)
+    else:
+        file = open('device_auths.json', 'w+')
+        file.write('{}')
     return {}
 
 
@@ -543,7 +546,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             has_purchased=True,
             level=args[1],
         )
-        
+
         await message.reply(f'Set battle pass tier to {args[1]}.')
 
     elif "!level" in args[0].lower():
@@ -552,7 +555,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             color=client.user.party.me.banner[1],
             season_level=args[1]
         )
-        
+
         await message.reply(f'Set level to {args[1]}.')
 
     elif "!echo" in args[0].lower():
@@ -791,11 +794,11 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply(f'Skin randomly set to {skin}.')
-        
+
     elif "!nobackpack" in args[0].lower():
         await client.user.party.me.clear_backpack()
         await message.reply('Removed backpack.')
-        
+
     elif "!nopet" in args[0].lower():
         await client.user.party.me.clear_pet()
         await message.reply('Removed pet.')
@@ -837,7 +840,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await _set_prop('UtcTimeStartedMatchAthena_s', '0001-01-01T00:00:00.000Z')
 
         await message.reply('Set state to the pre-game lobby.')
-        
+
     elif "!join" in args[0].lower():
         if len(args) == 1:
             friend = client.get_friend(message.author.id)
