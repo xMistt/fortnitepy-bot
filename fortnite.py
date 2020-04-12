@@ -789,12 +789,25 @@ async def event_friend_message(message):
                 await message.reply('Please specify if you want to add or remove a user from the admin list')
                 print(f' [PYBOT] [{getTime()}] Please specify if you want to add or remove a user from the admin list, using ' + color.GREEN + '!admin add ' + color.END + 'or ' + color.GREEN + '!admin remove' + color.END)
             if len(args) == 2:
-                if args[1].lower() == 'add' or args[1].lower() == 'remove':
-                    await message.reply('Please specify the name of the user you want to add/remove from the admin list')
-                    print(f' [PYBOT] [{getTime()}] Please specify the name of the user you want to add/remove from the admin list')
+                if args[1].lower() == 'add':
+                    await message.reply('You are already an admin')
+                elif args[1].lower() == 'remove':
+                    await message.reply('Are you sure you want to be removed as an admin?')
+                    res = await client.wait_for('friend_message')
+                    content = res.content.lower()
+                    user = await client.fetch_profile(message.author.id, cache=False, raw=False)
+                    if content == "yes":
+                        data['FullAccess'].remove(user.display_name)
+                        with open('config.json', 'w') as f:
+                            json.dump(data, f, indent=4)
+                            print(f" [PYBOT] [{getTime()}] Removed " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
+                            await message.reply(f"You were removed as an admin.")
+                    elif content == "no":
+                            await message.reply(f"You were kept as an admin.")
+                    else:
+                        await message.reply(f'Not a correct response, try "yes" or "no"')
                 else:
                     await message.reply('Invalid usage, try !admin add <username> or !admin remove <username>')
-                    print(f' [PYBOT] [{getTime()}] Invalid usage, try ' + color.GREEN + '!admin add <username> ' + color.END + 'or ' + color.GREEN + '!admin remove <username>' + color.END)
             if len(args) >= 3:
                 joinedArgumentsAdmin = " ".join(args[2:])
                 user = await client.fetch_profile(joinedArgumentsAdmin)
@@ -805,16 +818,20 @@ async def event_friend_message(message):
                             with open('config.json', 'w') as f:
                                 json.dump(data, f, indent=4)
                                 print(f" [PYBOT] [{getTime()}] Added " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
+                                await message.reply(f"Added {user.display_name} as an admin.")
                         elif user.display_name in data['FullAccess']:               
                             print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is already an admin")
+                            await message.reply(f"{user.display_name} is already an admin.")
                     elif args[1].lower() == 'remove':
                         if user.display_name in data['FullAccess']:
                             data['FullAccess'].remove(user.display_name)
                             with open('config.json', 'w') as f:
                                 json.dump(data, f, indent=4)
                                 print(f" [PYBOT] [{getTime()}] Removed " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
+                                await message.reply(f"Removed {user.display_name} as an admin.")
                         elif user.display_name not in data['FullAccess']:
                             print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is not an admin")
+                            await message.reply(f"{user.display_name} is not an admin.")
                 except AttributeError:
                     pass
                     print(f" [PYBOT] [{getTime()}] Can't find user: " + color.GREEN + f"{joinedArgumentsAdmin}" + color.END)
@@ -836,6 +853,21 @@ async def event_friend_message(message):
                     elif user.display_name in data['FullAccess']:
                         print(f" [PYBOT] [{getTime()}]" + color.GREEN + f" {user.display_name}" + color.END + " is already an admin")
                         await message.reply(f"{user.display_name} is already an admin.")
+                else:
+                    await message.reply(f"Incorrect Password")
+            elif len(args) == 2 and args[1].lower() == 'add':
+                await message.reply('Password?')
+                res = await client.wait_for('friend_message')
+                content = res.content.lower()
+                user = await client.fetch_profile(message.author.id, cache=False, raw=False)
+                if content in data['AdminPassword']:
+                    data['FullAccess'].append(f"{user.display_name}")
+                    with open('config.json', 'w') as f:
+                        json.dump(data, f, indent=4)
+                        await message.reply(f"Correct! You were added as an admin.")
+                        print(f" [PYBOT] [{getTime()}] Added " + color.GREEN + f"{user.display_name}" + color.END + " as an admin")
+                else:
+                    await message.reply(f"Incorrect Password")
             else:
                 await message.reply(f"You don't have access to this command!")
 
