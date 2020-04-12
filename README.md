@@ -15,7 +15,7 @@ PartyBot requires Python 3.6 or greater. If you need Python 3.6+, you can get it
 1. Install the required dependencies.
 
     ```
-    python3 -m pip install -U -r requirements.txt
+    pip install -U -r requirements.txt
     ```
 
 2. [Register](https://epicgames.com/id/register) a new Epic Games account.
@@ -27,7 +27,7 @@ PartyBot requires Python 3.6 or greater. If you need Python 3.6+, you can get it
 4. ***This step is optional and will not work on Windows*** <br>The bot will automatically use uvloop (fastest event loop) if it's installed. To install uvloop, enter this into terminal:
 
     ```
-    python3 -m pip install -U uvloop
+    pip install -U uvloop
     ```
 
 ## License
