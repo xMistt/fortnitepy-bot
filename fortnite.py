@@ -318,6 +318,74 @@ async def event_friend_message(message):
                     )
 
                     await message.reply(f"Pickaxe set to: {pickaxe.name}")
+        
+    if "!cid" in args[0].lower():
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaCharacter"
+                )
+                await message.reply(f'The CID for {cosmetic.name} is: ' + f'{cosmetic.id}')
+                print(f" [PYBOT] [{getTime()}] CID for {cosmetic.name}: {cosmetic.id}")
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find a cid for the skin: {joinedArguments}')
+    
+    if "!bid" in args[0].lower():
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaBackpack"
+                )
+                await message.reply(f'The BID for {cosmetic.name} is: ' + f'{cosmetic.id}')
+                print(f" [PYBOT] [{getTime()}] BID for {cosmetic.name}: {cosmetic.id}")
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find a bid for the backpack: {joinedArguments}')
+    
+    if "!eid" in args[0].lower():
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaDance"
+                )
+                await message.reply(f'The EID for {cosmetic.name} is: ' + f'{cosmetic.id}')
+                print(f" [PYBOT] [{getTime()}] EID for {cosmetic.name}: {cosmetic.id}")
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find a eid for the emote: {joinedArguments}')
+
+    if "!pid" in args[0].lower():
+        if message.author.display_name in data['BlockList']:
+            await message.reply("You don't have access to this command!")
+        else:
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=joinedArguments,
+                    backendType="AthenaPickaxe"
+                )
+                await message.reply(f'The PID for {cosmetic.name} is: ' + f'{cosmetic.id}')
+                print(f" [PYBOT] [{getTime()}] PID for {cosmetic.name}: {cosmetic.id}")
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f'Could not find a pid for the pickaxe: {joinedArguments}')
 
     if "!emote" in args[0].lower():
         if message.author.display_name in data['BlockList']:
