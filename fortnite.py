@@ -864,6 +864,13 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                 await message.reply('Party not found, are you sure Fortnite is open?')
         else:
             await message.reply('Cannot join party as the friend is not found.')
+            
+    elif "!reload" in args[0].lower():
+        with open('config.json') as f:
+            data = json.load(f)
+            
+        await message.reply('Configuration reloaded.')
+        print(f'[PartyBot] [{time()}] Configuration successfully reloaded..')
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
