@@ -161,7 +161,7 @@ async def event_ready() -> None:
 
     for pending in list(client.pending_friends.values()):
         if pending.direction == 'INBOUND':
-            friend = await pending.accept() if data["friendaccept"] else await pending.decline()
+            friend = await pending.accept() if data["friend_accept"] else await pending.decline()
             if isinstance(friend, fortnitepy.Friend):
                 print(f"[PartyBot] [{time()}] Accepted friend request from: {friend.display_name}.")
             else:
@@ -178,7 +178,7 @@ async def event_party_invite(invite: fortnitepy.PartyInvitation) -> None:
 async def event_friend_request(request: fortnitepy.PendingFriend) -> None:
     print(f"[PartyBot] [{time()}] Received friend request from: {request.display_name}.")
 
-    if data['friendaccept']:
+    if data['friend_accept']:
         await request.accept()
         print(f"[PartyBot] [{time()}] Accepted friend request from: {request.display_name}.")
     else:
@@ -621,15 +621,26 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                               "Failed to set gamemode as I don't have the required permissions."))
 
     elif "!platform" in args[0].lower():
-        await message.reply(f'Setting platform to {args[0]}')
         party_id = client.user.party.id
+
         await client.user.party.me.leave()
-        client.platform = fortnitepy.Platform(args[1])
-        await message.reply(f'Platform set to {str(client.platform)}.')
+
         try:
-            await client.join_to_party(party_id)
-        except fortnitepy.Forbidden:
-            await message.reply('Failed to join back as party is set to private.')
+            client.platform = fortnitepy.Platform(args[1].upper())
+            await message.reply(f'Platform set to {str(client.platform)}.')
+            print(f'[PartyBot] [{time()}] Platform successfully set to {str(client.platform)}.')
+        except ValueError:
+            platforms = ', '.join(enum.value for enum in fortnitepy.Platform)
+            await message.reply(f'{args[1]} is an invalid platform. Platforms include: {platforms}.')
+            print(crayons.red(f'[PartyBot] [{time()}] [ERROR] Failed to set platform as {args[1]} is an invalid '
+                              f'platform. Platforms include: {platforms}.'))
+        else:
+            try:
+                await client.join_to_party(party_id)
+            except fortnitepy.errors.Forbidden:
+                await message.reply('Failed to join back as party is set to private.')
+            except fortnitepy.errors.NotFound:
+                await message.reply('Party not found, are you sure Fortnite is open?')
 
     elif "!id" in args[0].lower():
         user = await client.fetch_profile(content, cache=False, raw=False)
@@ -870,7 +881,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             data = json.load(f)
             
         await message.reply('Configuration reloaded.')
-        print(f'[PartyBot] [{time()}] Configuration successfully reloaded..')
+        print(f'[PartyBot] [{time()}] Configuration successfully reloaded.')
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
