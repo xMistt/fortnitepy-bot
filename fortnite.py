@@ -38,12 +38,15 @@ try:
     import os
     import random
     import logging
+    import uuid
 
     # Third party imports.
     import crayons
     import fortnitepy
     import BenBotAsync
     import aiohttp
+    import pypresence
+    import psutil
 
 except ModuleNotFoundError as e:
     print(e)
@@ -84,6 +87,17 @@ def store_device_auth_details(email: str, details: dict) -> None:
         json.dump(existing, fp, sort_keys=False, indent=4)
 
 
+def check_if_process_running(name: str) -> bool:
+    for process in psutil.process_iter():
+        try:
+            if name.lower() in process.name().lower():
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            pass
+
+    return False
+
+
 async def set_vtid(vtid: str) -> Tuple[str, str, int]:
     async with aiohttp.ClientSession() as session:
         request = await session.request(
@@ -121,6 +135,35 @@ async def set_and_update_prop(schema_key: str, new_value: str) -> None:
 
     await client.user.party.me.patch(updated=prop)
 
+
+async def start_discord_rich_presence() -> None:
+    rpc = pypresence.AioPresence(
+        client_id='698619895910498344',
+        loop=client.loop
+    )
+
+    try:
+        await rpc.connect()
+    except Exception as discord_error:
+        print(f'There was an error {discord_error}')
+
+    start_time = datetime.datetime.now().timestamp()
+
+    while True:
+        await rpc.update(
+            details=f"Logged in as {client.user.display_name}.",
+            state=f"{client.user.party.leader.display_name}'s party.",
+            large_image="skull_trooper",
+            large_text="discord.gg/fnpy",
+            small_image="outfit",
+            small_text=client.user.party.me.outfit,
+            start=start_time,
+            party_id=client.user.party.id,
+            party_size=[client.user.party.member_count, 16],
+            join=uuid.uuid4().hex
+        )
+
+        await asyncio.sleep(20)
 
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
                    'Massive credit to Terbau for creating the library.'))
@@ -164,6 +207,11 @@ async def event_device_auth_generate(details: dict, email: str) -> None:
 @client.event
 async def event_ready() -> None:
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
+
+    discord_exists = await client.loop.run_in_executor(None, check_if_process_running, 'Discord')
+
+    if discord_exists and (sys.platform == 'darwin' or 'linux' in sys.platform.lower()):
+        client.loop.create_task(start_discord_rich_presence())
 
     for pending in list(client.pending_friends.values()):
         if pending.direction == 'INBOUND':
