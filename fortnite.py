@@ -27,22 +27,23 @@ License: Apache 2.0
 """
 
 try:
-    # Standard library imports
+    # System imports.
+    from typing import Tuple
+
     import asyncio
     import sys
-    import aiohttp
     import datetime
     import json
-    import logging
     import functools
     import os
-    from typing import Tuple
     import random
+    import logging
 
-    # Related third party imports
+    # Third party imports.
     import crayons
     import fortnitepy
     import BenBotAsync
+    import aiohttp
 
 except ModuleNotFoundError as e:
     print(e)
