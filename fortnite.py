@@ -149,7 +149,6 @@ async def start_discord_rich_presence() -> None:
 
     start_time = datetime.datetime.now().timestamp()
 
-
     while True:
         try:
             outfit = (await BenBotAsync.get_cosmetic_from_id(
@@ -913,6 +912,23 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             
         await message.reply('Configuration reloaded.')
         print(f'[PartyBot] [{time()}] Configuration successfully reloaded.')
+
+    elif "!friend" in args[0].lower():
+        if data['friend_accept']:
+            await message.reply('All friend requests will be accepted so there is no need to add manually.')
+            print(f'[PartyBot] [{time()}] !friend command ignored as friend requests will be accepted '
+                  'so there is no need to add manually.')
+        else:
+            user = await client.fetch_profile(content)
+
+            if user is not None:
+                friend = await client.add_friend(user.id)
+                await message.reply(f'Sent/accepted friend request to/from {user.display_name}.')
+                print(f'[PartyBot] [{time()}] Sent/accepted friend request to/from {user.display_name}.')
+            else:
+                await message.reply(f'Failed to find user with the name: {content}.')
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to find a user with the name {content}."))
+
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
