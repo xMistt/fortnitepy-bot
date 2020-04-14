@@ -149,14 +149,23 @@ async def start_discord_rich_presence() -> None:
 
     start_time = datetime.datetime.now().timestamp()
 
+
     while True:
+        try:
+            outfit = (await BenBotAsync.get_cosmetic_from_id(
+                cosmetic_id=client.user.party.me.outfit
+            )).name
+
+        except BenBotAsync.exceptions.NotFound:
+            outfit = client.user.party.me.outfit
+
         await rpc.update(
             details=f"Logged in as {client.user.display_name}.",
             state=f"{client.user.party.leader.display_name}'s party.",
             large_image="skull_trooper",
             large_text="discord.gg/fnpy",
             small_image="outfit",
-            small_text=client.user.party.me.outfit,
+            small_text=outfit,
             start=start_time,
             party_id=client.user.party.id,
             party_size=[client.user.party.member_count, 16],
