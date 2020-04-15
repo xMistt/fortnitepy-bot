@@ -458,31 +458,42 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                             '(Warning: This feature is not supported, please use !variants)')
 
     elif "!variants" in args[0].lower():
-        try:
-            args3 = int(args[3])
-        except ValueError:
-            args3 = args[3]
-
         if 'cid' in args[1].lower() and 'jersey_color' not in args[2]:
-            variants = client.user.party.me.create_variants(**{args[2]: args[3]})
+            variants = client.user.party.me.create_variants(
+                **{args[2]: int(args[3]) if args[3].isdigit() else args[3]}
+            )
+
             await client.user.party.me.set_outfit(
                 asset=args[1],
                 variants=variants
             )
         elif 'cid' in args[1].lower() and 'jersey_color' in args[2]:
-            variants = client.user.party.me.create_variants(pattern=0, numeric=69, **{args[2]: args[3]})
+            variants = client.user.party.me.create_variants(
+                pattern=0,
+                numeric=69,
+                **{args[2]: int(args[3]) if args[3].isdigit() else args[3]}
+            )
+
             await client.user.party.me.set_outfit(
                 asset=args[1],
                 variants=variants
             )
         elif 'bid' in args[1].lower():
-            variants = client.user.party.me.create_variants(item='AthenaBackpack', **{args[2]: args3})
+            variants = client.user.party.me.create_variants(
+                item='AthenaBackpack',
+                **{args[2]: int(args[3]) if args[3].isdigit() else args[3]}
+            )
+
             await client.user.party.me.set_backpack(
                 asset=args[1],
                 variants=variants
             )
         elif 'pickaxe_id' in args[1].lower():
-            variants = client.user.party.me.create_variants(item='AthenaPickaxe', **{args[2]: args3})
+            variants = client.user.party.me.create_variants(
+                item='AthenaPickaxe',
+                **{args[2]: int(args[3]) if args[3].isdigit() else args[3]}
+            )
+
             await client.user.party.me.set_pickaxe(
                 asset=args[1],
                 variants=variants
