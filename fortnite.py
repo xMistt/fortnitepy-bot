@@ -362,8 +362,8 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                 backendType="AthenaEmoji"
             )
 
-            await message.reply(f'Pet set to {cosmetic.id}.')
-            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
+            await message.reply(f'Emoji set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set emoji to: {cosmetic.id}.")
             await client.user.party.me.set_emoji(asset=cosmetic.id)
 
         except BenBotAsync.exceptions.NotFound:
@@ -399,6 +399,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Purple Skull Trooper!')
+        print(f"[PartyBot] [{time()}] Skin set to Purple Skull Trooper.")
 
     elif "!pinkghoul" in args[0].lower():
         variants = client.user.party.me.create_variants(
@@ -411,6 +412,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Pink Ghoul Trooper!')
+        print(f"[PartyBot] [{time()}] Skin set to Pink Ghoul Trooper.")
 
     elif "!purpleportal" in args[0].lower():
         variants = client.user.party.me.create_variants(
@@ -425,6 +427,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Backpack set to Purple Ghost Portal!')
+        print(f"[PartyBot] [{time()}] Backpack set to Purple Ghost Portal.")
 
     elif "!banner" in args[0].lower():
         await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
@@ -454,6 +457,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             variants = client.user.party.me.create_variants(**{vtid[1].lower(): int(vtid[2])})
 
         await client.user.party.me.set_outfit(asset=vtid[0], variants=variants)
+        print(f'[PartyBot] [{time()}] Set variants of {vtid[0]} to {vtid[1]} {vtid[2]}.')
         await message.reply(f'Variants set to {args[0]}.\n'
                             '(Warning: This feature is not supported, please use !variants)')
 
@@ -513,6 +517,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Checkered Renegade!')
+        print(f'[PartyBot] [{time()}] Skin set to Checkered Renegade.')
 
     elif "!mintyelf" in args[0].lower():
         variants = client.user.party.me.create_variants(
@@ -525,6 +530,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Minty Elf!')
+        print(f'[PartyBot] [{time()}] Skin set to Minty Elf.')
 
     elif "eid_" in args[0].lower():
         await client.user.party.me.clear_emote()
@@ -547,7 +553,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
     elif "!help" in args[0].lower():
         await message.reply('For a list of commands, goto; https://github.com/xMistt/fortnitepy-bot/wiki/Commands')
 
-    elif "PICKAXE_ID_" in args[0].lower():
+    elif "pickaxe_id_" in args[0].lower():
         await client.user.party.me.set_pickaxe(
             asset=args[0]
         )
@@ -766,6 +772,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Star Wars Hologram!')
+        print(f'[PartyBot] [{time()}] Skin set to Star Wars Hologram.')
 
     elif "!gift" in args[0].lower():
         await client.user.party.me.clear_emote()
@@ -789,6 +796,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Ninja!')
+        print(f'[PartyBot] [{time()}] Skin set to Ninja.')
 
     elif "!ponpon" in args[0].lower():
         await client.user.party.me.set_emote(
@@ -805,6 +813,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
+        print(f'[PartyBot] [{time()}] Enlightenment for {args[1]} set to level {args[3]} (for Season 1{args[2]}).')
 
     elif "!rareskins" in args[0].lower():
         await message.reply('Showing all rare skins now.')
@@ -815,6 +824,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Purple Skull Trooper!')
+        print(f"[PartyBot] [{time()}] Skin set to Purple Skull Trooper.")
         await asyncio.sleep(2)
 
         await client.user.party.me.set_outfit(
@@ -823,6 +833,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         )
 
         await message.reply('Skin set to Pink Ghoul Trooper!')
+        print(f"[PartyBot] [{time()}] Skin set to Pink Ghoul Trooper.")
         await asyncio.sleep(2)
 
         for skin in ('CID_028_Athena_Commando_F', 'CID_017_Athena_Commando_M', 'CID_022_Athena_Commando_F'):
@@ -831,6 +842,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             )
 
             await message.reply(f'Skin set to {skin}!')
+            print(f"[PartyBot] [{time()}] Skin set to: {skin}!")
             await asyncio.sleep(2)
 
     elif "!goldenpeely" in args[0].lower():
