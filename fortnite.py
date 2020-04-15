@@ -124,10 +124,7 @@ async def set_vtid(vtid: str) -> Tuple[str, str, int]:
         lambda x: x.isnumeric(), variant_name_tag
     )))
 
-    if variant_type == 'ClothingColor':
-        return skin_cid, 'clothing_color', variant_int
-    else:
-        return skin_cid, variant_type, variant_int
+    return skin_cid, variant_type if variant_type is not 'ClothingColor' else 'clothing_color', variant_int
 
 
 async def set_and_update_prop(schema_key: str, new_value: str) -> None:
