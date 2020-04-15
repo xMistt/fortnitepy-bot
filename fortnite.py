@@ -880,19 +880,45 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply('Removed contrail.')
 
     elif "!match" in args[0].lower():
-        await set_and_update_prop('Location_s', 'InGame')
-        await set_and_update_prop('NumAthenaPlayersLeft_U', args[1] if len(args) >= 2 else 0)
-        await set_and_update_prop('HasPreloadedAthena_b', True)
-        await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'true')
+        if len(args) == 2 and args[1].lower() == 'progressive':
+            await set_and_update_prop('Location_s', 'InGame')
+            await set_and_update_prop('HasPreloadedAthena_b', True)
+            await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'true')
+            await set_and_update_prop('NumAthenaPlayersLeft_U', '100')
 
-        match_time = str(fortnitepy.Client.to_iso(
-            datetime.datetime.utcnow() - datetime.timedelta(minutes=int(args[2]) if len(args) >= 3 else 0)
-        ))[slice(23)]
+            match_time = str(fortnitepy.Client.to_iso(
+                datetime.datetime.utcnow()
+            ))[slice(23)]
 
-        await set_and_update_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+            await set_and_update_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
 
-        await message.reply(f'Set state to in-game in a match with {args[1] if len(args) >= 2 else 0} players.'
-                            '\nUse the command: !lobby to revert back to normal.')
+            await message.reply(f'Set state to in-game in a match with progressive players drop starting from 100.'
+                                '\nUse the command: !lobby to revert back to normal.')
+
+            while (100 >= client.user.party.me.meta.get_prop('NumAthenaPlayersLeft_U') > 0
+                    and client.user.party.me.meta.get_prop('Location_s') == 'InGame'):
+
+                await set_and_update_prop(
+                    'NumAthenaPlayersLeft_U',
+                    client.user.party.me.meta.get_prop('NumAthenaPlayersLeft_U') - random.randint(3, 6)
+                )
+
+                await asyncio.sleep(random.randint(45, 65))
+
+        else:
+            await set_and_update_prop('Location_s', 'InGame')
+            await set_and_update_prop('NumAthenaPlayersLeft_U', args[1] if len(args) >= 2 else 0)
+            await set_and_update_prop('HasPreloadedAthena_b', True)
+            await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'true')
+
+            match_time = str(fortnitepy.Client.to_iso(
+                datetime.datetime.utcnow() - datetime.timedelta(minutes=int(args[2]) if len(args) >= 3 else 0)
+            ))[slice(23)]
+
+            await set_and_update_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+
+            await message.reply(f'Set state to in-game in a match with {args[1] if len(args) >= 2 else 0} players.'
+                                '\nUse the command: !lobby to revert back to normal.')
 
     elif "!lobby" in args[0].lower():
         await set_and_update_prop('Location_s', 'PreLobby')
