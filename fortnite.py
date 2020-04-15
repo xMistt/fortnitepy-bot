@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019
+Copyright Oli 2019-2020
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -25,81 +27,180 @@ License: Apache 2.0
 """
 
 try:
-    # Standard library imports
+    # System imports.
+    from typing import Tuple
+
     import asyncio
-    import aiohttp
+    import sys
     import datetime
     import json
-    import logging
-    import sys
     import functools
     import os
-    import time
-    import psutil
+    import random
+    import logging
+    import uuid
 
-    # Related third party imports
+    # Third party imports.
     import crayons
     import fortnitepy
-    import fortnitepy.errors
     import BenBotAsync
+    import aiohttp
     import pypresence
+    import psutil
+    import aioconsole
+
 except ModuleNotFoundError as e:
     print(e)
-    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" might fix the issue, if not please create an issue or join the support server.')
-    exit()
+    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat"'
+          'might fix the issue, if not please create an issue or join'
+          'the support server.')
+    sys.exit()
 
-def time():
+# Imports uvloop and uses it if installed (Unix only).
+try:
+    import uvloop
+except ImportError:
+    pass
+else:
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+
+
+def time() -> str:
     return datetime.datetime.now().strftime('%H:%M:%S')
 
-def get_device_auth_details():
+
+def get_device_auth_details() -> dict:
     if os.path.isfile('device_auths.json'):
         with open('device_auths.json', 'r') as fp:
             return json.load(fp)
+    else:
+        with open('device_auths.json', 'w+') as fp:
+            json.dump({}, fp, sort_keys=False, indent=4)
+            
     return {}
 
-def store_device_auth_details(email, details):
+
+def store_device_auth_details(email: str, details: dict) -> None:
     existing = get_device_auth_details()
     existing[email] = details
 
     with open('device_auths.json', 'w') as fp:
         json.dump(existing, fp, sort_keys=False, indent=4)
 
-async def setVTID(VTID: str) -> list:
-    url = f'http://benbotfn.tk:8080/api/assetProperties?file=FortniteGame/Content/Athena/Items/CosmeticVariantTokens/{VTID}.uasset'
-
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as r:
-            fileLocation = await r.json()
-
-            SkinCID = fileLocation['export_properties'][0]['cosmetic_item']
-            VariantChanelTag = fileLocation['export_properties'][0]['VariantChanelTag']['TagName']
-            VariantNameTag = fileLocation['export_properties'][0]['VariantNameTag']['TagName']
-
-            VariantType = VariantChanelTag.split('Cosmetics.Variant.Channel.')[1].split('.')[0]
-
-            VariantInt = int("".join(filter(lambda x: x.isnumeric(), VariantNameTag)))
-
-            if VariantType == 'ClothingColor':
-                return SkinCID, 'clothing_color', VariantInt
-            else:
-                return SkinCID, VariantType, VariantInt
 
 def check_if_process_running(name: str) -> bool:
-    for proc in psutil.process_iter():
+    for process in psutil.process_iter():
         try:
-            if name.lower() in proc.name().lower():
+            if name.lower() in process.name().lower():
                 return True
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
+
     return False
 
-print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. Massive credit to Terbau for creating the library.'))
+
+async def set_vtid(vtid: str) -> Tuple[str, str, int]:
+    async with aiohttp.ClientSession() as session:
+        request = await session.request(
+            method='GET',
+            url='https://benbotfn.tk/api/v1/assetProperties',
+            params={
+                'path': 'FortniteGame/Content/Athena/'
+                        f'Items/CosmeticVariantTokens/{vtid}.uasset'
+            })
+
+        response = await request.json()
+
+    file_location = response['export_properties'][0]
+
+    skin_cid = file_location['cosmetic_item']
+    variant_channel_tag = file_location['VariantChanelTag']['TagName']
+    variant_name_tag = file_location['VariantNameTag']['TagName']
+
+    variant_type = variant_channel_tag.split(
+        'Cosmetics.Variant.Channel.'
+    )[1].split('.')[0]
+
+    variant_int = int("".join(filter(
+        lambda x: x.isnumeric(), variant_name_tag
+    )))
+
+    if variant_type == 'ClothingColor':
+        return skin_cid, 'clothing_color', variant_int
+    else:
+        return skin_cid, variant_type, variant_int
+
+
+async def set_and_update_prop(schema_key: str, new_value: str) -> None:
+    prop = {schema_key: client.user.party.me.meta.set_prop(schema_key, new_value)}
+
+    await client.user.party.me.patch(updated=prop)
+
+
+async def start_discord_rich_presence() -> None:
+    rpc = pypresence.AioPresence(
+        client_id='698619895910498344',
+        loop=client.loop
+    )
+
+    try:
+        await rpc.connect()
+    except Exception as discord_error:
+        print(f'There was an error {discord_error}')
+
+    start_time = datetime.datetime.now().timestamp()
+
+    while True:
+        try:
+            outfit = (await BenBotAsync.get_cosmetic_from_id(
+                cosmetic_id=client.user.party.me.outfit
+            )).name
+
+        except BenBotAsync.exceptions.NotFound:
+            outfit = client.user.party.me.outfit
+
+        await rpc.update(
+            details=f"Logged in as {client.user.display_name}.",
+            state=f"{client.user.party.leader.display_name}'s party.",
+            large_image="skull_trooper",
+            large_text="discord.gg/fnpy",
+            small_image="outfit",
+            small_text=outfit,
+            start=start_time,
+            party_id=client.user.party.id,
+            party_size=[client.user.party.member_count, 16],
+            join=uuid.uuid4().hex
+        )
+
+        await asyncio.sleep(20)
+
+
+async def console_input() -> None:
+    # For more information about "console_input". It's basically inputting commands through cmd.
+    # Kind of like how you can in Java Minecraft Servers. The server can type in chat and be it's
+    # Own kind of user called "@CONSOLE".
+    #
+    # With console_input I want it to mimic a user who hasn't got Fortnite open. Kind of like
+    # controlling the bot from Epic Games Launcher with Fortnite not open.
+    #
+    # The input itself will be always at the bottom and will be deleted once inputted. I'm not sure
+    # If i'll ever go through with this but whatever. If you wanna make pull requests feel free to do
+    # so. I'll be more than happy to accept them if they're useful.
+
+    while True:
+        content = await aioconsole.ainput('> ')
+        print(f'[PartyBot] [{time()}] CONSOLE: {content}')
+
+
+
+print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
+                   'Massive credit to Terbau for creating the library.'))
 print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
 
 with open('config.json') as f:
     data = json.load(f)
-    
-if data['debug'] is True:
+
+if data['debug']:
     logger = logging.getLogger('fortnitepy.http')
     logger.setLevel(level=logging.DEBUG)
     handler = logging.StreamHandler(sys.stdout)
@@ -111,11 +212,6 @@ if data['debug'] is True:
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('\u001b[35m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
     logger.addHandler(handler)
-else:
-    pass
-
-async def exception_handler(exception, future):
-    print(exception)
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = fortnitepy.Client(
@@ -127,90 +223,60 @@ client = fortnitepy.Client(
         **device_auth_details
     ),
     status=data['status'],
-    platform=fortnitepy.Platform(data['platform']),
-    default_party_member_config=[
-        functools.partial(fortnitepy.ClientPartyMember.set_outfit, data['cid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_backpack, data['bid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=data['banner'], color=data['banner_colour'], season_level=data['level']),
-        functools.partial(fortnitepy.ClientPartyMember.set_emote, data['eid']),
-        functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=data['bp_tier'], self_boost_xp='0', friend_boost_xp='0')
-    ]
+    platform=fortnitepy.Platform(data['platform'])
 )
 
+
 @client.event
-async def event_device_auth_generate(details, email):
+async def event_device_auth_generate(details: dict, email: str) -> None:
     store_device_auth_details(email, details)
 
+
 @client.event
-async def event_ready():
-    discord_exists = await client.loop.run_in_executor(None, check_if_process_running, 'Discord')
-
-    if discord_exists:
-        print('Discord is running. (Beta tester, please tell me if this is incorrect.)')
-        client.loop.create_task(start_discord_rich_presence())
-    else:
-        print("Discord isn't running. (Beta tester, please tell me if this is incorrect.)")
-
+async def event_ready() -> None:
     print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
-    for pending in client.pending_friends:
-        friend = await pending.accept() if data["friendaccept"] else await pending.decline()
-        if isinstance(friend, fortnitepy.Friend):
-            print(f"[PartyBot] [{time()}] Accepted friend request from: {friend.display_name}.")
-        else:
-            print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
+    discord_exists = await client.loop.run_in_executor(None, check_if_process_running, 'Discord')
 
-async def start_discord_rich_presence():
-    rpc = pypresence.AioPresence(
-        client_id='677207575867031552',
-        loop=client.loop,
-        handler=exception_handler
-    )
+    if discord_exists and (sys.platform == 'darwin' or 'linux' in sys.platform.lower()):
+        client.loop.create_task(start_discord_rich_presence())
 
-    print('Attemping to connect to discord.')
-    try:
-        await rpc.connect()
-    except Exception as e:
-        print('There was an error {}'.format(e))
+    client.loop.create_task(console_input())
 
-    print('Connected to discord.')
+    for pending in list(client.pending_friends.values()):
+        if pending.direction == 'INBOUND':
+            friend = await pending.accept() if data["friend_accept"] else await pending.decline()
+            if isinstance(friend, fortnitepy.Friend):
+                print(f"[PartyBot] [{time()}] Accepted friend request from: {friend.display_name}.")
+            else:
+                print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
 
-    while True:
-        print('Loop starting.')
-        await rpc.update(
-            large_image="skulltrooper",
-            large_text="discord.gg/fnpy",
-            small_image="jonesy",
-            small_text=f"{client.user.party.me.outfit}",
-            state=f"{client.user.party.leader}'s party.",
-            details=f"Logged in as {client.user.display_name}.",
-            party_size=[client.user.party.member_count, 16]
-        )
-
-        await asyncio.sleep(20)
 
 @client.event
-async def event_party_invite(invite):
-   await invite.accept()
-   print(f'[PartyBot] [{time()}] Accepted party invite from {invite.sender.display_name}.')
+async def event_party_invite(invite: fortnitepy.PartyInvitation) -> None:
+    await invite.accept()
+    print(f'[PartyBot] [{time()}] Accepted party invite from {invite.sender.display_name}.')
+
 
 @client.event
-async def event_friend_request(request):
-    print(f"[PartyBot] [{time()}] Recieved friend request from: {request.display_name}.")
+async def event_friend_request(request: fortnitepy.PendingFriend) -> None:
+    print(f"[PartyBot] [{time()}] Received friend request from: {request.display_name}.")
 
-    if data['friendaccept']:
+    if data['friend_accept']:
         await request.accept()
         print(f"[PartyBot] [{time()}] Accepted friend request from: {request.display_name}.")
     else:
         await request.decline()
         print(f"[PartyBot] [{time()}] Declined friend request from: {request.display_name}.")
 
-@client.event
-async def event_party_member_join(member):
-    await BenBotAsync.set_default_loadout(client, data, member)
 
 @client.event
-async def event_friend_message(message):
+async def event_party_member_join(member: fortnitepy.PartyMember) -> None:
+    await BenBotAsync.set_default_loadout(client, data, member)
+
+
+@client.event
+async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
     args = message.content.split()
     split = args[1:]
     content = " ".join(split)
@@ -218,135 +284,135 @@ async def event_friend_message(message):
     print(f'[PartyBot] [{time()}] {message.author.display_name}: {message.content}')
 
     if "!skin" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Outfit']
-        )
+        try:
+            cosmetic = await BenBotAsync.get_cosmetic(
+                lang="en",
+                searchLang="en",
+                matchMethod="contains",
+                name=content,
+                backendType="AthenaCharacter"
+            )
 
-        if cosmetic == None:
-            print('Hi, it equals none!')
-            await message.reply(f"Couldn't find a skin with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a skin with the name: {content}.")
-        else:
             await message.reply(f'Skin set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set skin to: {cosmetic.id}.")
             await client.user.party.me.set_outfit(asset=cosmetic.id)
-        
-    elif "!backpack" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Back Bling']
-        )
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a backpack with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a backpack with the name: {content}.")
-        else:
+        except BenBotAsync.exceptions.NotFound:
+            await message.reply(f"Couldn't find a skin with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a skin with the name: {content}.")
+
+    elif "!backpack" in args[0].lower():
+        try:
+            cosmetic = await BenBotAsync.get_cosmetic(
+                lang="en",
+                searchLang="en",
+                matchMethod="contains",
+                name=content,
+                backendType="AthenaBackpack"
+            )
+
             await message.reply(f'Backpack set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set backpack to: {cosmetic.id}.")
             await client.user.party.me.set_backpack(asset=cosmetic.id)
 
+        except BenBotAsync.exceptions.NotFound:
+            await message.reply(f"Couldn't find a backpack with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a backpack with the name: {content}.")
+
     elif "!emote" in args[0].lower():
-        await client.user.party.me.clear_emote()
+        try:
+            cosmetic = await BenBotAsync.get_cosmetic(
+                lang="en",
+                searchLang="en",
+                matchMethod="contains",
+                name=content,
+                backendType="AthenaDance"
+            )
 
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Emote']
-        )
-
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a emote with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a emote with the name: {content}.")
-        else:
-            await message.reply(f'Emote set to {cosmetic.displayName}.')
-            print(f"[PartyBot] [{time()}] Set emote to: {cosmetic.displayName}.")
+            await message.reply(f'Emote set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set emote to: {cosmetic.id}.")
+            await client.user.party.me.clear_emote()
             await client.user.party.me.set_emote(asset=cosmetic.id)
 
-    elif "!pickaxe" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Harvesting Tool']
-        )
+        except BenBotAsync.exceptions.NotFound:
+            await message.reply(f"Couldn't find an emote with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find an emote with the name: {content}.")
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a pickaxe with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a pickaxe with the name: {content}.")
-        else:
-            await message.reply(f'Pickaxe set to {cosmetic.displayName}.')
-            print(f"[PartyBot] [{time()}] Set pickaxe to: {cosmetic.displayName}.")
+    elif "!pickaxe" in args[0].lower():
+        try:
+            cosmetic = await BenBotAsync.get_cosmetic(
+                lang="en",
+                searchLang="en",
+                matchMethod="contains",
+                name=content,
+                backendType="AthenaPickaxe"
+            )
+
+            await message.reply(f'Pickaxe set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set pickaxe to: {cosmetic.id}.")
             await client.user.party.me.set_pickaxe(asset=cosmetic.id)
 
-    elif "!pet" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.BACKEND_TYPE, 'AthenaPet']
-        )
+        except BenBotAsync.exceptions.NotFound:
+            await message.reply(f"Couldn't find a pickaxe with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a pickaxe with the name: {content}.")
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a pet with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find a pet with the name: {content}.")
-        else:
-            await message.reply(f'Pet set to {cosmetic.displayName}.')
-            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.displayName}.")
+    elif "!pet" in args[0].lower():
+        try:
+            cosmetic = await BenBotAsync.get_cosmetic(
+                lang="en",
+                searchLang="en",
+                matchMethod="contains",
+                name=content,
+                backendType="AthenaPet"
+            )
+
+            await message.reply(f'Pet set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
             await client.user.party.me.set_pet(asset=cosmetic.id)
 
+        except BenBotAsync.exceptions.NotFound:
+            await message.reply(f"Couldn't find a pet with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find a pet with the name: {content}.")
+
     elif "!emoji" in args[0].lower():
-        await client.user.party.me.clear_emote()
+        try:
+            cosmetic = await BenBotAsync.get_cosmetic(
+                lang="en",
+                searchLang="en",
+                matchMethod="contains",
+                name=content,
+                backendType="AthenaEmoji"
+            )
 
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.BACKEND_TYPE, 'AthenaDance']
-        )
-
-        if cosmetic == None:
-            await message.reply(f"Couldn't find an emoji with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find an emoji with the name: {content}.")
-        else:
-            await message.reply(f'Emoji set to {cosmetic.id}.')
-            print(f"[PartyBot] [{time()}] Set emoji to: {cosmetic.id}.")
+            await message.reply(f'Pet set to {cosmetic.id}.')
+            print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
             await client.user.party.me.set_emoji(asset=cosmetic.id)
 
-    elif "!contrail" in args[0].lower():
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Contrail']
-        )
+        except BenBotAsync.exceptions.NotFound:
+            await message.reply(f"Couldn't find an emoji with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find an emoji with the name: {content}.")
 
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a contrail with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find an contrail with the name: {content}.")
-        else:
+    elif "!contrail" in args[0].lower():
+        try:
+            cosmetic = await BenBotAsync.get_cosmetic(
+                lang="en",
+                searchLang="en",
+                matchMethod="contains",
+                name=content,
+                backendType="AthenaSkyDiveContrail"
+            )
+
             await message.reply(f'Contrail set to {cosmetic.id}.')
             print(f"[PartyBot] [{time()}] Set contrail to: {cosmetic.id}.")
-            await client.user.party.me.set_contrail(cosmetic.id)
+            await client.user.party.me.set_contrail(asset=cosmetic.id)
 
-    elif "!shout" in args[0].lower():
-        await client.user.party.me.clear_emote()
-
-        cosmetic = await BenBotAsync.get_cosmetic(
-            content,
-            params=BenBotAsync.Tags.NAME,
-            filter=[BenBotAsync.Filters.TYPE, 'Contrail']
-        )
-
-        if cosmetic == None:
-            await message.reply(f"Couldn't find a shout with the name: {content}.")
-            print(f"[PartyBot] [{time()}] Couldn't find an shout with the name: {content}.")
-        else:
-            await message.reply(f'Shout set to {cosmetic.id}.')
-            print(f"[PartyBot] [{time()}] Set shout to: {cosmetic.id}.")
-            await client.user.party.me.set_shout(cosmetic.id)
+        except BenBotAsync.exceptions.NotFound:
+            await message.reply(f"Couldn't find a contrail with the name: {content}.")
+            print(f"[PartyBot] [{time()}] Couldn't find an contrail with the name: {content}.")
 
     elif "!purpleskull" in args[0].lower():
         variants = client.user.party.me.create_variants(
-           clothing_color=1
+            clothing_color=1
         )
 
         await client.user.party.me.set_outfit(
@@ -358,7 +424,7 @@ async def event_friend_message(message):
 
     elif "!pinkghoul" in args[0].lower():
         variants = client.user.party.me.create_variants(
-           material=3
+            material=3
         )
 
         await client.user.party.me.set_outfit(
@@ -383,45 +449,37 @@ async def event_friend_message(message):
         await message.reply('Backpack set to Purple Ghost Portal!')
 
     elif "!banner" in args[0].lower():
-        if len(args) == 1:
-            await message.reply('You need to specifiy which banner, color & level you want to set the banner as.')
-        elif len(args) == 2:
-            await client.user.party.me.set_banner(icon=args[1], color=data['banner_colour'], season_level=data['level'])
-        elif len(args) == 3:
-            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=data['level'])
-        elif len(args) == 4:
-            await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
-        else:
-            await message.reply('You entered too many arguments!')
+        await client.user.party.me.set_banner(icon=args[1], color=args[2], season_level=args[3])
 
-        await message.reply(f'Banner set to; {args[1]} {args[2]} {args[3]}')
-        print(f"[PartyBot] [{time()}] Banner set to; {args[1]} {args[2]} {args[3]}")
+        await message.reply(f'Banner set to: {args[1]}, {args[2]}, {args[3]}.')
+        print(f"[PartyBot] [{time()}] Banner set to: {args[1]}, {args[2]}, {args[3]}.")
 
     elif "cid_" in args[0].lower():
-        if 'banner' not in args[0]:
+        if 'banner' not in args[0].lower():
             await client.user.party.me.set_outfit(
                 asset=args[0]
             )
         else:
             await client.user.party.me.set_outfit(
                 asset=args[0],
-                variants=client.user.party.me.create_variants(profilebanner='ProfileBanner')
+                variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
             )
 
         await message.reply(f'Skin set to {args[0]}')
-        await print(f'[PartyBot] [{time()}] Skin set to {args[0]}')
+        print(f'[PartyBot] [{time()}] Skin set to {args[0]}')
 
     elif "vtid_" in args[0].lower():
-        VTID = await setVTID(args[0])
-        if VTID[1] == 'Particle':
+        vtid = await set_vtid(args[0])
+        if vtid[1] == 'Particle':
             variants = client.user.party.me.create_variants(particle_config='Particle', particle=1)
         else:
-            variants = client.user.party.me.create_variants(**{VTID[1].lower(): int(VTID[2])})
+            variants = client.user.party.me.create_variants(**{vtid[1].lower(): int(vtid[2])})
 
-        await client.user.party.me.set_outfit(asset=VTID[0], variants=variants)
-        await message.reply(f'Variants set to {args[0]}.\n(Warning: This feature is not supported, please use !variants)')
+        await client.user.party.me.set_outfit(asset=vtid[0], variants=variants)
+        await message.reply(f'Variants set to {args[0]}.\n'
+                            '(Warning: This feature is not supported, please use !variants)')
 
-    elif "!variants" in args[0]:
+    elif "!variants" in args[0].lower():
         try:
             args3 = int(args[3])
         except ValueError:
@@ -457,7 +515,7 @@ async def event_friend_message(message):
 
     elif "!checkeredrenegade" in args[0].lower():
         variants = client.user.party.me.create_variants(
-           material=2
+            material=2
         )
 
         await client.user.party.me.set_outfit(
@@ -469,7 +527,7 @@ async def event_friend_message(message):
 
     elif "!mintyelf" in args[0].lower():
         variants = client.user.party.me.create_variants(
-           material=2
+            material=2
         )
 
         await client.user.party.me.set_outfit(
@@ -485,7 +543,7 @@ async def event_friend_message(message):
             asset=args[0]
         )
         await message.reply(f'Emote set to {args[0]}!')
-        
+
     elif "!stop" in args[0].lower():
         await client.user.party.me.clear_emote()
         await message.reply('Stopped emoting.')
@@ -502,22 +560,22 @@ async def event_friend_message(message):
 
     elif "PICKAXE_ID_" in args[0].lower():
         await client.user.party.me.set_pickaxe(
-                asset=args[0]
+            asset=args[0]
         )
 
         await message.reply(f'Pickaxe set to {args[0]}')
 
     elif "petcarrier_" in args[0].lower():
         await client.user.party.me.set_pet(
-                asset=args[0]
+            asset=args[0]
         )
 
         await message.reply(f'Pet set to {args[0]}!')
 
     elif "emoji_" in args[0].lower():
         await client.user.party.me.clear_emote()
-        await client.user.party.me.set_emote(
-                asset=args[0]
+        await client.user.party.me.set_emoji(
+            asset=args[0]
         )
 
         await message.reply(f'Emoji set to {args[0]}!')
@@ -527,22 +585,9 @@ async def event_friend_message(message):
 
         await message.reply(f'Contrail set to {args[0]}!')
 
-    elif "shout_" in args[0].lower():
-        await client.user.party.me.clear_emote()
-
-        await client.user.party.me.set_emote(
-                asset=f"/Game/Athena/Items/Cosmetics/Dances/Shouts/{args[0]}.{args[0]}"
-        )
-
-        await client.user.party.me.set_emote(
-                asset=f"/Game/Athena/Items/Cosmetics/Dances/Shouts/{args[0]}.{args[0]}"
-        )
-
-        await message.reply(f'Shout set to {args[0]}!')
-
     elif "!legacypickaxe" in args[0].lower():
         await client.user.party.me.set_pickaxe(
-                asset=args[1]
+            asset=args[1]
         )
 
         await message.reply(f'Pickaxe set to {args[1]}!')
@@ -553,14 +598,21 @@ async def event_friend_message(message):
             await client.user.party.me.set_emote(asset='EID_IceKing')
             await message.reply(f'Pickaxe set to {args[1]} & Point it Out played.')
         else:
-            cosmetic = await BenBotAsync.get_cosmetic(content, params=BenBotAsync.Tags.NAME, filter=[BenBotAsync.Filters.TYPE, 'Harvesting Tool'])
-            if cosmetic == None:
-                await message.reply(f"Couldn't find a pickaxe with the name: {content}")
-            else:
+            try:
+                cosmetic = await BenBotAsync.get_cosmetic(
+                    lang="en",
+                    searchLang="en",
+                    matchMethod="contains",
+                    name=content,
+                    backendType="AthenaPickaxe"
+                )
+
                 await client.user.party.me.set_pickaxe(asset=cosmetic.id)
+                await client.user.party.me.clear_emote()
                 await client.user.party.me.set_emote(asset='EID_IceKing')
                 await message.reply(f'Pickaxe set to {content} & Point it Out played.')
-
+            except BenBotAsync.exceptions.NotFound:
+                await message.reply(f"Couldn't find a pickaxe with the name: {content}")
 
     elif "!ready" in args[0].lower():
         await client.user.party.me.set_ready(fortnitepy.ReadyState.READY)
@@ -575,13 +627,25 @@ async def event_friend_message(message):
         await message.reply('Sitting Out!')
 
     elif "!bp" in args[0].lower():
-        await client.user.party.me.set_battlepass_info(has_purchased=True, level=args[1], self_boost_xp='0', friend_boost_xp='0')
+        await client.user.party.me.set_battlepass_info(
+            has_purchased=True,
+            level=args[1],
+        )
+
+        await message.reply(f'Set battle pass tier to {args[1]}.')
 
     elif "!level" in args[0].lower():
-        await client.user.party.me.set_banner(icon=client.user.party.me.banner[0], color=client.user.party.me.banner[1], season_level=args[1])
+        await client.user.party.me.set_banner(
+            icon=client.user.party.me.banner[0],
+            color=client.user.party.me.banner[1],
+            season_level=args[1]
+        )
+
+        await message.reply(f'Set level to {args[1]}.')
 
     elif "!echo" in args[0].lower():
         await client.user.party.send(content)
+        await message.reply('Sent message to party chat.')
 
     elif "!status" in args[0].lower():
         await client.set_status(content)
@@ -606,17 +670,18 @@ async def event_friend_message(message):
                 await member.kick()
                 await message.reply(f"Kicked user: {member.display_name}.")
                 print(f"[PartyBot] [{time()}] Kicked user: {member.display_name}")
-            except fortnitepy.Forbidden:
+            except fortnitepy.errors.Forbidden:
                 await message.reply(f"Couldn't kick {member.display_name}, as I'm not party leader.")
-                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to kick member as I don't have the required permissions."))
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  "Failed to kick member as I don't have the required permissions."))
 
     elif "!promote" in args[0].lower():
-        if len(args) != 1:
-            user = await client.fetch_profile(content)
-            member = client.user.party.members.get(user.id)
         if len(args) == 1:
             user = await client.fetch_profile(message.author.display_name)
-            user = await client.user.party.members.get(user.id)
+            member = await client.user.party.members.get(user.id)
+        else:
+            user = await client.fetch_profile(content)
+            member = client.user.party.members.get(user.id)
 
         if member is None:
             await message.reply("Couldn't find that user, are you sure they're in the party?")
@@ -625,29 +690,21 @@ async def event_friend_message(message):
                 await member.promote()
                 await message.reply(f"Promoted user: {member.display_name}.")
                 print(f"[PartyBot] [{time()}] Promoted user: {member.display_name}")
-            except fortnitepy.Forbidden:
+            except fortnitepy.errors.Forbidden:
                 await message.reply(f"Couldn't promote {member.display_name}, as I'm not party leader.")
-                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to promote member as I don't have the required permissions."))
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  "Failed to kick member as I don't have the required permissions."))
 
     elif "playlist_" in args[0].lower():
         try:
             await client.user.party.set_playlist(playlist=args[0])
-        except fortnitepy.Forbidden:
+            await message.reply(f'Gamemode set to {args[0]}')
+        except fortnitepy.errors.Forbidden:
             await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
-            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to set gamemode as I don't have the required permissions."))
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                              "Failed to set gamemode as I don't have the required permissions."))
 
-    elif "!platform" in args[0].lower():
-        await message.reply(f'Setting platform to {args[0]}')
-        party_id = client.user.party.id
-        await client.user.party.me.leave()
-        client.platform = fortnitepy.Platform(args[1])
-        await message.reply(f'Platform set to {str(client.platform)}.')
-        try:
-            await client.join_to_party(party_id, check_private=True)
-        except fortnitepy.Forbidden:
-            await message.reply('Failed to join back as party is set to private.')
-
-    elif args[0].lower() == "!id":
+    elif "!id" in args[0].lower():
         user = await client.fetch_profile(content, cache=False, raw=False)
         try:
             await message.reply(f"{content}'s Epic ID is: {user.id}")
@@ -670,26 +727,49 @@ async def event_friend_message(message):
             await message.reply(f'Party privacy set to {client.user.party.privacy}.')
             print(f'[PartyBot] [{time()}] Party privacy set to {client.user.party.privacy}.')
 
-        except fortnitepy.Forbidden:
+        except fortnitepy.errors.Forbidden:
             await message.reply(f"Couldn't set party privacy to {args[1]}, as I'm not party leader.")
-            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to set party privacy as I don't have the required permissions."))
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                              "Failed to set party privacy as I don't have the required permissions."))
 
     elif "!copy" in args[0].lower():
-        if len(args) >= 1:
+        if len(args) == 1:
             member = client.user.party.members.get(message.author.id)
         else:
             user = await client.fetch_profile(content)
             member = client.user.party.members.get(user.id)
 
         await client.user.party.me.edit(
-            functools.partial(fortnitepy.ClientPartyMember.set_outfit, asset=member.outfit, variants=member.outfit_variants),
-            functools.partial(fortnitepy.ClientPartyMember.set_backpack, asset=member.backpack, variants=member.backpack_variants),
-            functools.partial(fortnitepy.ClientPartyMember.set_pickaxe, asset=member.pickaxe, variants=member.pickaxe_variants),
-            functools.partial(fortnitepy.ClientPartyMember.set_banner, icon=member.banner[0], color=member.banner[1], season_level=member.banner[2]),
-            functools.partial(fortnitepy.ClientPartyMember.set_battlepass_info, has_purchased=True, level=member.battlepass_info[1], self_boost_xp='0', friend_boost_xp='0')
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_outfit,
+                asset=member.outfit,
+                variants=member.outfit_variants
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_backpack,
+                asset=member.backpack,
+                variants=member.backpack_variants
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_pickaxe,
+                asset=member.pickaxe,
+                variants=member.pickaxe_variants
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_banner,
+                icon=member.banner[0],
+                color=member.banner[1],
+                season_level=member.banner[2]
+            ),
+            functools.partial(
+                fortnitepy.ClientPartyMember.set_battlepass_info,
+                has_purchased=True,
+                level=member.battlepass_info[1]
+            )
         )
 
         await client.user.party.me.set_emote(asset=member.emote)
+        await message.reply(f'Copied the loadout of {member.display_name}.')
 
     elif "!hologram" in args[0].lower():
         await client.user.party.me.set_outfit(
@@ -728,10 +808,154 @@ async def event_friend_message(message):
 
         await message.reply('Emote set to Ninja Style!')
 
+    elif "!enlightened" in args[0].lower():
+        await client.user.party.me.set_outfit(
+            asset=args[1],
+            variants=client.user.party.me.create_variants(progressive=4),
+            enlightenment=(args[2], args[3])
+        )
+
+        await message.reply(f'Skin set to {args[1]} at level {args[3]} (for Season 1{args[2]}).')
+
+    elif "!rareskins" in args[0].lower():
+        await message.reply('Showing all rare skins now.')
+
+        await client.user.party.me.set_outfit(
+            asset='CID_030_Athena_Commando_M_Halloween',
+            variants=client.user.party.me.create_variants(clothing_color=1)
+        )
+
+        await message.reply('Skin set to Purple Skull Trooper!')
+        await asyncio.sleep(2)
+
+        await client.user.party.me.set_outfit(
+            asset='CID_029_Athena_Commando_F_Halloween',
+            variants=client.user.party.me.create_variants(material=3)
+        )
+
+        await message.reply('Skin set to Pink Ghoul Trooper!')
+        await asyncio.sleep(2)
+
+        for skin in ('CID_028_Athena_Commando_F', 'CID_017_Athena_Commando_M', 'CID_022_Athena_Commando_F'):
+            await client.user.party.me.set_outfit(
+                asset=skin
+            )
+
+            await message.reply(f'Skin set to {skin}!')
+            await asyncio.sleep(2)
+
+    elif "!goldenpeely" in args[0].lower():
+        await client.user.party.me.set_outfit(
+            asset='CID_701_Athena_Commando_M_BananaAgent',
+            variants=client.user.party.me.create_variants(progressive=4),
+            enlightenment=(2, 350)
+        )
+
+        await message.reply(f'Skin set to Golden Peely.')
+
+    elif "!random" in args[0].lower():
+        outfits = await BenBotAsync.get_cosmetics(
+            lang="en",
+            searchLang="en",
+            backendType="AthenaCharacter"
+        )
+
+        skin = random.choice(outfits).id
+
+        await client.user.party.me.set_outfit(
+            asset=skin,
+            variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
+        )
+
+        await message.reply(f'Skin randomly set to {skin}.')
+
+    elif "!nobackpack" in args[0].lower():
+        await client.user.party.me.clear_backpack()
+        await message.reply('Removed backpack.')
+
+    elif "!nopet" in args[0].lower():
+        await client.user.party.me.clear_pet()
+        await message.reply('Removed pet.')
+
+    elif "!nocontrail" in args[0].lower():
+        await client.user.party.me.clear_contrail()
+        await message.reply('Removed contrail.')
+
+    elif "!match" in args[0].lower():
+        await set_and_update_prop('Location_s', 'InGame')
+        await set_and_update_prop('NumAthenaPlayersLeft_U', args[1] if len(args) >= 2 else 0)
+        await set_and_update_prop('HasPreloadedAthena_b', True)
+        await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'true')
+
+        match_time = str(fortnitepy.Client.to_iso(
+            datetime.datetime.utcnow() - datetime.timedelta(minutes=int(args[2]) if len(args) >= 3 else 0)
+        ))[slice(23)]
+
+        await set_and_update_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+
+        await message.reply(f'Set state to in-game in a match with {args[1] if len(args) >= 2 else 0} players.'
+                            '\nUse the command: !lobby to revert back to normal.')
+
+    elif "!lobby" in args[0].lower():
+        await set_and_update_prop('Location_s', 'PreLobby')
+        await set_and_update_prop('NumAthenaPlayersLeft_U', '0')
+        await set_and_update_prop('HasPreloadedAthena_b', False)
+        await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'false')
+        await set_and_update_prop('UtcTimeStartedMatchAthena_s', '0001-01-01T00:00:00.000Z')
+
+        await message.reply('Set state to the pre-game lobby.')
+
+    elif "!join" in args[0].lower():
+        if len(args) == 1:
+            friend = client.get_friend(message.author.id)
+        else:
+            user = await client.fetch_profile(content)
+
+            if user is not None:
+                friend = client.get_friend(user.id)
+            else:
+                friend = None
+                await message.reply(f'Failed to find user with the name: {content}.')
+
+        if isinstance(friend, fortnitepy.Friend):
+            try:
+                await friend.join_party()
+                await message.reply(f'Joined the party of {friend.display_name}.')
+            except fortnitepy.errors.Forbidden:
+                await message.reply('Failed to join party since it is private.')
+            except fortnitepy.errors.PartyError:
+                await message.reply('Party not found, are you sure Fortnite is open?')
+        else:
+            await message.reply('Cannot join party as the friend is not found.')
+            
+    elif "!reload" in args[0].lower():
+        with open('config.json') as f:
+            data = json.load(f)
+            
+        await message.reply('Configuration reloaded.')
+        print(f'[PartyBot] [{time()}] Configuration successfully reloaded.')
+
+    elif "!friend" in args[0].lower():
+        if data['friend_accept']:
+            await message.reply('All friend requests will be accepted so there is no need to add manually.')
+            print(f'[PartyBot] [{time()}] !friend command ignored as friend requests will be accepted '
+                  'so there is no need to add manually.')
+        else:
+            user = await client.fetch_profile(content)
+
+            if user is not None:
+                friend = await client.add_friend(user.id)
+                await message.reply(f'Sent/accepted friend request to/from {user.display_name}.')
+                print(f'[PartyBot] [{time()}] Sent/accepted friend request to/from {user.display_name}.')
+            else:
+                await message.reply(f'Failed to find user with the name: {content}.')
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to find a user with the name {content}."))
+
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
-    except fortnitepy.AuthException as e:
+    except fortnitepy.errors.AuthException as e:
         print(crayons.red(f"[PartyBot] [{time()}] [ERROR] {e}"))
 else:
     print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to login as no (or default) account details provided."))
