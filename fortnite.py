@@ -133,7 +133,7 @@ async def get_playlist(display_name: str) -> str:
             method='GET',
             url='http://scuffedapi.xyz/api/playlists/search',
             params={
-                'display_name': display_name
+                'displayName': display_name
             })
 
         response = await request.json()
@@ -993,7 +993,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         try:
             playlist_id = await get_playlist(content)
             await client.user.party.set_playlist(playlist=playlist_id)
-            await message.reply(f'Gamemode set to {playlist_id}')
+            await message.reply(f'Gamemode set to {playlist_id}.')
         except fortnitepy.errors.Forbidden:
             await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
