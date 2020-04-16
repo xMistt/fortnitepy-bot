@@ -127,6 +127,20 @@ async def set_vtid(vtid: str) -> Tuple[str, str, int]:
     return skin_cid, variant_type if variant_type != 'ClothingColor' else 'clothing_color', variant_int
 
 
+async def get_playlist(display_name: str) -> str:
+    async with aiohttp.ClientSession() as session:
+        request = await session.request(
+            method='GET',
+            url='http://scuffedapi.xyz/api/playlists/search',
+            params={
+                'display_name': display_name
+            })
+
+        response = await request.json()
+
+    return response['id']
+
+
 async def set_and_update_prop(schema_key: str, new_value: str) -> None:
     prop = {schema_key: client.user.party.me.meta.set_prop(schema_key, new_value)}
 
@@ -974,6 +988,16 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             else:
                 await message.reply(f'Failed to find user with the name: {content}.')
                 print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to find a user with the name {content}."))
+                
+    elif "!playlist" in args[0].lower():
+        try:
+            playlist_id = await get_playlist(content)
+            await client.user.party.set_playlist(playlist=playlist_id)
+            await message.reply(f'Gamemode set to {playlist_id}')
+        except fortnitepy.errors.Forbidden:
+            await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                              "Failed to set gamemode as I don't have the required permissions."))
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
