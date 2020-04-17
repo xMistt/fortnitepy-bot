@@ -75,7 +75,7 @@ def get_device_auth_details() -> dict:
     else:
         with open('device_auths.json', 'w+') as fp:
             json.dump({}, fp, sort_keys=False, indent=4)
-            
+
     return {}
 
 
@@ -138,7 +138,7 @@ async def get_playlist(display_name: str) -> str:
 
         response = await request.json()
 
-    return response['id']
+    return response['id'] if 'error' not in response else None
 
 
 async def set_and_update_prop(schema_key: str, new_value: str) -> None:
@@ -183,6 +183,7 @@ async def start_discord_rich_presence() -> None:
         )
 
         await asyncio.sleep(20)
+
 
 print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
                    'Massive credit to Terbau for creating the library.'))
@@ -910,8 +911,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                                 '\nUse the command: !lobby to revert back to normal.')
 
             while (100 >= client.user.party.me.meta.get_prop('NumAthenaPlayersLeft_U') > 0
-                    and client.user.party.me.meta.get_prop('Location_s') == 'InGame'):
-
+                   and client.user.party.me.meta.get_prop('Location_s') == 'InGame'):
                 await set_and_update_prop(
                     'NumAthenaPlayersLeft_U',
                     client.user.party.me.meta.get_prop('NumAthenaPlayersLeft_U') - random.randint(3, 6)
@@ -965,11 +965,11 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
                 await message.reply('Party not found, are you sure Fortnite is open?')
         else:
             await message.reply('Cannot join party as the friend is not found.')
-            
+
     elif "!reload" in args[0].lower():
         with open('config.json') as f:
             data = json.load(f)
-            
+
         await message.reply('Configuration reloaded.')
         print(f'[PartyBot] [{time()}] Configuration successfully reloaded.')
 
@@ -988,16 +988,25 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             else:
                 await message.reply(f'Failed to find user with the name: {content}.')
                 print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to find a user with the name {content}."))
-                
+
     elif "!playlist" in args[0].lower():
         try:
             playlist_id = await get_playlist(content)
-            await client.user.party.set_playlist(playlist=playlist_id)
-            await message.reply(f'Gamemode set to {playlist_id}.')
+
+            if playlist_id is not None:
+                await client.user.party.set_playlist(playlist=playlist_id)
+                await message.reply(f'Playlist set to {playlist_id}.')
+                print(f'[PartyBot] [{time()}] Playlist set to {playlist_id}.')
+
+            else:
+                await message.reply(f'Failed to find a playlist with the name: {content}.')
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  f"Failed to find a playlist with the name: {content}."))
+
         except fortnitepy.errors.Forbidden:
-            await message.reply(f"Couldn't set gamemode to {args[1]}, as I'm not party leader.")
+            await message.reply(f"Couldn't set playlist to {args[1]}, as I'm not party leader.")
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
-                              "Failed to set gamemode as I don't have the required permissions."))
+                              "Failed to set playlist as I don't have the required permissions."))
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
