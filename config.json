@@ -1,6 +1,6 @@
 {
-    "email": "email@email.com",
-    "password": "password1",
+    "email": "vignolet.francoise3@gmail.com",
+    "password": "PLAYSTATION4",
     "cid": "CID_NPC_Athena_Commando_M_HenchmanGood",
     "bid": "BID_480_Donut",
     "eid": "EID_IndigoApple",
@@ -11,5 +11,5 @@
     "status": "Created by xMistt, enjoy!\nSupport server: https://discord.gg/fnpy",
     "platform": "WIN",
     "debug": false,
-    "friend_accept": true
+    "friend_accept": false
 }
