@@ -867,20 +867,65 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
         await message.reply(f'Skin set to Golden Peely.')
 
     elif "!random" in args[0].lower():
-        outfits = await BenBotAsync.get_cosmetics(
-            lang="en",
-            searchLang="en",
-            backendType="AthenaCharacter"
-        )
+        if len(args) >= 2 and "skin" in args[1].lower():
+            outfits = await BenBotAsync.get_cosmetics(
+                lang="en",
+                searchLang="en",
+                backendType="AthenaCharacter"
+            )
 
-        skin = random.choice(outfits).id
+            skin = random.choice(outfits).id
 
-        await client.user.party.me.set_outfit(
-            asset=skin,
-            variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
-        )
+            await client.user.party.me.set_outfit(
+                asset=skin,
+                variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
+            )
 
-        await message.reply(f'Skin randomly set to {skin}.')
+            await message.reply(f'Skin randomly set to {skin}.')
+        if len(args) >= 2 and "backpack" in args[1].lower():
+            outfits = await BenBotAsync.get_cosmetics(
+                lang="en",
+                searchLang="en",
+                backendType="AthenaBackpack"
+            )
+
+            backpack = random.choice(outfits).id
+
+            await client.user.party.me.set_backpack(
+                asset=backpack,
+                variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
+            )
+
+            await message.reply(f'Backpack randomly set to {backpack}.')
+        if len(args) >= 2 and "emote" in args[1].lower():
+            outfits = await BenBotAsync.get_cosmetics(
+                lang="en",
+                searchLang="en",
+                backendType="AthenaDance"
+            )
+
+            emote = random.choice(outfits).id
+
+            await client.user.party.me.set_emote(
+                asset=emote
+            )
+
+            await message.reply(f'Emote randomly set to {emote}.')
+        else:
+            outfits = await BenBotAsync.get_cosmetics(
+                lang="en",
+                searchLang="en",
+                backendType="AthenaCharacter"
+            )
+
+            skin = random.choice(outfits).id
+
+            await client.user.party.me.set_outfit(
+                asset=skin,
+                variants=client.user.party.me.create_variants(profile_banner='ProfileBanner')
+            )
+
+            await message.reply(f'Skin randomly set to {skin}.')
 
     elif "!nobackpack" in args[0].lower():
         await client.user.party.me.clear_backpack()
