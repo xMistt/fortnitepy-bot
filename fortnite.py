@@ -1053,6 +1053,34 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                               "Failed to set playlist as I don't have the required permissions."))
 
+    elif "!invite" in args[0].lower():
+        if len(args) == 1:
+            friend = client.get_friend(message.author.id)
+        else:
+            user = await client.fetch_profile(content)
+
+            if user is not None:
+                friend = client.get_friend(user.id)
+            else:
+                friend = None
+                await message.reply(f'Failed to find user with the name: {content}.')
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  f"Failed to find user with the name: {content}."))
+
+        if isinstance(friend, fortnitepy.Friend):
+            try:
+                await friend.invite()
+                await message.reply(f'Invited {friend.display_name} to the party.')
+                print(f"[PartyBot] [{time()}] [ERROR] Invited {friend.display_name} to the party.")
+            except fortnitepy.errors.PartyError:
+                await message.reply('Failed to invite friend as they are either already in the party or it is full.')
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  "Failed to invite to party as friend is already either in party or it is full."))
+        else:
+            await message.reply('Cannot invite to party as the friend is not found.')
+            print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                              "Failed to invite to party as the friend is not found."))
+
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
