@@ -711,13 +711,6 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                               "Failed to set gamemode as I don't have the required permissions."))
 
-    elif "!id" in args[0].lower():
-        user = await client.fetch_profile(content, cache=False, raw=False)
-        try:
-            await message.reply(f"{content}'s Epic ID is: {user.id}")
-        except AttributeError:
-            await message.reply(f"I couldn't find an Epic account with the name: {content}.")
-
     elif "!privacy" in args[0].lower():
         try:
             if 'public' in args[1].lower():
