@@ -28,7 +28,7 @@ License: Apache 2.0
 
 try:
     # System imports.
-    from typing import Tuple
+    from typing import Tuple, Any
 
     import asyncio
     import sys
@@ -141,7 +141,7 @@ async def get_playlist(display_name: str) -> str:
     return response['id'] if 'error' not in response else None
 
 
-async def set_and_update_prop(schema_key: str, new_value: str) -> None:
+async def set_and_update_prop(schema_key: str, new_value: Any) -> None:
     prop = {schema_key: client.user.party.me.meta.set_prop(schema_key, new_value)}
 
     await client.user.party.me.patch(updated=prop)
