@@ -1,6 +1,6 @@
 {
-    "email": "email@email.com",
-    "password": "password1",
+    "email": "wisejalani2@gmail.com"
+    "password": "Jalani789"
     "cid": "CID_NPC_Athena_Commando_M_HenchmanGood",
     "bid": "BID_480_Donut",
     "eid": "EID_IndigoApple",
@@ -9,7 +9,7 @@
     "level": 999,
     "bp_tier": 999999999,
     "status": "Created by xMistt, enjoy!\nSupport server: https://discord.gg/fnpy",
-    "platform": "WIN",
+    "platform": "Ps4",
     "debug": false,
-    "friend_accept": true
+    "friend_accept": false
 }
