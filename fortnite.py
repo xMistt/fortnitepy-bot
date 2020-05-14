@@ -202,7 +202,7 @@ async def commands(request: sanic.request.Request, account_id: str, command: str
 
 @app.route("/fortnite/api/calendar/v1/timeline")
 async def timeline(request: sanic.request.Request) -> sanic.response.HTTPResponse:
-    return sanic.json(
+    return sanic.response.json(
         {
             "channels": {
                 "client-matchmaking": {
