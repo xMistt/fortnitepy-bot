@@ -296,7 +296,8 @@ async def timeline(request: sanic.request.Request) -> sanic.response.HTTPRespons
             "eventsTimeOffsetHrs": 0,
             "cacheIntervalMins": 9999,
             "currentTime": "2019-07-18T18:13:41.770Z"
-        },status=200
+        },
+        status=200
     )
 
 
