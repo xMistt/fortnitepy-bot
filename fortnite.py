@@ -875,7 +875,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             )
 
             await message.reply(f'Skin randomly set to {skin}.')
-        if len(args) >= 2 and "backpack" in args[1].lower():
+        elif len(args) >= 2 and "backpack" in args[1].lower():
             outfits = await BenBotAsync.get_cosmetics(
                 lang="en",
                 searchLang="en",
@@ -890,7 +890,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             )
 
             await message.reply(f'Backpack randomly set to {backpack}.')
-        if len(args) >= 2 and "emote" in args[1].lower():
+        elif len(args) >= 2 and "emote" in args[1].lower():
             outfits = await BenBotAsync.get_cosmetics(
                 lang="en",
                 searchLang="en",
