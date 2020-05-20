@@ -1073,6 +1073,19 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
             await message.reply('Cannot invite to party as the friend is not found.')
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                               "Failed to invite to party as the friend is not found."))
+            
+    elif "!hatlessrecon" in args[0].lower():
+        variants = client.user.party.me.create_variants(
+            parts=2
+        )
+
+        await client.user.party.me.set_outfit(
+            asset='CID_022_Athena_Commando_F',
+            variants=variants
+        )
+
+        await message.reply('Skin set to Hatless Recon Expert!')
+        print(f'[PartyBot] [{time()}] Skin set to Hatless Recon Expert.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
