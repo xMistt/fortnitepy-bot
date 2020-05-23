@@ -243,7 +243,7 @@ async def event_ready() -> None:
 
 
 @client.event
-async def event_party_invite(invite: fortnitepy.PartyInvitation) -> None:
+async def event_party_invite(invite: fortnitepy.PartyInvitation if fortnitepy.__version__ != '2.0.3' else fortnitepy.ReceivedPartyInvitation) -> None:
     await invite.accept()
     print(f'[PartyBot] [{time()}] Accepted party invite from {invite.sender.display_name}.')
 
