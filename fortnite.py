@@ -36,7 +36,7 @@ try:
     import json
     import functools
     import os
-    import random
+    import random as py_random
     import logging
     import uuid
 
@@ -974,13 +974,13 @@ async def goldenpeely(ctx: fortnitepy.ext.commands.Context) -> None:
 @client.command()
 async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'skin') -> None:
     if cosmetic_type == 'skin':
-        outfits = await BenBotAsync.get_cosmetics(
+        all_outfits = await BenBotAsync.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaCharacter"
         )
 
-        random_skin = random.choice(outfits).id
+        random_skin = py_random.choice(all_outfits).id
 
         await client.party.me.set_outfit(
             asset=random_skin,
@@ -990,13 +990,13 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         await ctx.send(f'Skin randomly set to {skin}.')
 
     elif cosmetic_type == 'backpack':
-        outfits = await BenBotAsync.get_cosmetics(
+        all_backpacks = await BenBotAsync.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaBackpack"
         )
 
-        random_backpack = random.choice(outfits).id
+        random_backpack = py_random.choice(all_backpacks).id
 
         await client.party.me.set_backpack(
             asset=random_backpack,
@@ -1006,13 +1006,13 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         await ctx.send(f'Backpack randomly set to {backpack}.')
 
     elif cosmetic_type == 'emote':
-        outfits = await BenBotAsync.get_cosmetics(
+        all_emotes = await BenBotAsync.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaDance"
         )
 
-        random_emote = random.choice(outfits).id
+        random_emote = py_random.choice(all_emotes).id
 
         await client.party.me.set_emote(
             asset=random_emote
@@ -1021,27 +1021,27 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         await ctx.send(f'Emote randomly set to {emote}.')
 
     elif cosmetic_type == 'all':
-        outfits = await BenBotAsync.get_cosmetics(
+        all_outfits = await BenBotAsync.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaCharacter"
         )
 
-        backpacks = await BenBotAsync.get_cosmetics(
+        all_backpacks = await BenBotAsync.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaBackpack"
         )
 
-        emotes = await BenBotAsync.get_cosmetics(
+        all_emotes = await BenBotAsync.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaDance"
         )
 
-        random_outfit = random.choice(outfits).id
-        random_backpack = random.choice(backpacks).id
-        random_emote = random.choice(emotes).id
+        random_outfit = py_random.choice(all_outfits).id
+        random_backpack = py_random.choice(all_backpacks).id
+        random_emote = py_random.choice(all_emotes).id
 
         await client.party.me.set_outfit(
             asset=random_outfit
@@ -1055,7 +1055,7 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
 
         await ctx.send(f'Backpack randomly set to {random_backpack}.')
 
-        await client.party.me.set_outfit(
+        await client.party.me.set_emote(
             asset=random_emote
         )
 
@@ -1431,6 +1431,29 @@ async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
         await message.reply('Failed to join back as party is set to private.')
     except fortnitepy.errors.NotFound:
         await message.reply('Party not found, are you sure Fortnite is open?')
+
+
+@client.command()
+async def shop(ctx: fortnitepy.ext.commands.Context) -> None:
+    store = await client.fetch_item_shop()
+
+    await ctx.send(f"Equipping all skins in today's item shop.")
+    print(f"[PartyBot] [{time()}] Equipping all skins in today's item shop.")
+
+    for item in store.featured_items + store.daily_items:
+        for grant in item.grants:
+            if grant['type'] == 'AthenaCharacter':
+                await client.party.me.set_outfit(
+                    asset=grant['asset']
+                )
+
+                await ctx.send(f"Skin set to {item.display_names[0]}!")
+                print(f"[PartyBot] [{time()}] Skin set to: {item.display_names[0]}!")
+
+                await asyncio.sleep(3)
+
+    await ctx.send(f'Finished equipping all skins in the item shop.')
+    print(f'[PartyBot] [{time()}] Finished equipping all skins in the item shop.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
