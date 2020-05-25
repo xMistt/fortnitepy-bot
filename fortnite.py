@@ -988,6 +988,7 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         )
 
         await ctx.send(f'Skin randomly set to {skin}.')
+
     elif cosmetic_type == 'backpack':
         outfits = await BenBotAsync.get_cosmetics(
             lang="en",
@@ -1018,6 +1019,47 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         )
 
         await ctx.send(f'Emote randomly set to {emote}.')
+
+    elif cosmetic_type == 'all':
+        outfits = await BenBotAsync.get_cosmetics(
+            lang="en",
+            searchLang="en",
+            backendType="AthenaCharacter"
+        )
+
+        backpacks = await BenBotAsync.get_cosmetics(
+            lang="en",
+            searchLang="en",
+            backendType="AthenaBackpack"
+        )
+
+        emotes = await BenBotAsync.get_cosmetics(
+            lang="en",
+            searchLang="en",
+            backendType="AthenaDance"
+        )
+
+        random_outfit = random.choice(outfits).id
+        random_backpack = random.choice(backpacks).id
+        random_emote = random.choice(emotes).id
+
+        await client.party.me.set_outfit(
+            asset=random_outfit
+        )
+
+        await ctx.send(f'Skin randomly set to {random_outfit}.')
+
+        await client.party.me.set_backpack(
+            asset=random_backpack
+        )
+
+        await ctx.send(f'Backpack randomly set to {random_backpack}.')
+
+        await client.party.me.set_outfit(
+            asset=random_emote
+        )
+
+        await ctx.send(f'Emote randomly set to {random_emote}.')
 
 
 @client.command()
