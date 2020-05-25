@@ -1418,8 +1418,6 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
 async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
     client.default_party_member_config.cls = fortnitepy.JustChattingClientPartyMember
 
-    print(client.default_party_member_config.cls)
-
     party_id = client.party.id
     await client.party.me.leave()
 
