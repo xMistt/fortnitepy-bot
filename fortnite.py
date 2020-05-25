@@ -1314,38 +1314,7 @@ async def set(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
             await asyncio.sleep(3)
 
     await ctx.send(f'Finished equipping all cosmetics from the {set_items[0].set} set.')
-    print(f'[PartyBot] [{time()}] Fishing equipping  all cosmetics from the {set_items[0].set} set.')
-
-
-@client.command()
-async def style(ctx: fortnitepy.ext.commands.Context, cosmetic_name: str, variant_type: str, variant_int: str) -> None:
-    # cosmetic_types = {
-    #     "AthenaCharacter": client.party.me.set_outfit,
-    #     "AthenaBackpack": client.party.me.set_backpack,
-    #     "AthenaPickaxe": client.party.me.set_pickaxe
-    # }
-
-    cosmetic = await BenBotAsync.get_cosmetic(
-        lang="en",
-        searchLang="en",
-        matchMethod="contains",
-        name=cosmetic_name,
-        backendType="AthenaCharacter"
-    )
-
-    cosmetic_variants = client.party.me.create_variants(
-        # item=cosmetic.backend_type.value,
-        **{variant_type: int(variant_int) if variant_int.isdigit() else variant_int}
-    )
-
-    # await cosmetic_types[cosmetic.backend_type.value](
-    await client.party.me.set_outfit(
-        asset=cosmetic.id,
-        variants=cosmetic_variants
-    )
-
-    await ctx.send(f'Set variants of {cosmetic.id} to {variant_type} {variant_int}.')
-    print(f'[PartyBot] [{time()}] Set variants of {cosmetic.id} to {variant_type} {variant_int}.')
+    print(f'[PartyBot] [{time()}] Fishing equipping all cosmetics from the {set_items[0].set} set.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
