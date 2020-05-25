@@ -622,7 +622,7 @@ async def _help(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send('For a list of commands, go to: https://github.com/xMistt/fortnitepy-bot/wiki/Commands')
 
 
-@client.command()
+@client.command(aliases=['legacypickaxe'])
 async def pickaxe_id(ctx: fortnitepy.ext.commands.Context, pickaxe_id_: str) -> None:
     await client.party.me.set_pickaxe(
         asset=pickaxe_id_
@@ -660,8 +660,11 @@ async def trails(ctx: fortnitepy.ext.commands.Context, trails_: str) -> None:
 
 
 @client.command()
-async def point(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
-    if 'pickaxe_id' in content.lower():
+async def point(ctx: fortnitepy.ext.commands.Context, *, content: str = None) -> None:
+    if content is None:
+        await client.party.me.set_emote(asset='EID_IceKing')
+        await ctx.send(f'Point it Out played.')
+    elif 'pickaxe_id' in content.lower():
         await client.party.me.set_pickaxe(asset=content)
         await client.party.me.set_emote(asset='EID_IceKing')
         await ctx.send(f'Pickaxe set to {content} & Point it Out played.')
