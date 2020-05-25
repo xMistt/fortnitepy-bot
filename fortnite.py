@@ -1262,14 +1262,59 @@ async def shadow(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
 @commands.dm_only()
 @client.command()
 async def avatar(ctx: fortnitepy.ext.commands.Context, kairos_cid: str) -> None:
-    karios_avatar = fortnitepy.Avatar(
-        asset=karios_cid
+    kairos_avatar = fortnitepy.Avatar(
+        asset=kairos_cid
     )
 
     client.set_avatar(kairos_avatar)
 
-    await message.reply(f'Kairos avatar set to {kairos_cid}.')
+    await ctx.send(f'Kairos avatar set to {kairos_cid}.')
     print(f'[PartyBot] [{time()}] Kairos avatar set to {kairos_cid}.')
+
+
+@commands.dm_only()
+@client.command(aliases=['clear'])
+async def clean(ctx: fortnitepy.ext.commands.Context) -> None:
+    os.system('cls' if 'win' in sys.platform else 'clear')
+
+    print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
+                       'Massive credit to Terbau for creating the library.'))
+    print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
+
+    await ctx.send('Command prompt/terminal cleared.')
+    print(f'[PartyBot] [{time()}] Command prompt/terminal cleared.')
+
+
+@client.command()
+async def set(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
+    cosmetic_types = {
+        "AthenaBackpack": client.party.me.set_backpack,
+        "AthenaCharacter": client.party.me.set_outfit,
+        "AthenaEmoji": client.party.me.set_emoji,
+        "AthenaDance": client.party.me.set_emote
+    }
+
+    set_items = await BenBotAsync.get_cosmetics(
+        lang="en",
+        searchLang="en",
+        matchMethod="contains",
+        set=content
+    )
+
+    await ctx.send(f'Equipping all cosmetics from the {set_items[0].set} set.')
+    print(f'[PartyBot] [{time()}] Equipping all cosmetics from the {set_items[0].set} set.')
+
+    for cosmetic in set_items:
+        if cosmetic.backend_type.value in cosmetic_types:
+            await cosmetic_types[cosmetic.backend_type.value](asset=cosmetic.id)
+
+            await ctx.send(f'{cosmetic.short_description} set to {cosmetic.name}!')
+            print(f'[PartyBot] [{time()}] {cosmetic.short_description} set to {cosmetic.name}.')
+
+            await asyncio.sleep(3)
+
+    await ctx.send(f'Finished equipping all cosmetics from the {set_items[0].set} set.')
+    print(f'[PartyBot] [{time()}] Fishing equipping all cosmetics from the {set_items[0].set} set.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
