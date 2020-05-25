@@ -143,10 +143,16 @@ async def get_playlist(display_name: str) -> str:
     return response['id'] if 'error' not in response else None
 
 
-async def set_and_update_prop(schema_key: str, new_value: Any) -> None:
+async def set_and_update_member_prop(schema_key: str, new_value: Any) -> None:
     prop = {schema_key: client.party.me.meta.set_prop(schema_key, new_value)}
 
     await client.party.me.patch(updated=prop)
+
+
+async def set_and_update_party_prop(schema_key: str, new_value: Any) -> None:
+    prop = {schema_key: client.party.me.meta.set_prop(schema_key, new_value)}
+
+    await client.party.patch(updated=prop)
 
 
 async def start_discord_rich_presence() -> None:
@@ -756,11 +762,11 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> N
                               "Failed to kick member as I don't have the required permissions."))
 
 
-@client.command()
+@client.command(aliases=['unhide'])
 async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
     if epic_username is None:
-        user = await client.fetch_profile(message.author.display_name)
-        member = await client.party.members.get(user.id)
+        user = await client.fetch_profile(ctx.author.display_name)
+        member = client.party.members.get(user.id)
     else:
         user = await client.fetch_profile(epic_username)
         member = client.party.members.get(user.id)
@@ -1027,23 +1033,23 @@ async def nocontrail(ctx: fortnitepy.ext.commands.Context) -> None:
 @client.command()
 async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] = 0, inputted_time: int = 0) -> None:
     if players == 'progressive':
-        await set_and_update_prop('Location_s', 'InGame')
-        await set_and_update_prop('HasPreloadedAthena_b', True)
-        await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'true')
-        await set_and_update_prop('NumAthenaPlayersLeft_U', '100')
+        await set_and_update_member_prop('Location_s', 'InGame')
+        await set_and_update_member_prop('HasPreloadedAthena_b', True)
+        await set_and_update_member_prop('SpectateAPartyMemberAvailable_b', 'true')
+        await set_and_update_member_prop('NumAthenaPlayersLeft_U', '100')
 
         match_time = str(fortnitepy.Client.to_iso(
             datetime.datetime.utcnow()
         ))[slice(23)]
 
-        await set_and_update_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+        await set_and_update_member_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
 
         await ctx.send(f'Set state to in-game in a match with progressive players drop starting from 100.'
                        '\nUse the command: !lobby to revert back to normal.')
 
         while (100 >= client.party.me.meta.get_prop('NumAthenaPlayersLeft_U') > 0
                and client.party.me.meta.get_prop('Location_s') == 'InGame'):
-            await set_and_update_prop(
+            await set_and_update_member_prop(
                 'NumAthenaPlayersLeft_U',
                 client.party.me.meta.get_prop('NumAthenaPlayersLeft_U') - random.randint(3, 6)
             )
@@ -1051,16 +1057,16 @@ async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] =
             await asyncio.sleep(random.randint(45, 65))
 
     else:
-        await set_and_update_prop('Location_s', 'InGame')
-        await set_and_update_prop('NumAthenaPlayersLeft_U', players)
-        await set_and_update_prop('HasPreloadedAthena_b', True)
-        await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'true')
+        await set_and_update_member_prop('Location_s', 'InGame')
+        await set_and_update_member_prop('NumAthenaPlayersLeft_U', players)
+        await set_and_update_member_prop('HasPreloadedAthena_b', True)
+        await set_and_update_member_prop('SpectateAPartyMemberAvailable_b', 'true')
 
         match_time = str(fortnitepy.Client.to_iso(
             datetime.datetime.utcnow() - datetime.timedelta(minutes=inputted_time)
         ))[slice(23)]
 
-        await set_and_update_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+        await set_and_update_member_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
 
         await ctx.send(f'Set state to in-game in a match with {players} players.'
                        '\nUse the command: !lobby to revert back to normal.')
@@ -1068,11 +1074,11 @@ async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] =
 
 @client.command()
 async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
-    await set_and_update_prop('Location_s', 'PreLobby')
-    await set_and_update_prop('NumAthenaPlayersLeft_U', '0')
-    await set_and_update_prop('HasPreloadedAthena_b', False)
-    await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'false')
-    await set_and_update_prop('UtcTimeStartedMatchAthena_s', '0001-01-01T00:00:00.000Z')
+    await set_and_update_member_prop('Location_s', 'PreLobby')
+    await set_and_update_member_prop('NumAthenaPlayersLeft_U', '0')
+    await set_and_update_member_prop('HasPreloadedAthena_b', False)
+    await set_and_update_member_prop('SpectateAPartyMemberAvailable_b', 'false')
+    await set_and_update_member_prop('UtcTimeStartedMatchAthena_s', '0001-01-01T00:00:00.000Z')
 
     await ctx.send('Set state to the pre-game lobby.')
 
@@ -1144,7 +1150,7 @@ async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) 
 @client.command()
 async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
     if epic_username is None:
-        epic_friend = client.get_friend(message.author.id)
+        epic_friend = client.get_friend(ctx.author.id)
     else:
         user = await client.fetch_profile(epic_username)
 
@@ -1169,6 +1175,20 @@ async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = N
         await ctx.send('Cannot invite to party as the friend is not found.')
         print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                           "Failed to invite to party as the friend is not found."))
+
+
+@client.command()
+async def hide(ctx: fortnitepy.ext.commands.Context) -> None:
+    if client.party.me.leader:
+        await set_and_update_party_prop(
+            'RawSquadAssignments_j', {'RawSquadAssignments': [{'memberId': client.user.id, 'absoluteMemberIdx': 1}]}
+        )
+
+        await ctx.send('Hid everyone in the party. Use !unhide if you want to unhide everyone.')
+    else:
+        await ctx.send("Failed to hide everyone, as I'm not party leader")
+        print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                          "Failed to hide everyone as I don't have the required permissions."))
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
