@@ -1414,6 +1414,25 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Finished equipping all new unencrypted skins.')
 
 
+@client.command()
+async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
+    client.default_party_member_config.cls = fortnitepy.JustChattingClientPartyMember
+
+    print(client.default_party_member_config.cls)
+
+    party_id = client.party.id
+    await client.party.me.leave()
+
+    await ctx.send('Set state to Just Chattin\'. Now attempting to rejoin party.')
+
+    try:
+        await client.join_to_party(party_id)
+    except fortnitepy.errors.Forbidden:
+        await message.reply('Failed to join back as party is set to private.')
+    except fortnitepy.errors.NotFound:
+        await message.reply('Party not found, are you sure Fortnite is open?')
+
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
