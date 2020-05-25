@@ -1185,10 +1185,23 @@ async def hide(ctx: fortnitepy.ext.commands.Context) -> None:
         )
 
         await ctx.send('Hid everyone in the party. Use !unhide if you want to unhide everyone.')
+        print(f'[PartyBot] [{time()}] Hid everyone in the party.')
     else:
         await ctx.send("Failed to hide everyone, as I'm not party leader")
         print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                           "Failed to hide everyone as I don't have the required permissions."))
+
+
+@client.command()
+async def avatar(ctx: fortnitepy.ext.commands.Context, kairos_cid: str) -> None:
+    karios_avatar = fortnitepy.Avatar(
+        asset=karios_cid
+    )
+
+    client.set_avatar(kairos_avatar)
+
+    await message.reply(f'Kairos avatar set to {kairos_cid}.')
+    print(f'[PartyBot] [{time()}] Kairos avatar set to {kairos_cid}.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
