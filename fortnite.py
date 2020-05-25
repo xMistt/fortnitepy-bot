@@ -763,7 +763,7 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> N
             await ctx.send(f"Kicked user: {member.display_name}.")
             print(f"[PartyBot] [{time()}] Kicked user: {member.display_name}")
         except fortnitepy.errors.Forbidden:
-            await ctx.send(f"Failed tokick {member.display_name}, as I'm not party leader.")
+            await ctx.send(f"Failed to kick {member.display_name}, as I'm not party leader.")
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                               "Failed to kick member as I don't have the required permissions."))
 
@@ -1201,6 +1201,62 @@ async def hide(ctx: fortnitepy.ext.commands.Context) -> None:
         await ctx.send("Failed to hide everyone, as I'm not party leader")
         print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                           "Failed to hide everyone as I don't have the required permissions."))
+
+
+@client.command()
+async def ghost(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
+    try:
+        skin_variants = client.party.me.create_variants(
+            progressive=2
+        )
+
+        cosmetic = await BenBotAsync.get_cosmetic(
+            lang="en",
+            searchLang="en",
+            matchMethod="contains",
+            name=content,
+            backendType="AthenaCharacter"
+        )
+
+        await client.party.me.set_outfit(
+            asset=cosmetic.id,
+            variants=skin_variants
+        )
+
+        await ctx.send(f'Skin set to Ghost {cosmetic.name}!')
+        print(f'[PartyBot] [{time()}] Skin set to Ghost {cosmetic.name}.')
+
+    except BenBotAsync.exceptions.NotFound:
+        await ctx.send(f"Failed to find a skin with the name: {content}.")
+        print(f"[PartyBot] [{time()}] Failed to find a skin with the name: {content}.")
+
+
+@client.command()
+async def shadow(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
+    try:
+        skin_variants = client.party.me.create_variants(
+            progressive=3
+        )
+
+        cosmetic = await BenBotAsync.get_cosmetic(
+            lang="en",
+            searchLang="en",
+            matchMethod="contains",
+            name=content,
+            backendType="AthenaCharacter"
+        )
+
+        await client.party.me.set_outfit(
+            asset=cosmetic.id,
+            variants=skin_variants
+        )
+
+        await ctx.send(f'Skin set to Shadow {cosmetic.name}!')
+        print(f'[PartyBot] [{time()}] Skin set to Ghost {cosmetic.name}.')
+
+    except BenBotAsync.exceptions.NotFound:
+        await ctx.send(f"Failed to find a skin with the name: {content}.")
+        print(f"[PartyBot] [{time()}] Failed to find a skin with the name: {content}.")
 
 
 @commands.dm_only()
