@@ -729,6 +729,7 @@ async def echo(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     await ctx.send('Sent message to party chat.')
 
 
+@commands.dm_only()
 @client.command()
 async def status(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     await client.set_status(content)
@@ -737,6 +738,7 @@ async def status(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     print(f'[PartyBot] [{time()}] Status set to {content}.')
 
 
+@commands.dm_only()
 @client.command()
 async def leave(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_emote('EID_Wave')
@@ -747,6 +749,7 @@ async def leave(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Left the party as I was requested.')
 
 
+@commands.dm_only()
 @client.command()
 async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
     user = await client.fetch_profile(epic_username)
@@ -765,6 +768,7 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> N
                               "Failed to kick member as I don't have the required permissions."))
 
 
+@commands.dm_only()
 @client.command(aliases=['unhide'])
 async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
     if epic_username is None:
@@ -798,6 +802,7 @@ async def playlist_id(ctx: fortnitepy.ext.commands.Context, playlist_: str) -> N
                           "Failed to set gamemode as I don't have the required permissions."))
 
 
+@commands.dm_only()
 @client.command()
 async def privacy(ctx: fortnitepy.ext.commands.Context, privacy_type: str) -> None:
     try:
@@ -1086,6 +1091,7 @@ async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send('Set state to the pre-game lobby.')
 
 
+@commands.dm_only()
 @client.command()
 async def join(ctx: fortnitepy.ext.commands.Context, *, username: str = None) -> None:
     if username is None:
@@ -1111,6 +1117,7 @@ async def join(ctx: fortnitepy.ext.commands.Context, *, username: str = None) ->
         await ctx.send('Cannot join party as the friend is not found.')
 
 
+@commands.dm_only()
 @client.command()
 async def friend(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
     if data['friend_accept']:
@@ -1150,6 +1157,7 @@ async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) 
                           "Failed to set playlist as I don't have the required permissions."))
 
 
+@commands.dm_only()
 @client.command()
 async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
     if epic_username is None:
@@ -1195,6 +1203,7 @@ async def hide(ctx: fortnitepy.ext.commands.Context) -> None:
                           "Failed to hide everyone as I don't have the required permissions."))
 
 
+@commands.dm_only()
 @client.command()
 async def avatar(ctx: fortnitepy.ext.commands.Context, kairos_cid: str) -> None:
     karios_avatar = fortnitepy.Avatar(
