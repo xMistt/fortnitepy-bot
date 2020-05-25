@@ -488,8 +488,8 @@ async def cid(ctx: fortnitepy.ext.commands.Context, character_id: str) -> None:
         variants=client.party.me.create_variants(profile_banner='ProfileBanner')
     )
 
-    await ctx.send(f'Skin set to {args[0]}')
-    print(f'[PartyBot] [{time()}] Skin set to {args[0]}')
+    await ctx.send(f'Skin set to {character_id}')
+    print(f'[PartyBot] [{time()}] Skin set to {character_id}')
 
 
 @client.command()
@@ -503,7 +503,7 @@ async def vtid(ctx: fortnitepy.ext.commands.Context, variant_token: str) -> None
 
     await client.party.me.set_outfit(asset=vtid[0], variants=skin_variants)
     print(f'[PartyBot] [{time()}] Set variants of {vtid[0]} to {vtid[1]} {vtid[2]}.')
-    await ctx.send(f'Variants set to {args[0]}.\n'
+    await ctx.send(f'Variants set to {variant_token}.\n'
                    '(Warning: This feature is not supported, please use !variants)')
 
 
@@ -515,7 +515,7 @@ async def variants(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, varia
         )
 
         await client.party.me.set_outfit(
-            asset=args[1],
+            asset=cosmetic_id,
             variants=skin_variants
         )
 
@@ -527,7 +527,7 @@ async def variants(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, varia
         )
 
         await client.party.me.set_outfit(
-            asset=args[1],
+            asset=cosmetic_id,
             variants=cosmetic_variants
         )
 
@@ -538,7 +538,7 @@ async def variants(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, varia
         )
 
         await client.party.me.set_backpack(
-            asset=args[1],
+            asset=cosmetic_id,
             variants=cosmetic_variants
         )
     elif 'pickaxe_id' in cosmetic_id.lower():
@@ -548,7 +548,7 @@ async def variants(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, varia
         )
 
         await client.party.me.set_pickaxe(
-            asset=args[1],
+            asset=cosmetic_id,
             variants=cosmetic_variants
         )
 
@@ -656,7 +656,7 @@ async def trails(ctx: fortnitepy.ext.commands.Context, trails_: str) -> None:
 @client.command()
 async def point(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     if 'pickaxe_id' in content.lower():
-        await client.party.me.set_pickaxe(asset=args[1])
+        await client.party.me.set_pickaxe(asset=content)
         await client.party.me.set_emote(asset='EID_IceKing')
         await ctx.send(f'Pickaxe set to {content} & Point it Out played.')
     else:
@@ -739,8 +739,8 @@ async def leave(ctx: fortnitepy.ext.commands.Context) -> None:
 
 
 @client.command()
-async def kick(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
-    user = await client.fetch_profile(content)
+async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
+    user = await client.fetch_profile(epic_username)
     member = client.party.members.get(user.id)
 
     if member is None:
@@ -757,12 +757,12 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
 
 
 @client.command()
-async def promote(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
-    if len(ctx.args) == 1:
+async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
+    if epic_username is None:
         user = await client.fetch_profile(message.author.display_name)
         member = await client.party.members.get(user.id)
     else:
-        user = await client.fetch_profile(content)
+        user = await client.fetch_profile(epic_username)
         member = client.party.members.get(user.id)
 
     if member is None:
@@ -1052,7 +1052,7 @@ async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] =
 
     else:
         await set_and_update_prop('Location_s', 'InGame')
-        await set_and_update_prop('NumAthenaPlayersLeft_U', args[1] if len(args) >= 2 else 0)
+        await set_and_update_prop('NumAthenaPlayersLeft_U', players)
         await set_and_update_prop('HasPreloadedAthena_b', True)
         await set_and_update_prop('SpectateAPartyMemberAvailable_b', 'true')
 
@@ -1142,19 +1142,19 @@ async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) 
 
 
 @client.command()
-async def invite(ctx: fortnitepy.ext.commands.Context, *, username: str = None) -> None:
-    if username is None:
+async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
+    if epic_username is None:
         epic_friend = client.get_friend(message.author.id)
     else:
-        user = await client.fetch_profile(content)
+        user = await client.fetch_profile(epic_username)
 
         if user is not None:
             epic_friend = client.get_friend(user.id)
         else:
             epic_friend = None
-            await ctx.send(f'Failed to find user with the name: {content}.')
+            await ctx.send(f'Failed to find user with the name: {epic_username}.')
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
-                              f"Failed to find user with the name: {content}."))
+                              f"Failed to find user with the name: {epic_username}."))
 
     if isinstance(epic_friend, fortnitepy.Friend):
         try:
