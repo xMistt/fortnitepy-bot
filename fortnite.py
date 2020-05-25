@@ -1390,6 +1390,30 @@ async def style(ctx: fortnitepy.ext.commands.Context, cosmetic_name: str, varian
     print(f'[PartyBot] [{time()}] Set variants of {cosmetic.id} to {variant_type} {variant_int}.')
 
 
+@client.command()
+async def new(ctx: fortnitepy.ext.commands.Context) -> None:
+    async with aiohttp.ClientSession() as session:
+        request = await session.request(
+            method='GET',
+            url='https://benbotfn.tk/api/v1/files/added',
+        )
+
+        response = await request.json()
+
+    for new_skin in [new_cid for new_cid in response if new_cid.split('/')[-1].lower().startswith('cid_')]:
+        await client.party.me.set_outfit(
+            asset=new_skin.split('/')[-1].split('.uasset')[0]
+        )
+
+        await ctx.send(f"Skin set to {new_skin.split('/')[-1].split('.uasset')[0]}!")
+        print(f"[PartyBot] [{time()}] Skin set to: {new_skin.split('/')[-1].split('.uasset')[0]}!")
+
+        await asyncio.sleep(3)
+
+    await ctx.send(f'Finished equipping all new unencrypted skins.')
+    print(f'[PartyBot] [{time()}] Finished equipping all new unencrypted skins.')
+
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
