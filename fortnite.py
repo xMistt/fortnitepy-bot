@@ -1479,11 +1479,11 @@ async def olddefault(ctx: fortnitepy.ext.commands.Context) -> None:
 
 @client.command()
 async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
-    skin_variants = client.user.party.me.create_variants(
+    skin_variants = client.party.me.create_variants(
         parts=2
     )
 
-    await client.user.party.me.set_outfit(
+    await client.party.me.set_outfit(
         asset='CID_022_Athena_Commando_F',
         variants=skin_variants
     )
