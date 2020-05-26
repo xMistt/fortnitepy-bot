@@ -907,15 +907,25 @@ async def ponpon(ctx: fortnitepy.ext.commands.Context) -> None:
 
 
 @client.command()
-async def enlightened(ctx: fortnitepy.ext.commands.Context, character_id: str, season: int, skin_level: int) -> None:
-    await client.party.me.set_outfit(
-        asset=cid,
-        variants=client.party.me.create_variants(progressive=4),
-        enlightenment=(season, level)
-    )
+async def enlightened(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, season: int, skin_level: int) -> None:
+    if 'cid' in cosmetic_id.lower():
+        await client.party.me.set_outfit(
+            asset=cosmetic_id,
+            variants=client.party.me.create_variants(progressive=4),
+            enlightenment=(season, level)
+        )
 
-    await ctx.send(f'Skin set to {character_id} at level {skin_level} (for Season 1{season}).')
-    print(f'[PartyBot] [{time()}] Enlightenment for {character_id} set to level {skin_level} (for Season 1{season}).')
+        await ctx.send(f'Skin set to {character_id} at level {skin_level} (for Season 1{season}).')
+    elif 'bid' in cosmetic_id.lower():
+        await client.party.me.set_backpack(
+            asset=cosmetic_id,
+            variants=client.party.me.create_variants(progressive=2),
+            enlightenment=(season, level)
+        )
+        await ctx.send(f'Backpack set to {character_id} at level {skin_level} (for Season 1{season}).')
+
+    print(f'[PartyBot] [{time()}] Enlightenment for {cosmetic_id} set to level {skin_level} (for Season 1{season}).')
+
 
 
 @client.command()
