@@ -1488,7 +1488,7 @@ async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
         variants=skin_variants
     )
 
-    await message.reply('Skin set to Hatless Recon Expert!')
+    await ctx.send('Skin set to Hatless Recon Expert!')
     print(f'[PartyBot] [{time()}] Skin set to Hatless Recon Expert.')
 
 
