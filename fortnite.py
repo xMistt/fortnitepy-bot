@@ -927,7 +927,6 @@ async def enlightened(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, se
     print(f'[PartyBot] [{time()}] Enlightenment for {cosmetic_id} set to level {skin_level} (for Season 1{season}).')
 
 
-
 @client.command()
 async def ninja(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_outfit(
@@ -1145,17 +1144,17 @@ async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
 
 @commands.dm_only()
 @client.command()
-async def join(ctx: fortnitepy.ext.commands.Context, *, username: str = None) -> None:
+async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
     if username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
-        user = await client.fetch_profile(username)
+        user = await client.fetch_profile(epic_username)
 
         if user is not None:
             epic_friend = client.get_friend(user.id)
         else:
             epic_friend = None
-            await ctx.send(f'Failed to find user with the name: {username}.')
+            await ctx.send(f'Failed to find user with the name: {epic_username}.')
 
     if isinstance(epic_friend, fortnitepy.Friend):
         try:
@@ -1476,6 +1475,21 @@ async def olddefault(ctx: fortnitepy.ext.commands.Context) -> None:
 
     await ctx.send(f'Skin set to {random_default}!')
     print(f"[PartyBot] [{time()}] Skin set to {random_default}.")
+
+
+@client.command()
+async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
+    skin_variants = client.user.party.me.create_variants(
+        parts=2
+    )
+
+    await client.user.party.me.set_outfit(
+        asset='CID_022_Athena_Commando_F',
+        variants=skin_variants
+    )
+
+    await message.reply('Skin set to Hatless Recon Expert!')
+    print(f'[PartyBot] [{time()}] Skin set to Hatless Recon Expert.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
