@@ -1454,6 +1454,20 @@ async def shop(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Finished equipping all skins in the item shop.')
 
 
+@client.command()
+async def olddefault(ctx: fortnitepy.ext.commands.Context) -> None:
+    random_default = py_random.choice(
+        [cid_ for cid_ in dir(fortnitepy.DefaultCharactersChapter1) if not cid_.startswith('_')]
+    )
+
+    await client.party.me.set_outfit(
+        asset=random_default
+    )
+
+    await ctx.send(f'Skin set to {random_default}!')
+    print(f"[PartyBot] [{time()}] Skin set to {random_default}.")
+
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
