@@ -959,7 +959,7 @@ async def rareskins(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f"[PartyBot] [{time()}] Skin set to Pink Ghoul Trooper.")
     await asyncio.sleep(2)
 
-    for rare_skin in ('CID_028_Athena_Commando_F', 'CID_017_Athena_Commando_M', 'CID_022_Athena_Commando_F'):
+    for rare_skin in ('CID_028_Athena_Commando_F', 'CID_017_Athena_Commando_M'):
         await client.party.me.set_outfit(
             asset=rare_skin
         )
