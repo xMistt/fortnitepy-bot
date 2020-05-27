@@ -215,7 +215,7 @@ if data['debug']:
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = commands.Bot(
-    command_prefix='!',
+    command_prefix=['prefix'],
     auth=fortnitepy.AdvancedAuth(
         email=data['email'],
         password=data['password'],
@@ -1489,7 +1489,8 @@ async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
     )
 
     await ctx.send('Skin set to Hatless Recon Expert!')
-    print(f'[PartyBot] [{time()}] Skin set to Hatless Recon Expert.')
+    print(f"[PartyBot] [{time()}] Skin set to Hatless Recon Expert.")
+
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
