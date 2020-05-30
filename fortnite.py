@@ -1435,9 +1435,9 @@ async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
     try:
         await client.join_to_party(party_id)
     except fortnitepy.errors.Forbidden:
-        await message.reply('Failed to join back as party is set to private.')
+        await ctx.send('Failed to join back as party is set to private.')
     except fortnitepy.errors.NotFound:
-        await message.reply('Party not found, are you sure Fortnite is open?')
+        await ctx.send('Party not found, are you sure Fortnite is open?')
 
 
 @client.command()
