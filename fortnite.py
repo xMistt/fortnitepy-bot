@@ -1492,6 +1492,29 @@ async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Skin set to Hatless Recon Expert.')
 
 
+@client.command()
+async def season(ctx: fortnitepy.ext.commands.Context, br_season: int) -> None:
+    max_tier_skins = {
+        1: "CID_028_Athena_Commando_F",
+        2: "CID_035_Athena_Commando_M_Medieval",
+        3: "CID_084_Athena_Commando_M_Assassin",
+        4: "CID_116_Athena_Commando_M_CarbideBlack",
+        5: "CID_165_Athena_Commando_M_DarkViking",
+        6: "CID_230_Athena_Commando_M_Werewolf",
+        7: "CID_288_Athena_Commando_M_IceKing",
+        8: "CID_352_Athena_Commando_F_Shiny",
+        9: "CID_407_Athena_Commando_M_BattleSuit",
+        10: "CID_484_Athena_Commando_M_KnightRemix",
+        11: "CID_572_Athena_Commando_M_Viper",
+        12: "CID_694_Athena_Commando_M_CatBurglar"
+    }
+
+    await client.party.me.set_outfit(asset=max_tier_skins[br_season])
+
+    await ctx.send(f'Skin set to {max_tier_skins[br_season]}!')
+    print(f"[PartyBot] [{time()}] Skin set to {max_tier_skins[br_season]}.")
+
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
