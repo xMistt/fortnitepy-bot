@@ -1133,6 +1133,21 @@ async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] =
 
 @client.command()
 async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
+    if client.default_party_member_config.cls == fortnitepy.JustChattingClientPartyMember:
+        client.default_party_member_config.cls = fortnitepy.ClientPartyMember
+
+        party_id = client.party.id
+        await client.party.me.leave()
+
+        await ctx.send('Removed state of Just Chattin\'. Now attempting to rejoin party.')
+
+        try:
+            await client.join_to_party(party_id)
+        except fortnitepy.errors.Forbidden:
+            await ctx.send('Failed to join back as party is set to private.')
+        except fortnitepy.errors.NotFound:
+            await ctx.send('Party not found, are you sure Fortnite is open?')
+
     await set_and_update_member_prop('Location_s', 'PreLobby')
     await set_and_update_member_prop('NumAthenaPlayersLeft_U', '0')
     await set_and_update_member_prop('HasPreloadedAthena_b', False)
@@ -1430,7 +1445,8 @@ async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
     party_id = client.party.id
     await client.party.me.leave()
 
-    await ctx.send('Set state to Just Chattin\'. Now attempting to rejoin party.')
+    await ctx.send('Set state to Just Chattin\'. Now attempting to rejoin party.'
+                   '\nUse the command: !lobby to revert back to normal.')
 
     try:
         await client.join_to_party(party_id)
