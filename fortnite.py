@@ -1090,42 +1090,30 @@ async def nocontrail(ctx: fortnitepy.ext.commands.Context) -> None:
 
 
 @client.command()
-async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] = 0, inputted_time: int = 0) -> None:
+async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] = 0, match_time: int = 0) -> None:
     if players == 'progressive':
-        await set_and_update_member_prop('Location_s', 'InGame')
-        await set_and_update_member_prop('HasPreloadedAthena_b', True)
-        await set_and_update_member_prop('SpectateAPartyMemberAvailable_b', 'true')
-        await set_and_update_member_prop('NumAthenaPlayersLeft_U', '100')
+        match_time = datetime.datetime.utcnow()
 
-        match_time = str(fortnitepy.Client.to_iso(
-            datetime.datetime.utcnow()
-        ))[slice(23)]
+        await client.party.me.set_in_match(
+            players_left=100,
+            started_at=match_time
+        )
 
-        await set_and_update_member_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+        while (100 >= client.party.me.match_players_left > 0
+               and client.party.me.in_match()):
 
-        await ctx.send(f'Set state to in-game in a match with progressive players drop starting from 100.'
-                       '\nUse the command: !lobby to revert back to normal.')
-
-        while (100 >= client.party.me.meta.get_prop('NumAthenaPlayersLeft_U') > 0
-               and client.party.me.meta.get_prop('Location_s') == 'InGame'):
-            await set_and_update_member_prop(
-                'NumAthenaPlayersLeft_U',
-                client.party.me.meta.get_prop('NumAthenaPlayersLeft_U') - random.randint(3, 6)
+            await client.party.me.set_in_match(
+                players_left=client.party.me.match_players_left - py_random.randint(3, 6),
+                started_at=match_time
             )
 
-            await asyncio.sleep(random.randint(45, 65))
+            await asyncio.sleep(py_random.randint(45, 65))
 
     else:
-        await set_and_update_member_prop('Location_s', 'InGame')
-        await set_and_update_member_prop('NumAthenaPlayersLeft_U', players)
-        await set_and_update_member_prop('HasPreloadedAthena_b', True)
-        await set_and_update_member_prop('SpectateAPartyMemberAvailable_b', 'true')
-
-        match_time = str(fortnitepy.Client.to_iso(
-            datetime.datetime.utcnow() - datetime.timedelta(minutes=inputted_time)
-        ))[slice(23)]
-
-        await set_and_update_member_prop('UtcTimeStartedMatchAthena_s', f'{str(match_time)}Z')
+        await client.party.me.set_in_match(
+            players_left=int(players),
+            started_at=datetime.datetime.utcnow() - datetime.timedelta(minutes=match_time)
+        )
 
         await ctx.send(f'Set state to in-game in a match with {players} players.'
                        '\nUse the command: !lobby to revert back to normal.')
@@ -1148,11 +1136,7 @@ async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
         except fortnitepy.errors.NotFound:
             await ctx.send('Party not found, are you sure Fortnite is open?')
 
-    await set_and_update_member_prop('Location_s', 'PreLobby')
-    await set_and_update_member_prop('NumAthenaPlayersLeft_U', '0')
-    await set_and_update_member_prop('HasPreloadedAthena_b', False)
-    await set_and_update_member_prop('SpectateAPartyMemberAvailable_b', 'false')
-    await set_and_update_member_prop('UtcTimeStartedMatchAthena_s', '0001-01-01T00:00:00.000Z')
+    await client.party.me.clear_in_match()
 
     await ctx.send('Set state to the pre-game lobby.')
 
