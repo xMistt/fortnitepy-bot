@@ -291,6 +291,7 @@ async def event_party_message(message: fortnitepy.FriendMessage) -> None:
     print(crayons.green(f'[PartyBot] [{time()}] {message.author.display_name}: {message.content}'))
 
 
+@commands.dm_only()
 @client.command()
 async def skin(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -311,6 +312,7 @@ async def skin(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Failed to find a skin with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def backpack(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -331,6 +333,7 @@ async def backpack(ctx: fortnitepy.ext.commands.Context, *, content: str) -> Non
         print(f"[PartyBot] [{time()}] Failed to find a backpack with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def emote(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -352,6 +355,7 @@ async def emote(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Failed to find an emote with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def pickaxe(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -372,6 +376,7 @@ async def pickaxe(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None
         print(f"[PartyBot] [{time()}] Failed to find a pickaxe with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def pet(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -392,6 +397,7 @@ async def pet(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Failed to find a pet with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def emoji(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -412,6 +418,7 @@ async def emoji(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Failed to find an emoji with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def contrail(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -432,6 +439,7 @@ async def contrail(ctx: fortnitepy.ext.commands.Context, *, content: str) -> Non
         print(f"[PartyBot] [{time()}] Failed to find an contrail with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def purpleskull(ctx: fortnitepy.ext.commands.Context) -> None:
     skin_variants = client.party.me.create_variants(
@@ -447,6 +455,7 @@ async def purpleskull(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f"[PartyBot] [{time()}] Skin set to Purple Skull Trooper.")
 
 
+@commands.dm_only()
 @client.command()
 async def pinkghoul(ctx: fortnitepy.ext.commands.Context) -> None:
     skin_variants = client.party.me.create_variants(
@@ -462,6 +471,7 @@ async def pinkghoul(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f"[PartyBot] [{time()}] Skin set to Pink Ghoul Trooper.")
 
 
+@commands.dm_only()
 @client.command()
 async def purpleportal(ctx: fortnitepy.ext.commands.Context) -> None:
     skin_variants = client.party.me.create_variants(
@@ -479,6 +489,7 @@ async def purpleportal(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f"[PartyBot] [{time()}] Backpack set to Purple Ghost Portal.")
 
 
+@commands.dm_only()
 @client.command()
 async def banner(ctx: fortnitepy.ext.commands.Context, icon: str, colour: str, banner_level: int) -> None:
     await client.party.me.set_banner(icon=icon, color=colour, season_level=banner_level)
@@ -487,6 +498,7 @@ async def banner(ctx: fortnitepy.ext.commands.Context, icon: str, colour: str, b
     print(f"[PartyBot] [{time()}] Banner set to: {icon}, {colour}, {banner_level}.")
 
 
+@commands.dm_only()
 @client.command()
 async def cid(ctx: fortnitepy.ext.commands.Context, character_id: str) -> None:
     await client.party.me.set_outfit(
@@ -498,6 +510,7 @@ async def cid(ctx: fortnitepy.ext.commands.Context, character_id: str) -> None:
     print(f'[PartyBot] [{time()}] Skin set to {character_id}')
 
 
+@commands.dm_only()
 @client.command()
 async def vtid(ctx: fortnitepy.ext.commands.Context, variant_token: str) -> None:
     variant_id = await set_vtid(variant_token)
@@ -513,6 +526,7 @@ async def vtid(ctx: fortnitepy.ext.commands.Context, variant_token: str) -> None
                    '(Warning: This feature is not supported, please use !variants)')
 
 
+@commands.dm_only()
 @client.command()
 async def variants(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, variant_type: str, variant_int: str) -> None:
     if 'cid' in cosmetic_id.lower() and 'jersey_color' not in variant_type.lower():
@@ -562,6 +576,7 @@ async def variants(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, varia
     print(f'[PartyBot] [{time()}] Set variants of {cosmetic_id} to {variant_type} {variant_int}.')
 
 
+@commands.dm_only()
 @client.command()
 async def checkeredrenegade(ctx: fortnitepy.ext.commands.Context) -> None:
     skin_variants = client.party.me.create_variants(
@@ -577,6 +592,7 @@ async def checkeredrenegade(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Skin set to Checkered Renegade.')
 
 
+@commands.dm_only()
 @client.command()
 async def mintyelf(ctx: fortnitepy.ext.commands.Context) -> None:
     skin_variants = client.party.me.create_variants(
@@ -592,6 +608,7 @@ async def mintyelf(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Skin set to Minty Elf.')
 
 
+@commands.dm_only()
 @client.command()
 async def eid(ctx: fortnitepy.ext.commands.Context, emote_id: str) -> None:
     await client.party.me.clear_emote()
@@ -602,12 +619,14 @@ async def eid(ctx: fortnitepy.ext.commands.Context, emote_id: str) -> None:
     await ctx.send(f'Emote set to {emote_id}!')
 
 
+@commands.dm_only()
 @client.command()
 async def stop(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.clear_emote()
     await ctx.send('Stopped emoting.')
 
 
+@commands.dm_only()
 @client.command()
 async def bid(ctx: fortnitepy.ext.commands.Context, backpack_id: str) -> None:
     await client.party.me.set_backpack(
@@ -617,11 +636,13 @@ async def bid(ctx: fortnitepy.ext.commands.Context, backpack_id: str) -> None:
     await ctx.send(f'Backbling set to {backpack_id}!')
 
 
+@commands.dm_only()
 @client.command()
 async def _help(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send('For a list of commands, go to: https://github.com/xMistt/fortnitepy-bot/wiki/Commands')
 
 
+@commands.dm_only()
 @client.command(aliases=['legacypickaxe'])
 async def pickaxe_id(ctx: fortnitepy.ext.commands.Context, pickaxe_id_: str) -> None:
     await client.party.me.set_pickaxe(
@@ -631,6 +652,7 @@ async def pickaxe_id(ctx: fortnitepy.ext.commands.Context, pickaxe_id_: str) -> 
     await ctx.send(f'Pickaxe set to {pickaxe_id_}')
 
 
+@commands.dm_only()
 @client.command()
 async def pet_carrier(ctx: fortnitepy.ext.commands.Context, pet_carrier_id: str) -> None:
     await client.party.me.set_pet(
@@ -640,6 +662,7 @@ async def pet_carrier(ctx: fortnitepy.ext.commands.Context, pet_carrier_id: str)
     await ctx.send(f'Pet set to {pet_carrier_id}!')
 
 
+@commands.dm_only()
 @client.command()
 async def emoji_id(ctx: fortnitepy.ext.commands.Context, emoji_: str) -> None:
     await client.party.me.clear_emote()
@@ -650,6 +673,7 @@ async def emoji_id(ctx: fortnitepy.ext.commands.Context, emoji_: str) -> None:
     await ctx.send(f'Emoji set to {emoji_}!')
 
 
+@commands.dm_only()
 @client.command()
 async def trails(ctx: fortnitepy.ext.commands.Context, trails_: str) -> None:
     await client.party.me.set_contrail(
@@ -659,6 +683,7 @@ async def trails(ctx: fortnitepy.ext.commands.Context, trails_: str) -> None:
     await ctx.send(f'Contrail set to {trails}!')
 
 
+@commands.dm_only()
 @client.command()
 async def point(ctx: fortnitepy.ext.commands.Context, *, content: str = None) -> None:
     if content is None:
@@ -686,24 +711,28 @@ async def point(ctx: fortnitepy.ext.commands.Context, *, content: str = None) ->
             await ctx.send(f"Failed to find a pickaxe with the name: {content}")
 
 
+@commands.dm_only()
 @client.command()
 async def ready(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_ready(fortnitepy.ReadyState.READY)
     await ctx.send('Ready!')
 
 
+@commands.dm_only()
 @client.command(aliases=['sitin'])
 async def unready(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_ready(fortnitepy.ReadyState.NOT_READY)
     await ctx.send('Unready!')
 
 
+@commands.dm_only()
 @client.command()
 async def sitout(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
     await ctx.send('Sitting Out!')
 
 
+@commands.dm_only()
 @client.command()
 async def bp(ctx: fortnitepy.ext.commands.Context, tier: int) -> None:
     await client.party.me.set_battlepass_info(
@@ -714,6 +743,7 @@ async def bp(ctx: fortnitepy.ext.commands.Context, tier: int) -> None:
     await ctx.send(f'Set battle pass tier to {tier}.')
 
 
+@commands.dm_only()
 @client.command()
 async def level(ctx: fortnitepy.ext.commands.Context, banner_level: int) -> None:
     await client.party.me.set_banner(
@@ -723,6 +753,7 @@ async def level(ctx: fortnitepy.ext.commands.Context, banner_level: int) -> None
     await ctx.send(f'Set level to {level}.')
 
 
+@commands.dm_only()
 @client.command()
 async def echo(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     await client.party.send(content)
@@ -791,6 +822,7 @@ async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = 
                               "Failed to kick member as I don't have the required permissions."))
 
 
+@commands.dm_only()
 @client.command()
 async def playlist_id(ctx: fortnitepy.ext.commands.Context, playlist_: str) -> None:
     try:
@@ -826,6 +858,7 @@ async def privacy(ctx: fortnitepy.ext.commands.Context, privacy_type: str) -> No
                           "Failed to set party privacy as I don't have the required permissions."))
 
 
+@commands.dm_only()
 @client.command()
 async def copy(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
     if epic_username is None:
@@ -867,6 +900,7 @@ async def copy(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = Non
     await ctx.send(f'Copied the loadout of {member.display_name}.')
 
 
+@commands.dm_only()
 @client.command()
 async def hologram(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_outfit(
@@ -877,6 +911,7 @@ async def hologram(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Skin set to Star Wars Hologram.')
 
 
+@commands.dm_only()
 @client.command()
 async def gift(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.clear_emote()
@@ -888,6 +923,7 @@ async def gift(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send('What did you think would happen?')
 
 
+@commands.dm_only()
 @client.command()
 async def matchmakingcode(ctx: fortnitepy.ext.commands.Context, *, custom_matchmaking_key: str) -> None:
     await client.party.set_custom_key(
@@ -897,6 +933,7 @@ async def matchmakingcode(ctx: fortnitepy.ext.commands.Context, *, custom_matchm
     await ctx.send(f'Custom matchmaking code set to: {custom_matchmaking_key}')
 
 
+@commands.dm_only()
 @client.command()
 async def ponpon(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_emote(
@@ -906,6 +943,7 @@ async def ponpon(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send('Emote set to Ninja Style!')
 
 
+@commands.dm_only()
 @client.command()
 async def enlightened(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, season: int, skin_level: int) -> None:
     if 'cid' in cosmetic_id.lower():
@@ -927,6 +965,7 @@ async def enlightened(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, se
     print(f'[PartyBot] [{time()}] Enlightenment for {cosmetic_id} set to level {skin_level} (for Season 1{season}).')
 
 
+@commands.dm_only()
 @client.command()
 async def ninja(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_outfit(
@@ -937,6 +976,7 @@ async def ninja(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Skin set to Ninja.')
 
 
+@commands.dm_only()
 @client.command()
 async def rareskins(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send('Showing all rare skins now.')
@@ -969,6 +1009,7 @@ async def rareskins(ctx: fortnitepy.ext.commands.Context) -> None:
         await asyncio.sleep(2)
 
 
+@commands.dm_only()
 @client.command()
 async def goldenpeely(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.set_outfit(
@@ -980,6 +1021,7 @@ async def goldenpeely(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send(f'Skin set to Golden Peely.')
 
 
+@commands.dm_only()
 @client.command()
 async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'skin') -> None:
     if cosmetic_type == 'skin':
@@ -1071,24 +1113,28 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         await ctx.send(f'Emote randomly set to {random_emote}.')
 
 
+@commands.dm_only()
 @client.command()
 async def nobackpack(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.clear_backpack()
     await ctx.send('Removed backpack.')
 
 
+@commands.dm_only()
 @client.command()
 async def nopet(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.clear_pet()
     await ctx.send('Removed pet.')
 
 
+@commands.dm_only()
 @client.command()
 async def nocontrail(ctx: fortnitepy.ext.commands.Context) -> None:
     await client.party.me.clear_contrail()
     await ctx.send('Removed contrail.')
 
 
+@commands.dm_only()
 @client.command()
 async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] = 0, match_time: int = 0) -> None:
     if players == 'progressive':
@@ -1119,6 +1165,7 @@ async def match(ctx: fortnitepy.ext.commands.Context, players: Union[str, int] =
                        '\nUse the command: !lobby to revert back to normal.')
 
 
+@commands.dm_only()
 @client.command()
 async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
     if client.default_party_member_config.cls == fortnitepy.JustChattingClientPartyMember:
@@ -1186,6 +1233,7 @@ async def friend(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) ->
             print(crayons.red(f"[PartyBot] [{time()}] [ERROR] Failed to find a user with the name {epic_username}."))
 
 
+@commands.dm_only()
 @client.command()
 async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) -> None:
     try:
@@ -1238,6 +1286,7 @@ async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = N
                           "Failed to invite to party as the friend is not found."))
 
 
+@commands.dm_only()
 @client.command()
 async def hide(ctx: fortnitepy.ext.commands.Context) -> None:
     if client.party.me.leader:
@@ -1253,6 +1302,7 @@ async def hide(ctx: fortnitepy.ext.commands.Context) -> None:
                           "Failed to hide everyone as I don't have the required permissions."))
 
 
+@commands.dm_only()
 @client.command()
 async def ghost(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -1281,6 +1331,7 @@ async def ghost(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Failed to find a skin with the name: {content}.")
 
 
+@commands.dm_only()
 @client.command()
 async def shadow(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
@@ -1335,6 +1386,7 @@ async def clean(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Command prompt/terminal cleared.')
 
 
+@commands.dm_only()
 @client.command()
 async def set(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     cosmetic_types = {
@@ -1367,6 +1419,7 @@ async def set(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     print(f'[PartyBot] [{time()}] Fishing equipping  all cosmetics from the {set_items[0].set} set.')
 
 
+@commands.dm_only()
 @client.command()
 async def style(ctx: fortnitepy.ext.commands.Context, cosmetic_name: str, variant_type: str, variant_int: str) -> None:
     # cosmetic_types = {
@@ -1398,6 +1451,7 @@ async def style(ctx: fortnitepy.ext.commands.Context, cosmetic_name: str, varian
     print(f'[PartyBot] [{time()}] Set variants of {cosmetic.id} to {variant_type} {variant_int}.')
 
 
+@commands.dm_only()
 @client.command()
 async def new(ctx: fortnitepy.ext.commands.Context) -> None:
     async with aiohttp.ClientSession() as session:
@@ -1422,6 +1476,7 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Finished equipping all new unencrypted skins.')
 
 
+@commands.dm_only()
 @client.command()
 async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
     client.default_party_member_config.cls = fortnitepy.JustChattingClientPartyMember
@@ -1440,6 +1495,7 @@ async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
         await ctx.send('Party not found, are you sure Fortnite is open?')
 
 
+@commands.dm_only()
 @client.command()
 async def shop(ctx: fortnitepy.ext.commands.Context) -> None:
     store = await client.fetch_item_shop()
@@ -1463,6 +1519,7 @@ async def shop(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Finished equipping all skins in the item shop.')
 
 
+@commands.dm_only()
 @client.command()
 async def olddefault(ctx: fortnitepy.ext.commands.Context) -> None:
     random_default = py_random.choice(
@@ -1477,6 +1534,7 @@ async def olddefault(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f"[PartyBot] [{time()}] Skin set to {random_default}.")
 
 
+@commands.dm_only()
 @client.command()
 async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
     skin_variants = client.party.me.create_variants(
@@ -1492,6 +1550,7 @@ async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
     print(f'[PartyBot] [{time()}] Skin set to Hatless Recon Expert.')
 
 
+@commands.dm_only()
 @client.command()
 async def season(ctx: fortnitepy.ext.commands.Context, br_season: int) -> None:
     max_tier_skins = {
