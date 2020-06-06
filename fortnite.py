@@ -685,7 +685,7 @@ async def trails(ctx: fortnitepy.ext.commands.Context, trails_: str) -> None:
 
 @commands.dm_only()
 @client.command()
-async def point(ctx: fortnitepy.ext.commands.Context, *, content: str = None) -> None:
+async def point(ctx: fortnitepy.ext.commands.Context, *, content: Union[str, None] = None) -> None:
     if content is None:
         await client.party.me.set_emote(asset='EID_IceKing')
         await ctx.send(f'Point it Out played.')
@@ -801,7 +801,7 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> N
 
 @commands.dm_only()
 @client.command(aliases=['unhide'])
-async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
+async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
     if epic_username is None:
         user = await client.fetch_profile(ctx.author.display_name)
         member = client.party.members.get(user.id)
@@ -860,7 +860,7 @@ async def privacy(ctx: fortnitepy.ext.commands.Context, privacy_type: str) -> No
 
 @commands.dm_only()
 @client.command()
-async def copy(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
+async def copy(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
     if epic_username is None:
         member = client.party.members.get(ctx.author.id)
     else:
@@ -1190,7 +1190,7 @@ async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
 
 @commands.dm_only()
 @client.command()
-async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
+async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
     if username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
@@ -1257,7 +1257,7 @@ async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) 
 
 @commands.dm_only()
 @client.command()
-async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = None) -> None:
+async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
     if epic_username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
@@ -1288,14 +1288,37 @@ async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: str = N
 
 @commands.dm_only()
 @client.command()
-async def hide(ctx: fortnitepy.ext.commands.Context) -> None:
+async def hide(ctx: fortnitepy.ext.commands.Context, party_member: Union[str, None] = None) -> None:
     if client.party.me.leader:
-        await set_and_update_party_prop(
-            'RawSquadAssignments_j', {'RawSquadAssignments': [{'memberId': client.user.id, 'absoluteMemberIdx': 1}]}
-        )
+        if party_member is not None:
+            user = await client.fetch_profile(party_member)
+            member = client.party.members.get(user.id)
 
-        await ctx.send('Hid everyone in the party. Use !unhide if you want to unhide everyone.')
-        print(f'[PartyBot] [{time()}] Hid everyone in the party.')
+            if member is not None:
+                raw_squad_assignments = client.party.meta.get_prop('RawSquadAssignments_j')["RawSquadAssignments"]
+
+                for player in raw_squad_assignments:
+                    if player['memberId'] == member.id:
+                        raw_squad_assignments.remove(player)
+
+                await set_and_update_party_prop(
+                    'RawSquadAssignments_j', {
+                        'RawSquadAssignments': raw_squad_assignments
+                    }
+                )
+            else:
+                await ctx.send(f'Failed to find user with the name: {party_member}.')
+                print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
+                                  f"Failed to find user with the name: {party_member}."))
+        else:
+            await set_and_update_party_prop(
+                'RawSquadAssignments_j', {
+                    'RawSquadAssignments': [{'memberId': client.user.id, 'absoluteMemberIdx': 1}]
+                }
+            )
+
+            await ctx.send('Hid everyone in the party. Use !unhide if you want to unhide everyone.')
+            print(f'[PartyBot] [{time()}] Hid everyone in the party.')
     else:
         await ctx.send("Failed to hide everyone, as I'm not party leader")
         print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
