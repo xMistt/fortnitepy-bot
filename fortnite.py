@@ -224,7 +224,11 @@ client = commands.Bot(
         **device_auth_details
     ),
     status=data['status'],
-    platform=fortnitepy.Platform(data['platform'])
+    platform=fortnitepy.Platform(data['platform']),
+    avatar=fortnitepy.Avatar(
+        asset="cid_028_ff2b06cf446376144ba408d3482f5c982bf2584cf0f508ee3e4ba4a0fd461a38",
+        background_colors=fortnitepy.KairosBackgroundColorPreset.PINK.value
+    )
 )
 
 
@@ -1588,7 +1592,8 @@ async def season(ctx: fortnitepy.ext.commands.Context, br_season: int) -> None:
         9: "CID_407_Athena_Commando_M_BattleSuit",
         10: "CID_484_Athena_Commando_M_KnightRemix",
         11: "CID_572_Athena_Commando_M_Viper",
-        12: "CID_694_Athena_Commando_M_CatBurglar"
+        12: "CID_694_Athena_Commando_M_CatBurglar",
+        13: "CID_767_Athena_Commando_F_BlackKnight"
     }
 
     await client.party.me.set_outfit(asset=max_tier_skins[br_season])
