@@ -949,24 +949,30 @@ async def ponpon(ctx: fortnitepy.ext.commands.Context) -> None:
 
 @commands.dm_only()
 @client.command()
-async def enlightened(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, season: int, skin_level: int) -> None:
+async def enlightened(ctx: fortnitepy.ext.commands.Context, cosmetic_id: str, br_season: int, skin_level: int) -> None:
+    variant_types = {
+        1: client.party.me.create_variants(progressive=4),
+        2: client.party.me.create_variants(progressive=4),
+        3: client.party.me.create_variants(material=2)
+    }
+
     if 'cid' in cosmetic_id.lower():
         await client.party.me.set_outfit(
             asset=cosmetic_id,
-            variants=client.party.me.create_variants(progressive=4),
-            enlightenment=(season, level)
+            variants=variant_types[br_season] if br_season in variant_types else variant_types[2],
+            enlightenment=(br_season, level)
         )
 
-        await ctx.send(f'Skin set to {character_id} at level {skin_level} (for Season 1{season}).')
+        await ctx.send(f'Skin set to {character_id} at level {skin_level} (for Season 1{br_season}).')
     elif 'bid' in cosmetic_id.lower():
         await client.party.me.set_backpack(
             asset=cosmetic_id,
             variants=client.party.me.create_variants(progressive=2),
-            enlightenment=(season, level)
+            enlightenment=(br_season, level)
         )
-        await ctx.send(f'Backpack set to {character_id} at level {skin_level} (for Season 1{season}).')
+        await ctx.send(f'Backpack set to {character_id} at level {skin_level} (for Season 1{br_season}).')
 
-    print(f'[PartyBot] [{time()}] Enlightenment for {cosmetic_id} set to level {skin_level} (for Season 1{season}).')
+    print(f'[PartyBot] [{time()}] Enlightenment for {cosmetic_id} set to level {skin_level} (for Season 1{br_season}).')
 
 
 @commands.dm_only()
@@ -1195,7 +1201,7 @@ async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
 @commands.dm_only()
 @client.command()
 async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
-    if username is None:
+    if epic_username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
         user = await client.fetch_profile(epic_username)
@@ -1496,6 +1502,20 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
 
         await ctx.send(f"Skin set to {new_skin.split('/')[-1].split('.uasset')[0]}!")
         print(f"[PartyBot] [{time()}] Skin set to: {new_skin.split('/')[-1].split('.uasset')[0]}!")
+
+        await asyncio.sleep(3)
+
+    await ctx.send(f'Finished equipping all new unencrypted skins.')
+    print(f'[PartyBot] [{time()}] Finished equipping all new unencrypted skins.')
+
+
+    for new_emote in [new_eid for new_eid in response if new_eid.split('/')[-1].lower().startswith('eid_')]:
+        await client.party.me.set_emote(
+            asset=new_skin.split('/')[-1].split('.uasset')[0]
+        )
+
+        await ctx.send(f"Emote set to {new_eid.split('/')[-1].split('.uasset')[0]}!")
+        print(f"[PartyBot] [{time()}] Emote set to: {new_eid.split('/')[-1].split('.uasset')[0]}!")
 
         await asyncio.sleep(3)
 
