@@ -1,9 +1,20 @@
-# PartyBot
+<h1 align="center">PartyBot</h1>
 
-[![Downloads](https://pepy.tech/badge/benbotasync)](https://pepy.tech/project/benbotasync)
-[![Python Versions](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)](https://www.python.org/downloads/release/python-360/) 
+<p align="center">
+    <a href="https://pepy.tech/project/benbotasync" align="center">
+        <img alt="Downloads" src="https://pepy.tech/badge/benbotasync">
+    </a>
+    <a href="https://www.python.org/downloads/release/python-360/" align="center">
+        <img alt="Python" src="https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue">
+    </a>
+    <a href="https://www.python.org/dev/peps/pep-0008/" align="center">
+        <img alt="PEP8" src="https://img.shields.io/badge/PEP8-compliant-brightgreen.svg">
+    </a>
+</p>
 
-A fortnite HTTP/XMPP bot coded in Python with party capabilites.
+<p align="center">A Fortnite HTTP/XMPP bot coded in Python with party capabilities.</p>
+
+---
 
 ## Discord Support
 <a href="https://discord.gg/8heARRB"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
@@ -24,7 +35,7 @@ PartyBot requires Python 3.6 or greater. If you need Python 3.6+, you can get it
 
 3. Launch the fortnite.py file and enjoy.
 
-4. ***This step is optional and will not work on Windows*** <br>The bot will automatically use uvloop (fastest event loop) if it's installed. To install uvloop, enter this into terminal:
+4. ***This step is optional and WILL NOT work on Windows.*** <br>The bot will automatically use uvloop (fastest event loop) if it's installed. To install uvloop, enter this into terminal:
 
     ```
     pip install -U uvloop
