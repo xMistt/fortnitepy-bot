@@ -1305,14 +1305,14 @@ async def hide(ctx: fortnitepy.ext.commands.Context, party_member: Union[str, No
             member = client.party.members.get(user.id)
 
             if member is not None:
-                raw_squad_assignments = client.party.meta.get_prop('RawSquadAssignments_j')["RawSquadAssignments"]
+                raw_squad_assignments = client.party.meta.get_prop('Default:RawSquadAssignments_j')["RawSquadAssignments"]
 
                 for player in raw_squad_assignments:
                     if player['memberId'] == member.id:
                         raw_squad_assignments.remove(player)
 
                 await set_and_update_party_prop(
-                    'RawSquadAssignments_j', {
+                    'Default:RawSquadAssignments_j', {
                         'RawSquadAssignments': raw_squad_assignments
                     }
                 )
@@ -1322,7 +1322,7 @@ async def hide(ctx: fortnitepy.ext.commands.Context, party_member: Union[str, No
                                   f"Failed to find user with the name: {party_member}."))
         else:
             await set_and_update_party_prop(
-                'RawSquadAssignments_j', {
+                'Default:RawSquadAssignments_j', {
                     'RawSquadAssignments': [{'memberId': client.user.id, 'absoluteMemberIdx': 1}]
                 }
             )
@@ -1495,8 +1495,8 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
 
         response = await request.json()
 
-    for new_skin in [new_cid for new_cid in response if new_cid.split('/')[-1].lower().startswith('cid_')]:
-        await client.party.me.set_outfit(
+    for new_skin in [new_cid for new_cid in response if new_cid.split('/')[-1].lower().startswith('eid_')]:
+        await client.party.me.set_emote(
             asset=new_skin.split('/')[-1].split('.uasset')[0]
         )
 
@@ -1507,7 +1507,6 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
 
     await ctx.send(f'Finished equipping all new unencrypted skins.')
     print(f'[PartyBot] [{time()}] Finished equipping all new unencrypted skins.')
-
 
     for new_emote in [new_eid for new_eid in response if new_eid.split('/')[-1].lower().startswith('eid_')]:
         await client.party.me.set_emote(
