@@ -1621,6 +1621,36 @@ async def season(ctx: fortnitepy.ext.commands.Context, br_season: int) -> None:
     print(f"[PartyBot] [{time()}] Skin set to {max_tier_skins[br_season]}.")
 
 
+@commands.dm_only()
+@client.command()
+async def henchman(ctx: fortnitepy.ext.commands.Context) -> None:
+    random_henchman = py_random.choice(
+        "CID_794_Athena_Commando_M_HenchmanBadShorts_D",
+        "CID_NPC_Athena_Commando_F_HenchmanSpyDark",
+        "CID_791_Athena_Commando_M_HenchmanGoodShorts_D",
+        "CID_780_Athena_Commando_M_HenchmanBadShorts",
+        "CID_NPC_Athena_Commando_M_HenchmanGood",
+        "CID_692_Athena_Commando_M_HenchmanTough",
+        "CID_707_Athena_Commando_M_HenchmanGood",
+        "CID_792_Athena_Commando_M_HenchmanBadShorts_B",
+        "CID_793_Athena_Commando_M_HenchmanBadShorts_C",
+        "CID_NPC_Athena_Commando_M_HenchmanBad",
+        "CID_790_Athena_Commando_M_HenchmanGoodShorts_C",
+        "CID_779_Athena_Commando_M_HenchmanGoodShorts",
+        "CID_NPC_Athena_Commando_F_RebirthDefault_Henchman",
+        "CID_NPC_Athena_Commando_F_HenchmanSpyGood",
+        "CID_706_Athena_Commando_M_HenchmanBad",
+        "CID_789_Athena_Commando_M_HenchmanGoodShorts_B"
+    )
+
+    await client.party.me.set_outfit(
+        asset=random_henchman
+    )
+
+    await ctx.send(f'Skin set to {random_henchman}!')
+    print(f"[PartyBot] [{time()}] Skin set to {random_henchman}.")
+
+
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
         client.run()
