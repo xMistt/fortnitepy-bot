@@ -1495,8 +1495,8 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
 
         response = await request.json()
 
-    for new_skin in [new_cid for new_cid in response if new_cid.split('/')[-1].lower().startswith('eid_')]:
-        await client.party.me.set_emote(
+    for new_skin in [new_cid for new_cid in response if new_cid.split('/')[-1].lower().startswith('cid_')]:
+        await client.party.me.set_outfit(
             asset=new_skin.split('/')[-1].split('.uasset')[0]
         )
 
