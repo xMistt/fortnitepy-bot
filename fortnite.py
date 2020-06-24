@@ -1260,7 +1260,7 @@ async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) 
                               f"Failed to find a playlist with the name: {playlist_name}."))
 
     except fortnitepy.errors.Forbidden:
-        await ctx.send(f"Failed to set playlist to {playlist_namet}, as I'm not party leader.")
+        await ctx.send(f"Failed to set playlist to {playlist_name}, as I'm not party leader.")
         print(crayons.red(f"[PartyBot] [{time()}] [ERROR] "
                           "Failed to set playlist as I don't have the required permissions."))
 
