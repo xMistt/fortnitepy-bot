@@ -20,7 +20,7 @@
 <a href="https://discord.gg/8heARRB"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
 
 ## Installation
-PartyBot requires Python 3.6 or greater. If you need Python 3.6.1+, you can get it from here: [Python 3.6.1 Download](https://www.python.org/downloads/release/python-361/ "Python 3.6.1 Download").
+PartyBot requires Python 3.6.1  or greater. If you need Python 3.6.1+, you can get it from here: [Python 3.6.1 Download](https://www.python.org/downloads/release/python-361/ "Python 3.6.1 Download").
 
 
 1. Install the required dependencies.
