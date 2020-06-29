@@ -3,3 +3,4 @@ BenBotAsync
 crayons
 pypresence
 psutil
+pyyaml

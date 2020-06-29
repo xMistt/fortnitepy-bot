@@ -43,6 +43,7 @@ try:
     # Third party imports.
     from fortnitepy.ext import commands
 
+    import yaml
     import crayons
     import fortnitepy
     import BenBotAsync
@@ -197,8 +198,24 @@ print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
                    'Massive credit to Terbau for creating the library.'))
 print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
 
-with open('config.json') as f:
-    data = json.load(f)
+if os.path.isfile('config.json'):
+    old = json.load(open('config.json'))
+    json.dump(old, open('config.json.bak', 'w'), indent=2, sort_keys=False)
+    if os.path.isfile('config.yml'):
+        yaml.safe_dump(
+            yaml.safe_load(
+                open('config.yml')
+            ),
+            open('config.yml.bak', 'w'),
+            indent=2,
+            sort_keys=False
+        ) 
+    yaml.safe_dump(old, open('config.yml', 'w'), indent=2, sort_keys=False)
+    os.remove('config.json')
+    print(crayons.green(f'[PartyBot] [{time()}] Converted Config to YAML!'))
+    del old
+with open('config.yml') as f:
+    data = yaml.safe_load(f)
 
 if data['debug']:
     logger = logging.getLogger('fortnitepy.http')
