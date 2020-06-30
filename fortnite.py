@@ -66,6 +66,9 @@ except ImportError:
 else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
+if sys.platform == 'win32':
+    asyncio.set_event_loop(asyncio.ProactorEventLoop())
+
 
 def time() -> str:
     return datetime.datetime.now().strftime('%H:%M:%S')
@@ -158,14 +161,14 @@ async def set_and_update_party_prop(schema_key: str, new_value: Any) -> None:
 
 async def start_discord_rich_presence() -> None:
     rpc = pypresence.AioPresence(
-        client_id='698619895910498344',
+        client_id='717610574837710919',
         loop=client.loop
     )
 
     try:
         await rpc.connect()
     except Exception as discord_error:
-        print(f'There was an error {discord_error}')
+        print(f'There was an error: {discord_error}.')
 
     start_time = datetime.datetime.now().timestamp()
 
@@ -260,7 +263,7 @@ async def event_ready() -> None:
 
     discord_exists = await client.loop.run_in_executor(None, check_if_process_running, 'Discord')
 
-    if discord_exists and (sys.platform == 'darwin' or 'linux' in sys.platform.lower()):
+    if discord_exists:
         client.loop.create_task(start_discord_rich_presence())
 
     for pending in list(client.pending_friends.values()):
