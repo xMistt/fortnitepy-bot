@@ -1,15 +1,16 @@
 {
-    "email": "email@email.com",
-    "password": "password1",
-    "cid": "CID_770_Athena_Commando_F_MechanicalEngineer",
+    "email": "botadrirexgamer@lexu4g.com",
+    "password": "botadrirex2010,
+    "cid": CID_028_athena_commando_f ,
     "bid": "BID_533_MechanicalEngineer",
     "eid": "EID_DontBeSquare",
     "banner": "otherbanner28",
     "banner_colour": "defaultcolor15",
-    "level": 999,
+    "level": 999999
+
     "bp_tier": 999999999,
     "status": "discord.gg/fnpy",
-    "platform": "WIN",
+    "platform": "PC",
     "debug": false,
     "friend_accept": true
 }
