@@ -39,6 +39,7 @@ try:
     import random as py_random
     import logging
     import uuid
+    import json
 
     # Third party imports.
     from fortnitepy.ext import commands
@@ -392,7 +393,7 @@ async def pet(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
             searchLang="en",
             matchMethod="contains",
             name=content,
-            backendType="AthenaPet"
+            backendType="AthenaPetCarrier"
         )
 
         await ctx.send(f'Pet set to {cosmetic.id}.')
@@ -1552,7 +1553,7 @@ async def shop(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send(f"Equipping all skins in today's item shop.")
     print(f"[PartyBot] [{time()}] Equipping all skins in today's item shop.")
 
-    for item in store.featured_items + store.daily_items:
+    for item in store.special_featured_items + store.special_daily_items:
         for grant in item.grants:
             if grant['type'] == 'AthenaCharacter':
                 await client.party.me.set_outfit(
@@ -1653,6 +1654,11 @@ async def henchman(ctx: fortnitepy.ext.commands.Context) -> None:
     await ctx.send(f'Skin set to {random_henchman}!')
     print(f"[PartyBot] [{time()}] Skin set to {random_henchman}.")
 
+
+@commands.dm_only()
+@client.command()
+async def meta(ctx: fortnitepy.ext.commands.Context) -> None:
+    print(json.dumps(client.party.meta.schema, sort_keys=False, indent=4))
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
