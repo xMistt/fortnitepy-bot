@@ -273,7 +273,7 @@ async def event_party_invite(invite: fortnitepy.ReceivedPartyInvitation) -> None
 
 
 @client.event
-async def event_friend_request(request: fortnitepy.PendingFriend) -> None:
+async def event_friend_request(request: fortnitepy.IncomingPendingFriend) -> None:
     print(f"[PartyBot] [{time()}] Received friend request from: {request.display_name}.")
 
     if data['friend_accept']:
