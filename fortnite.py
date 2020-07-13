@@ -1444,9 +1444,8 @@ async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str
 
 @commands.dm_only()
 @client.command(
-    description="[Party]  Joins the party of the defined friend. If friend is left blank, "
-                "the message author will be used.",
-    help="Joins the party of the defined friend.\n"
+    description="[Party] Sends the defined user a friend request.",
+    help="Sends the defined user a friend request.\n"
     "Example: !friend Ninja"
 )
 async def friend(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
@@ -1884,8 +1883,8 @@ async def hatlessrecon(ctx: fortnitepy.ext.commands.Context) -> None:
 
 @commands.dm_only()
 @client.command(
-    description="[Cosmetic] Sets the outfit of the client to Hatless Recon Expert.",
-    help="Sets the outfit of the client to Hatless Recon Expert.\n"
+    description="[Cosmetic] Sets the outfit of the to the max tier skin in the defined season.",
+    help="Sets the outfit of the to the max tier skin in the defined season.\n"
     "Example: !season 2"
 )
 async def season(ctx: fortnitepy.ext.commands.Context, br_season: int) -> None:
