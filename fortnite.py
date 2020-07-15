@@ -197,9 +197,9 @@ async def start_discord_rich_presence() -> None:
         await asyncio.sleep(20)
 
 
-print(crayons.cyan(f'[PartyBot] [{time()}] PartyBot made by xMistt. '
-                   'Massive credit to Terbau for creating the library.'))
-print(crayons.cyan(f'[PartyBot] [{time()}] Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
+print(crayons.cyan(f'[Parse] [{time()}] Epic employee parse. '
+                   '..'))
+print(crayons.cyan(f'[Parse] [{time()}] Creating custom skins'))
 
 with open('config.json') as f:
     data = json.load(f)
