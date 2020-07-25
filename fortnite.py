@@ -28,7 +28,7 @@ License: Apache 2.0
 
 try:
     # System imports.
-    from typing import Tuple, Any, Union
+    from typing import Tuple, Any, Union, Optional
 
     import asyncio
     import sys
@@ -543,11 +543,15 @@ async def purpleportal(ctx: fortnitepy.ext.commands.Context) -> None:
     help="Sets the banner of the client.\n"
     "Example: !banner BRSeason01 defaultcolor15 100"
 )
-async def banner(ctx: fortnitepy.ext.commands.Context, icon: str, colour: str, banner_level: int) -> None:
+async def banner(ctx: fortnitepy.ext.commands.Context,
+                 icon: Optional[str] = None,
+                 colour: Optional[str] = None,
+                 banner_level: Optional[int] = None
+                 ) -> None:
     await client.party.me.set_banner(icon=icon, color=colour, season_level=banner_level)
 
-    await ctx.send(f'Banner set to: {icon}, {colour}, {banner_level}.')
-    print(f"[PartyBot] [{time()}] Banner set to: {icon}, {colour}, {banner_level}.")
+    await ctx.send(f'Banner set to: {icon} with {colour} at level {banner_level}.')
+    print(f"[PartyBot] [{time()}] Banner set to: {icon} with {colour} at level {banner_level}.")
 
 
 @commands.dm_only()
@@ -562,8 +566,8 @@ async def cid(ctx: fortnitepy.ext.commands.Context, character_id: str) -> None:
         variants=client.party.me.create_variants(profile_banner='ProfileBanner')
     )
 
-    await ctx.send(f'Skin set to {character_id}')
-    print(f'[PartyBot] [{time()}] Skin set to {character_id}')
+    await ctx.send(f'Skin set to {character_id}.')
+    print(f'[PartyBot] [{time()}] Skin set to {character_id}.')
 
 
 @commands.dm_only()
@@ -786,7 +790,7 @@ async def trails(ctx: fortnitepy.ext.commands.Context, trails_: str) -> None:
          "specified, only the emote will be played.\n"
     "Example: !point Pickaxe_ID_029_Assassin"
 )
-async def point(ctx: fortnitepy.ext.commands.Context, *, content: Union[str, None] = None) -> None:
+async def point(ctx: fortnitepy.ext.commands.Context, *, content: Optional[str] = None) -> None:
     if content is None:
         await client.party.me.set_emote(asset='EID_IceKing')
         await ctx.send(f'Point it Out played.')
@@ -945,7 +949,7 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> N
     help="Promotes the defined user to party leader. If friend is left blank, the message author will be used.\n"
     "Example: !promote Terbau"
 )
-async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
+async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
     if epic_username is None:
         user = await client.fetch_profile(ctx.author.display_name)
         member = client.party.members.get(user.id)
@@ -1017,7 +1021,7 @@ async def privacy(ctx: fortnitepy.ext.commands.Context, privacy_type: str) -> No
     help="Copies the cosmetic loadout of the defined user. If user is left blank, the message author will be used.\n"
     "Example: !copy Terbau"
 )
-async def copy(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
+async def copy(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
     if epic_username is None:
         member = client.party.members.get(ctx.author.id)
     else:
@@ -1418,7 +1422,7 @@ async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
     help="Joins the party of the defined friend.\n"
     "Example: !join Terbau"
 )
-async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
+async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
     if epic_username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
@@ -1498,7 +1502,7 @@ async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) 
     help="Invites the defined friend to the party.\n"
     "Example: !invite Terbau"
 )
-async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[str, None] = None) -> None:
+async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
     if epic_username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
@@ -1534,7 +1538,7 @@ async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Union[s
     help="Hides members of the party.\n"
     "Example: !hide"
 )
-async def hide(ctx: fortnitepy.ext.commands.Context, party_member: Union[str, None] = None) -> None:
+async def hide(ctx: fortnitepy.ext.commands.Context, party_member: Optional[str] = None) -> None:
     if client.party.me.leader:
         if party_member is not None:
             user = await client.fetch_profile(party_member)
@@ -1779,7 +1783,7 @@ async def new(ctx: fortnitepy.ext.commands.Context) -> None:
 
     for new_emote in [new_eid for new_eid in response if new_eid.split('/')[-1].lower().startswith('eid_')]:
         await client.party.me.set_emote(
-            asset=new_skin.split('/')[-1].split('.uasset')[0]
+            asset=new_emote.split('/')[-1].split('.uasset')[0]
         )
 
         await ctx.send(f"Emote set to {new_eid.split('/')[-1].split('.uasset')[0]}!")
