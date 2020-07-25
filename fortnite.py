@@ -53,7 +53,7 @@ try:
 
 except ModuleNotFoundError as e:
     print(e)
-    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat"'
+    print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat "'
           'might fix the issue, if not please create an issue or join'
           'the support server.')
     sys.exit()
