@@ -297,7 +297,7 @@ async def event_friend_message(message: fortnitepy.FriendMessage) -> None:
 
 
 @client.event
-async def event_command_error(self, ctx: fortnitepy.ext.commands.Context,
+async def event_command_error(ctx: fortnitepy.ext.commands.Context,
                               error: fortnitepy.ext.commands.CommandError) -> None:
     if isinstance(error, fortnitepy.ext.commands.errors.CommandNotFound):
         if isinstance(ctx.message, fortnitepy.FriendMessage):
@@ -1509,12 +1509,13 @@ async def playlist(ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) 
 
 @commands.dm_only()
 @client.command(
+    name="invite",
     description="[Party] Invites the defined friend to the party. If friend is left blank, "
                 "the message author will be used.",
     help="Invites the defined friend to the party.\n"
          "Example: !invite Terbau"
 )
-async def invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
+async def _invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
     if epic_username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
