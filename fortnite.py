@@ -50,6 +50,7 @@ try:
     import aiohttp
     import pypresence
     import psutil
+    import FortniteAPIAsync
 
 except ModuleNotFoundError as e:
     print(e)
@@ -174,11 +175,10 @@ async def start_discord_rich_presence() -> None:
 
     while True:
         try:
-            outfit = (await BenBotAsync.get_cosmetic_from_id(
-                cosmetic_id=client.party.me.outfit
-            )).name
-
-        except BenBotAsync.exceptions.NotFound:
+            outfit = (await fortnite_api.cosmetics.get_cosmetics_from_id(
+                fortnite_id=client.party.me.outfit
+            ))[0].name
+        except FortniteAPIAsync.exceptions.NotFound:
             outfit = client.party.me.outfit
 
         await rpc.update(
@@ -216,6 +216,8 @@ if data['debug']:
     handler = logging.StreamHandler(sys.stdout)
     handler.setFormatter(logging.Formatter('\u001b[35m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
     logger.addHandler(handler)
+
+fortnite_api = FortniteAPIAsync.APIClient()
 
 device_auth_details = get_device_auth_details().get(data['email'], {})
 client = commands.Bot(
@@ -307,7 +309,7 @@ async def event_party_message(message: fortnitepy.FriendMessage) -> None:
 )
 async def skin(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -319,7 +321,7 @@ async def skin(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Set skin to: {cosmetic.id}.")
         await client.party.me.set_outfit(asset=cosmetic.id)
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find a skin with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find a skin with the name: {content}.")
 
@@ -332,7 +334,7 @@ async def skin(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
 )
 async def backpack(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -344,7 +346,7 @@ async def backpack(ctx: fortnitepy.ext.commands.Context, *, content: str) -> Non
         print(f"[PartyBot] [{time()}] Set backpack to: {cosmetic.id}.")
         await client.party.me.set_backpack(asset=cosmetic.id)
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find a backpack with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find a backpack with the name: {content}.")
 
@@ -357,7 +359,7 @@ async def backpack(ctx: fortnitepy.ext.commands.Context, *, content: str) -> Non
 )
 async def emote(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -370,7 +372,7 @@ async def emote(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         await client.party.me.clear_emote()
         await client.party.me.set_emote(asset=cosmetic.id)
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find an emote with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find an emote with the name: {content}.")
 
@@ -383,7 +385,7 @@ async def emote(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
 )
 async def pickaxe(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -395,7 +397,7 @@ async def pickaxe(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None
         print(f"[PartyBot] [{time()}] Set pickaxe to: {cosmetic.id}.")
         await client.party.me.set_pickaxe(asset=cosmetic.id)
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find a pickaxe with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find a pickaxe with the name: {content}.")
 
@@ -408,7 +410,7 @@ async def pickaxe(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None
 )
 async def pet(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -420,7 +422,7 @@ async def pet(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Set pet to: {cosmetic.id}.")
         await client.party.me.set_pet(asset=cosmetic.id)
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find a pet with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find a pet with the name: {content}.")
 
@@ -433,7 +435,7 @@ async def pet(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
 )
 async def emoji(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -445,7 +447,7 @@ async def emoji(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         print(f"[PartyBot] [{time()}] Set emoji to: {cosmetic.id}.")
         await client.party.me.set_emoji(asset=cosmetic.id)
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find an emoji with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find an emoji with the name: {content}.")
 
@@ -458,7 +460,7 @@ async def emoji(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
 )
 async def contrail(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     try:
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -470,7 +472,7 @@ async def contrail(ctx: fortnitepy.ext.commands.Context, *, content: str) -> Non
         print(f"[PartyBot] [{time()}] Set contrail to: {cosmetic.id}.")
         await client.party.me.set_contrail(asset=cosmetic.id)
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find a contrail with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find an contrail with the name: {content}.")
 
@@ -800,7 +802,7 @@ async def point(ctx: fortnitepy.ext.commands.Context, *, content: Optional[str] 
         await ctx.send(f'Pickaxe set to {content} & Point it Out played.')
     else:
         try:
-            cosmetic = await BenBotAsync.get_cosmetic(
+            cosmetic = await fortnite_api.cosmetics.get_cosmetic(
                 lang="en",
                 searchLang="en",
                 matchMethod="contains",
@@ -812,7 +814,7 @@ async def point(ctx: fortnitepy.ext.commands.Context, *, content: Optional[str] 
             await client.party.me.clear_emote()
             await client.party.me.set_emote(asset='EID_IceKing')
             await ctx.send(f'Pickaxe set to {content} & Point it Out played.')
-        except BenBotAsync.exceptions.NotFound:
+        except FortniteAPIAsync.exceptions.NotFound:
             await ctx.send(f"Failed to find a pickaxe with the name: {content}")
 
 
@@ -1231,7 +1233,7 @@ async def goldenpeely(ctx: fortnitepy.ext.commands.Context) -> None:
 )
 async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'skin') -> None:
     if cosmetic_type == 'skin':
-        all_outfits = await BenBotAsync.get_cosmetics(
+        all_outfits = await fortnite_api.cosmetics.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaCharacter"
@@ -1247,7 +1249,7 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         await ctx.send(f'Skin randomly set to {skin}.')
 
     elif cosmetic_type == 'backpack':
-        all_backpacks = await BenBotAsync.get_cosmetics(
+        all_backpacks = await fortnite_api.cosmetics.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaBackpack"
@@ -1263,7 +1265,7 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         await ctx.send(f'Backpack randomly set to {backpack}.')
 
     elif cosmetic_type == 'emote':
-        all_emotes = await BenBotAsync.get_cosmetics(
+        all_emotes = await fortnite_api.cosmetics.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaDance"
@@ -1278,19 +1280,19 @@ async def random(ctx: fortnitepy.ext.commands.Context, cosmetic_type: str = 'ski
         await ctx.send(f'Emote randomly set to {emote}.')
 
     elif cosmetic_type == 'all':
-        all_outfits = await BenBotAsync.get_cosmetics(
+        all_outfits = await fortnite_api.cosmetics.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaCharacter"
         )
 
-        all_backpacks = await BenBotAsync.get_cosmetics(
+        all_backpacks = await fortnite_api.cosmetics.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaBackpack"
         )
 
-        all_emotes = await BenBotAsync.get_cosmetics(
+        all_emotes = await fortnite_api.cosmetics.get_cosmetics(
             lang="en",
             searchLang="en",
             backendType="AthenaDance"
@@ -1590,7 +1592,7 @@ async def ghost(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
             progressive=2
         )
 
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -1606,7 +1608,7 @@ async def ghost(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         await ctx.send(f'Skin set to Ghost {cosmetic.name}!')
         print(f'[PartyBot] [{time()}] Skin set to Ghost {cosmetic.name}.')
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find a skin with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find a skin with the name: {content}.")
 
@@ -1623,7 +1625,7 @@ async def shadow(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
             progressive=3
         )
 
-        cosmetic = await BenBotAsync.get_cosmetic(
+        cosmetic = await fortnite_api.cosmetics.get_cosmetic(
             lang="en",
             searchLang="en",
             matchMethod="contains",
@@ -1639,7 +1641,7 @@ async def shadow(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         await ctx.send(f'Skin set to Shadow {cosmetic.name}!')
         print(f'[PartyBot] [{time()}] Skin set to Ghost {cosmetic.name}.')
 
-    except BenBotAsync.exceptions.NotFound:
+    except FortniteAPIAsync.exceptions.NotFound:
         await ctx.send(f"Failed to find a skin with the name: {content}.")
         print(f"[PartyBot] [{time()}] Failed to find a skin with the name: {content}.")
 
@@ -1681,11 +1683,12 @@ async def clean(ctx: fortnitepy.ext.commands.Context) -> None:
 
 @commands.dm_only()
 @client.command(
+    name="set",
     description="[Cosmetic] Equips all cosmetics from a set.",
     help="Equips all cosmetics from a set.\n"
     "Example: !set Fort Knights"
 )
-async def set(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
+async def _set(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
     cosmetic_types = {
         "AthenaBackpack": client.party.me.set_backpack,
         "AthenaCharacter": client.party.me.set_outfit,
@@ -1693,7 +1696,7 @@ async def set(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         "AthenaDance": client.party.me.set_emote
     }
 
-    set_items = await BenBotAsync.get_cosmetics(
+    set_items = await fortnite_api.cosmetics.get_cosmetics(
         lang="en",
         searchLang="en",
         matchMethod="contains",
@@ -1730,7 +1733,7 @@ async def style(ctx: fortnitepy.ext.commands.Context, cosmetic_name: str, varian
     #     "AthenaPickaxe": client.party.me.set_pickaxe
     # }
 
-    cosmetic = await BenBotAsync.get_cosmetic(
+    cosmetic = await fortnite_api.cosmetics.get_cosmetic(
         lang="en",
         searchLang="en",
         matchMethod="contains",
