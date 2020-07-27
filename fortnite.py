@@ -175,9 +175,9 @@ async def start_discord_rich_presence() -> None:
 
     while True:
         try:
-            outfit = (await fortnite_api.cosmetics.get_cosmetics_from_id(
+            outfit = (await fortnite_api.cosmetics.get_cosmetic_from_id(
                 fortnite_id=client.party.me.outfit
-            ))[0].name
+            )).name
         except FortniteAPIAsync.exceptions.NotFound:
             outfit = client.party.me.outfit
 
