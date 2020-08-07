@@ -11,6 +11,7 @@
         <img alt="PEP8" src="https://img.shields.io/badge/PEP8-compliant-brightgreen.svg">
     </a>
 </p>
+[![Run on Repl.it](https://repl.it/badge/github/xmistt/fortnitepy-bot)](https://repl.it/github/xmistt/fortnitepy-bot)
 
 <p align="center">A Fortnite HTTP/XMPP bot coded in Python with party capabilities.</p>
 
