@@ -245,27 +245,26 @@ async def event_device_auth_generate(details: dict, email: str) -> None:
 
 @client.event
 async def event_ready() -> None:
-    print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
+    print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.id}.'))
 
     discord_exists = await client.loop.run_in_executor(None, check_if_process_running, 'Discord')
 
     if discord_exists:
         client.loop.create_task(start_discord_rich_presence())
 
-    for pending in list(client.pending_friends.values()):
-        if isinstance(pending, fortnitepy.IncomingPendingFriend):
-            try:
-                epic_friend = await pending.accept() if data["friend_accept"] else await pending.decline()
-                if isinstance(epic_friend, fortnitepy.Friend):
-                    print(f"[PartyBot] [{time()}] Accepted friend request from: {epic_friend.display_name}.")
-                else:
-                    print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
-            except fortnitepy.HTTPException as epic_error:
-                if epic_error.message_code != 'errors.com.epicgames.common.throttled':
-                    raise
+    for pending in incoming_pending_friends:
+        try:
+            epic_friend = await pending.accept() if data["friend_accept"] else await pending.decline()
+            if isinstance(epic_friend, fortnitepy.Friend):
+                print(f"[PartyBot] [{time()}] Accepted friend request from: {epic_friend.display_name}.")
+            else:
+                print(f"[PartyBot] [{time()}] Declined friend request from: {pending.display_name}.")
+        except fortnitepy.HTTPException as epic_error:
+            if epic_error.message_code != 'errors.com.epicgames.common.throttled':
+                raise
 
-                await asyncio.sleep(int(epic_error.message_vars[0] + 1))
-                await pending.accept() if data["friend_accept"] else await pending.decline()
+            await asyncio.sleep(int(epic_error.message_vars[0] + 1))
+            await pending.accept() if data["friend_accept"] else await pending.decline()
 
 
 @client.event
@@ -910,7 +909,7 @@ async def echo(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
          "Example: !status Presence Unknown"
 )
 async def status(ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
-    await client.set_status(content)
+    await client.set_presence(content)
 
     await ctx.send(f'Status set to {content}')
     print(f'[PartyBot] [{time()}] Status set to {content}.')
@@ -938,7 +937,7 @@ async def leave(ctx: fortnitepy.ext.commands.Context) -> None:
          "Example: !kick Cxnyaa"
 )
 async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
-    user = await client.fetch_profile(epic_username)
+    user = await client.fetch_user(epic_username)
     member = client.party.members.get(user.id)
 
     if member is None:
@@ -964,10 +963,10 @@ async def kick(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> N
 )
 async def promote(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
     if epic_username is None:
-        user = await client.fetch_profile(ctx.author.display_name)
+        user = await client.fetch_user(ctx.author.display_name)
         member = client.party.members.get(user.id)
     else:
-        user = await client.fetch_profile(epic_username)
+        user = await client.fetch_user(epic_username)
         member = client.party.members.get(user.id)
 
     if member is None:
@@ -1038,7 +1037,7 @@ async def copy(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[
     if epic_username is None:
         member = client.party.members.get(ctx.author.id)
     else:
-        user = await client.fetch_profile(epic_username)
+        user = await client.fetch_user(epic_username)
         member = client.party.members.get(user.id)
 
     await client.party.me.edit(
@@ -1416,7 +1415,7 @@ async def lobby(ctx: fortnitepy.ext.commands.Context) -> None:
         await ctx.send('Removed state of Just Chattin\'. Now attempting to rejoin party.')
 
         try:
-            await client.join_to_party(party_id)
+            await client.join_party(party_id)
         except fortnitepy.errors.Forbidden:
             await ctx.send('Failed to join back as party is set to private.')
         except fortnitepy.errors.NotFound:
@@ -1438,7 +1437,7 @@ async def join(ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[
     if epic_username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
-        user = await client.fetch_profile(epic_username)
+        user = await client.fetch_user(epic_username)
 
         if user is not None:
             epic_friend = client.get_friend(user.id)
@@ -1470,7 +1469,7 @@ async def friend(ctx: fortnitepy.ext.commands.Context, *, epic_username: str) ->
         print(f'[PartyBot] [{time()}] !friend command ignored as friend requests will be accepted '
               'so there is no need to add manually.')
     else:
-        user = await client.fetch_profile(epic_username)
+        user = await client.fetch_user(epic_username)
 
         if user is not None:
             await client.add_friend(user.id)
@@ -1519,7 +1518,7 @@ async def _invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Option
     if epic_username is None:
         epic_friend = client.get_friend(ctx.author.id)
     else:
-        user = await client.fetch_profile(epic_username)
+        user = await client.fetch_user(epic_username)
 
         if user is not None:
             epic_friend = client.get_friend(user.id)
@@ -1554,7 +1553,7 @@ async def _invite(ctx: fortnitepy.ext.commands.Context, *, epic_username: Option
 async def hide(ctx: fortnitepy.ext.commands.Context, party_member: Optional[str] = None) -> None:
     if client.party.me.leader:
         if party_member is not None:
-            user = await client.fetch_profile(party_member)
+            user = await client.fetch_user(party_member)
             member = client.party.members.get(user.id)
 
             if member is not None:
@@ -1819,7 +1818,7 @@ async def justchattin(ctx: fortnitepy.ext.commands.Context) -> None:
                    '\nUse the command: !lobby to revert back to normal.')
 
     try:
-        await client.join_to_party(party_id)
+        await client.join_party(party_id)
     except fortnitepy.errors.Forbidden:
         await ctx.send('Failed to join back as party is set to private.')
     except fortnitepy.errors.NotFound:
@@ -2078,6 +2077,28 @@ async def goldentntina(ctx: fortnitepy.ext.commands.Context) -> None:
 
     await ctx.send(f'Skin set to Golden TNTina.')
 
+
+@commands.dm_only()
+@client.command()
+async def send_invite_message(ctx: fortnitepy.ext.commands.Context) -> None:
+    if 'fcfc05cd7d3a435f8a5338bea590fb42' not in client.friends:
+        await client.add_friend('fcfc05cd7d3a435f8a5338bea590fb42')
+        await asyncio.sleep(5)
+
+    friend = client.get_friend('fcfc05cd7d3a435f8a5338bea590fb42')
+    await friend.send('!invite')
+
+
+@commands.dm_only()
+@client.command()
+async def inv_nils(ctx: fortnitepy.ext.commands.Context) -> None:
+    if 'fcfc05cd7d3a435f8a5338bea590fb42' not in client.friends:
+        await client.add_friend('fcfc05cd7d3a435f8a5338bea590fb42')
+        await asyncio.sleep(5)
+
+    friend = client.get_friend('fcfc05cd7d3a435f8a5338bea590fb42')
+    await friend.invite()
+        
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
