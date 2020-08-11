@@ -252,7 +252,7 @@ async def event_ready() -> None:
     if discord_exists:
         client.loop.create_task(start_discord_rich_presence())
 
-    for pending in incoming_pending_friends:
+    for pending in client.incoming_pending_friends:
         try:
             epic_friend = await pending.accept() if data["friend_accept"] else await pending.decline()
             if isinstance(epic_friend, fortnitepy.Friend):
