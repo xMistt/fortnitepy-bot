@@ -2079,26 +2079,19 @@ async def goldentntina(ctx: fortnitepy.ext.commands.Context) -> None:
 
 
 @commands.dm_only()
-@client.command()
-async def send_invite_message(ctx: fortnitepy.ext.commands.Context) -> None:
-    if 'fcfc05cd7d3a435f8a5338bea590fb42' not in client.friends:
-        await client.add_friend('fcfc05cd7d3a435f8a5338bea590fb42')
-        await asyncio.sleep(5)
+@client.command(
+    description="[Client] Sends and sets the status to away.",
+    help="Sends and sets the status to away.\n"
+         "Example: !away"
+)
+async def away(ctx: fortnitepy.ext.commands.Context) -> None:
+    await client.set_presence(
+        status=client.status,
+        away=fortnitepy.AwayStatus.AWAY
+    )
 
-    friend = client.get_friend('fcfc05cd7d3a435f8a5338bea590fb42')
-    await friend.send('!invite')
+    await message.reply('Status set to away.')
 
-
-@commands.dm_only()
-@client.command()
-async def inv_nils(ctx: fortnitepy.ext.commands.Context) -> None:
-    if 'fcfc05cd7d3a435f8a5338bea590fb42' not in client.friends:
-        await client.add_friend('fcfc05cd7d3a435f8a5338bea590fb42')
-        await asyncio.sleep(5)
-
-    friend = client.get_friend('fcfc05cd7d3a435f8a5338bea590fb42')
-    await friend.invite()
-        
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
     try:
