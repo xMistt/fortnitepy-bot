@@ -2090,7 +2090,7 @@ async def away(ctx: fortnitepy.ext.commands.Context) -> None:
         away=fortnitepy.AwayStatus.AWAY
     )
 
-    await message.reply('Status set to away.')
+    await ctx.send('Status set to away.')
 
 
 if (data['email'] and data['password']) and (data['email'] != 'email@email.com' and data['password'] != 'password1'):
