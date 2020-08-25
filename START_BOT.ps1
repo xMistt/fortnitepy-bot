@@ -31,7 +31,7 @@ function GetPython
         continue
     }
     if (!$pythonInstalledResult){
-        Write-Host "Python not found, installing python..."
+        Write-Output "Python not found, installing python..."
         InstallPython
     }
     return $finalPythonPath
