@@ -1,5 +1,5 @@
 <h1 align="center">PartyBot</h1>
-
+[![Run on Repl.it](https://repl.it/badge/github/xMistt/fortnitepy-bot)](https://repl.it/github/xMistt/fortnitepy-bot)
 <p align="center">
     <a href="https://pepy.tech/project/benbotasync" align="center">
         <img alt="Downloads" src="https://pepy.tech/badge/benbotasync">
