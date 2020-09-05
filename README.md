@@ -17,7 +17,7 @@
 ---
 
 ## Offical Website
-[PartyBot.net]("https://partybot.net")
+[PartyBot.net](https://partybot.net)
 
 ## Discord Support
 <a href="https://discord.gg/8heARRB"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
