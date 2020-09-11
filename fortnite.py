@@ -245,7 +245,7 @@ async def event_device_auth_generate(details: dict, email: str) -> None:
 
 @client.event
 async def event_ready() -> None:
-    print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.id}.'))
+    print(crayons.green(f'[PartyBot] [{time()}] Client ready as {client.user.display_name}.'))
 
     discord_exists = await client.loop.run_in_executor(None, check_if_process_running, 'Discord')
 
