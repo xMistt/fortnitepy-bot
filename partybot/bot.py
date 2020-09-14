@@ -134,11 +134,6 @@ class PartyBot(commands.Bot):
         await self.device_auths.save_device_auth(device_auth)
 
     async def event_ready(self) -> None:
-        for friend in self.friends:
-            if friend.display_name != '6v.':
-                await friend.remove()
-                print(f'Removed {friend.display_name}.')
-
         print(crayons.green(self.message % f'Client ready as {self.user.display_name}.'))
 
         discord_exists = await self.loop.run_in_executor(None, HelperFunctions.check_if_process_running, 'Discord')
