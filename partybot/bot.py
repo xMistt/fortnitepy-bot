@@ -35,6 +35,7 @@ from typing import Any
 
 import uuid
 import datetime
+import asyncio
 
 # Third party imports.
 from fortnitepy.ext import commands
@@ -142,8 +143,8 @@ class PartyBot(commands.Bot):
 
         discord_exists = await self.loop.run_in_executor(None, HelperFunctions.check_if_process_running, 'Discord')
 
-        # if discord_exists:
-        #     self.loop.create_task(self.start_discord_rich_presence())
+        if discord_exists:
+            asyncio.get_event_loop().create_task(self.start_discord_rich_presence())
 
         for pending in self.incoming_pending_friends:
             try:
