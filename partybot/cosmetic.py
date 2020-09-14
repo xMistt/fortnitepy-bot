@@ -30,6 +30,7 @@ License: Apache 2.0
 from typing import Optional, Union, Tuple
 
 import asyncio
+import functools
 
 # Third party imports.
 from fortnitepy.ext import commands
@@ -559,10 +560,10 @@ class CosmeticCommands(commands.Cog):
     )
     async def copy(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
-            member = self.bot.party.members.get(ctx.author.id)
+            member = [m for m in self.bot.party.members if m.id == ctx.author.id][0]
         else:
             user = await self.bot.fetch_user(epic_username)
-            member = self.bot.party.members.get(user.id)
+            member = [m for m in self.bot.party.members if m.id == user.id][0]
 
         await self.bot.party.me.edit(
             functools.partial(
