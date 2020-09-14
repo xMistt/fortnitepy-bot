@@ -29,6 +29,8 @@ License: Apache 2.0
 # System imports.
 from typing import Optional, Union, Tuple
 
+import asyncio
+
 # Third party imports.
 from fortnitepy.ext import commands
 
@@ -1008,33 +1010,33 @@ class CosmeticCommands(commands.Cog):
              "Example: !new"
     )
     async def new(self, ctx: fortnitepy.ext.commands.Context) -> None:
-        new_skins = await self.bot.fortnite_api.cosmetics.get_new_cosmetics()
+        new_cosmetics = await self.bot.fortnite_api.cosmetics.get_new_cosmetics()
 
-        for new_skin in [new_cid for new_cid in new_skins if new_cid.split('/')[-1].lower().startswith('cid_')]:
+        for new_skin in [new_cid for new_cid in new_cosmetics if new_cid.id.lower().startswith('cid_')]:
             await self.bot.party.me.set_outfit(
-                asset=new_skin.split('/')[-1].split('.uasset')[0]
+                asset=new_skin.id
             )
 
-            await ctx.send(f"Skin set to {new_skin.split('/')[-1].split('.uasset')[0]}!")
-            print(self.bot.message % f"Skin set to: {new_skin.split('/')[-1].split('.uasset')[0]}!")
+            await ctx.send(f"Skin set to {new_skin.id}.")
+            print(self.bot.message % f"Skin set to: {new_skin.name}!")
 
             await asyncio.sleep(3)
 
         await ctx.send(f'Finished equipping all new unencrypted skins.')
         print(self.bot.message % f'Finished equipping all new unencrypted skins.')
 
-        for new_emote in [new_eid for new_eid in response if new_eid.split('/')[-1].lower().startswith('eid_')]:
-            await self.bot.party.me.set_emote(
-                asset=new_emote.split('/')[-1].split('.uasset')[0]
-            )
-
-            await ctx.send(f"Emote set to {new_emote.split('/')[-1].split('.uasset')[0]}!")
-            print(self.bot.message % f"Emote set to: {new_emote.split('/')[-1].split('.uasset')[0]}!")
-
-            await asyncio.sleep(3)
-
-        await ctx.send(f'Finished equipping all new unencrypted skins.')
-        print(self.bot.message % f'Finished equipping all new unencrypted skins.')
+        # for new_emote in [new_eid for new_eid in response if new_eid..lower().startswith('eid_')]:
+        #     await self.bot.party.me.set_emote(
+        #         asset=new_emote.split('/')[-1].split('.uasset')[0]
+        #     )
+        #
+        #     await ctx.send(f"Emote set to {new_emote.split('/')[-1].split('.uasset')[0]}!")
+        #     print(self.bot.message % f"Emote set to: {new_emote.split('/')[-1].split('.uasset')[0]}!")
+        #
+        #     await asyncio.sleep(3)
+        #
+        # await ctx.send(f'Finished equipping all new unencrypted skins.')
+        # print(self.bot.message % f'Finished equipping all new unencrypted skins.')
 
     @commands.dm_only()
     @commands.command(
