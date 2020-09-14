@@ -34,6 +34,7 @@ import asyncio
 from fortnitepy.ext import commands
 
 import fortnitepy
+import crayons
 
 
 class PartyCommands(commands.Cog):
@@ -453,7 +454,7 @@ class PartyCommands(commands.Cog):
                         if player['memberId'] == member.id:
                             raw_squad_assignments.remove(player)
 
-                    await set_and_update_party_prop(
+                    await self.bot.set_and_update_party_prop(
                         'Default:RawSquadAssignments_j', {
                             'RawSquadAssignments': raw_squad_assignments
                         }
@@ -463,7 +464,7 @@ class PartyCommands(commands.Cog):
                     print(crayons.red(self.bot.message % f"[ERROR] "
                                       f"Failed to find user with the name: {party_member}."))
             else:
-                await set_and_update_party_prop(
+                await self.bot.set_and_update_party_prop(
                     'Default:RawSquadAssignments_j', {
                         'RawSquadAssignments': [{'memberId': self.bot.user.id, 'absoluteMemberIdx': 1}]
                     }
