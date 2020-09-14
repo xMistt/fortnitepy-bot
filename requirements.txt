@@ -4,3 +4,4 @@ crayons
 pypresence
 psutil
 FortniteAPIAsync
+aiofiles
