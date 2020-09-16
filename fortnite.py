@@ -38,6 +38,7 @@ try:
     import aiofiles
     import fortnitepy
     import crayons
+    import aiohttp
 except ModuleNotFoundError as e:
     print(e)
     print('Failed to import 1 or more modules, running "INSTALL PACKAGES.bat" '
@@ -92,9 +93,16 @@ async def main() -> None:
     client.add_cog(partybot.PartyCommands(client))
     client.add_cog(partybot.ClientCommands(client))
 
-    print(crayons.cyan(client.message % f'PartyBot made by xMistt. '
+    async with aiohttp.ClientSession() as session:
+        async with session.request(
+            method="GET",
+            url="https://partybot.net/api/discord"
+        ) as r:
+            invite = (await r.json())['invite'] if r.status == 200 else "8heARRB"
+
+    print(crayons.cyan(client.message % 'PartyBot made by xMistt. '
                        'Massive credit to Terbau for creating the library.'))
-    print(crayons.cyan(client.message % f'Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
+    print(crayons.cyan(client.message % f'Discord server: https://discord.gg/{invite} - For support, questions, etc.'))
 
     if (settings.email and settings.password) and \
             (settings.email != 'email@email.com' and settings.password != 'password1'):
@@ -111,4 +119,3 @@ async def main() -> None:
 
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
-loop.close()
