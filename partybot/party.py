@@ -34,6 +34,7 @@ import asyncio
 from fortnitepy.ext import commands
 
 import fortnitepy
+import aiohttp
 import crayons
 
 
