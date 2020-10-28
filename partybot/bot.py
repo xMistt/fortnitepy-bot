@@ -136,10 +136,10 @@ class PartyBot(commands.Bot):
     async def event_ready(self) -> None:
         print(crayons.green(self.message % f'Client ready as {self.user.display_name}.'))
 
-        discord_exists = await self.loop.run_in_executor(None, HelperFunctions.check_if_process_running, 'Discord')
+        # discord_exists = await self.loop.run_in_executor(None, HelperFunctions.check_if_process_running, 'Discord')
 
-        if discord_exists:
-            asyncio.get_event_loop().create_task(self.start_discord_rich_presence())
+        # if discord_exists:
+        #     asyncio.get_event_loop().create_task(self.start_discord_rich_presence())
 
         for pending in self.incoming_pending_friends:
             try:
