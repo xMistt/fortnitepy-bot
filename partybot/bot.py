@@ -28,7 +28,7 @@ License: Apache 2.0
 
 from .settings import BotSettings
 from .deviceauths import DeviceAuth, DeviceAuths
-from .helper import HelperFunctions
+# from .helper import HelperFunctions
 
 # System imports.
 from typing import Any
