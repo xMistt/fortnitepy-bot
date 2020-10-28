@@ -27,17 +27,17 @@ License: Apache 2.0
 """
 
 # Third party imports.
-import psutil
+# import psutil
 
 
-class HelperFunctions:
-    @staticmethod
-    def check_if_process_running(name: str) -> bool:
-        for process in psutil.process_iter():
-            try:
-                if name.lower() in process.name().lower():
-                    return True
-            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
-                pass
+# class HelperFunctions:
+#     @staticmethod
+#     def check_if_process_running(name: str) -> bool:
+#         for process in psutil.process_iter():
+#             try:
+#                 if name.lower() in process.name().lower():
+#                     return True
+#             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+#                 pass
 
-        return False
+#         return False
