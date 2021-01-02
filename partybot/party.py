@@ -36,6 +36,7 @@ from fortnitepy.ext import commands
 import fortnitepy
 import aiohttp
 import crayons
+import random
 
 
 class PartyCommands(commands.Cog):
@@ -278,11 +279,11 @@ class PartyCommands(commands.Cog):
             while (100 >= self.bot.party.me.match_players_left > 0
                    and self.bot.party.me.in_match()):
                 await self.bot.party.me.set_in_match(
-                    players_left=self.bot.party.me.match_players_left - py_random.randint(3, 6),
+                    players_left=self.bot.party.me.match_players_left - random.randint(3, 6),
                     started_at=match_time
                 )
 
-                await asyncio.sleep(py_random.randint(45, 65))
+                await asyncio.sleep(random.randint(45, 65))
 
         else:
             await self.bot.party.me.set_in_match(
