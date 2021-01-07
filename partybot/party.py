@@ -162,7 +162,7 @@ class PartyCommands(commands.Cog):
     )
     async def kick(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
         user = await self.bot.fetch_user(epic_username)
-        member = self.bot.party.members.get(user.id)
+        member = self.bot.party.get_member(user.id)
 
         if member is None:
             await ctx.send("Failed to find that user, are you sure they're in the party?")
@@ -187,10 +187,10 @@ class PartyCommands(commands.Cog):
     async def promote(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
             user = await self.bot.fetch_user(ctx.author.display_name)
-            member = self.bot.party.members.get(user.id)
+            member = self.bot.party.get_member(user.id)
         else:
             user = await self.bot.fetch_user(epic_username)
-            member = self.bot.party.members.get(user.id)
+            member = self.bot.party.get_member(user.id)
 
         if member is None:
             await ctx.send("Failed to find that user, are you sure they're in the party?")
@@ -445,7 +445,7 @@ class PartyCommands(commands.Cog):
         if self.bot.party.me.leader:
             if party_member is not None:
                 user = await self.bot.fetch_user(party_member)
-                member = self.bot.party.members.get(user.id)
+                member = self.bot.party.get_member(user.id)
 
                 if member is not None:
                     raw_squad_assignments = self.bot.party.meta.get_prop(
