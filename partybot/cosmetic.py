@@ -38,6 +38,7 @@ from fortnitepy.ext import commands
 import fortnitepy
 import aiohttp
 import FortniteAPIAsync
+import random as py_random
 
 
 class CosmeticCommands(commands.Cog):
@@ -762,7 +763,8 @@ class CosmeticCommands(commands.Cog):
                 variants=self.bot.party.me.create_variants(profile_banner='ProfileBanner')
             )
 
-            await ctx.send(f'Skin randomly set to {skin}.')
+            await ctx.send(f'Skin randomly set to {random_skin}.')
+            print(self.bot.message % f"Set skin randomly to: {random_skin}.")
 
         elif cosmetic_type == 'backpack':
             all_backpacks = await self.bot.fortnite_api.cosmetics.get_cosmetics(
@@ -778,7 +780,8 @@ class CosmeticCommands(commands.Cog):
                 variants=self.bot.party.me.create_variants(profile_banner='ProfileBanner')
             )
 
-            await ctx.send(f'Backpack randomly set to {backpack}.')
+            await ctx.send(f'Backpack randomly set to {random_backpack}.')
+            print(self.bot.message % f"Set backpack randomly to: {random_backpack}.")
 
         elif cosmetic_type == 'emote':
             all_emotes = await self.bot.fortnite_api.cosmetics.get_cosmetics(
@@ -793,7 +796,8 @@ class CosmeticCommands(commands.Cog):
                 asset=random_emote
             )
 
-            await ctx.send(f'Emote randomly set to {emote}.')
+            await ctx.send(f'Emote randomly set to {random_emote}.')
+            print(self.bot.message % f"Set emote randomly to: {random_emote}.")
 
         elif cosmetic_type == 'all':
             all_outfits = await self.bot.fortnite_api.cosmetics.get_cosmetics(
@@ -823,18 +827,21 @@ class CosmeticCommands(commands.Cog):
             )
 
             await ctx.send(f'Skin randomly set to {random_outfit}.')
+            print(self.bot.message % f"Set skin randomly to: {random_outfit}.")
 
             await self.bot.party.me.set_backpack(
                 asset=random_backpack
             )
 
             await ctx.send(f'Backpack randomly set to {random_backpack}.')
+            print(self.bot.message % f"Set backpack randomly to: {random_backpack}.")
 
             await self.bot.party.me.set_emote(
                 asset=random_emote
             )
 
             await ctx.send(f'Emote randomly set to {random_emote}.')
+            print(self.bot.message % f"Set emote randomly to: {random_emote}.")
 
     @commands.dm_only()
     @commands.command(
@@ -952,20 +959,20 @@ class CosmeticCommands(commands.Cog):
             set=content
         )
 
-        await ctx.send(f'Equipping all cosmetics from the {set_items[0].set} set.')
-        print(self.bot.message % f'Equipping all cosmetics from the {set_items[0].set} set.')
+        await ctx.send(f'Equipping all cosmetics from the {set_items[0].set["value"]} set.')
+        print(self.bot.message % f'Equipping all cosmetics from the {set_items[0].set["value"]} set.')
 
         for cosmetic in set_items:
-            if cosmetic.backend_type.value in cosmetic_types:
-                await cosmetic_types[cosmetic.backend_type.value](asset=cosmetic.id)
+            if cosmetic.type['backendValue'] in cosmetic_types:
+                await cosmetic_types[cosmetic.type['backendValue']](asset=cosmetic.id)
 
-                await ctx.send(f'{cosmetic.short_description} set to {cosmetic.name}!')
-                print(self.bot.message % f'{cosmetic.short_description} set to {cosmetic.name}.')
+                await ctx.send(f'{cosmetic.type["value"].capitalize()} set to {cosmetic.name}!')
+                print(self.bot.message % f'{cosmetic.type["value"].capitalize()} set to {cosmetic.name}.')
 
                 await asyncio.sleep(3)
 
-        await ctx.send(f'Finished equipping all cosmetics from the {set_items[0].set} set.')
-        print(self.bot.message % f'Fishing equipping  all cosmetics from the {set_items[0].set} set.')
+        await ctx.send(f'Finished equipping all cosmetics from the {set_items[0].set["value"]} set.')
+        print(self.bot.message % f'Fishing equipping  all cosmetics from the {set_items[0].set["value"]} set.')
 
     @commands.dm_only()
     @commands.command(
