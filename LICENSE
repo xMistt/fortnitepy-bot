@@ -1,5 +1,5 @@
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019-2020
+Copyright Oli 2019-2021
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -146,6 +146,12 @@ License: Apache 2.0
           or as an addendum to the NOTICE text from the Work, provided
           that such additional attribution notices cannot be construed
           as modifying the License.
+          
+      (e) You may not steal the source code or any other content related to
+          PartyBot w/o providing credit to the original owner/s. Meaning you
+          cannot redistribute it without providing full credit and you also
+          cannot market the product as your own w/o explicit permission from
+          the owner/s.
 
       You may add Your own copyright statement to Your modifications and
       may provide additional or different license terms and conditions
