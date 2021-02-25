@@ -141,6 +141,15 @@ class PartyBot(commands.Bot):
         # if discord_exists:
         #     asyncio.get_event_loop().create_task(self.start_discord_rich_presence())
 
+        # NOTE: Ignore this commented out code below, I use it to generate the "docs".
+        # command_names = []
+        #
+        # for commands in self.commands:
+        #     command_names.append(commands.name)
+        #
+        # for command in command_names:
+        #     print(command)
+
         for pending in self.incoming_pending_friends:
             try:
                 epic_friend = await pending.accept() if self.settings.friend_accept else await pending.decline()
