@@ -25,9 +25,6 @@
 ## Installation
 PartyBot requires Python 3.6.1 or greater. If you want Python 3.7 (the recommended version), you can get it from here: [Python 3.7.0 Download](https://www.python.org/ftp/python/3.7.0/python-3.7.0-amd64.exe "Python 3.6.1 Download").
 
-**NOTE**: The bot currently doesn't work on any Python 3.9.x version.
-
-
 1. Install the required dependencies.
 
     ```
