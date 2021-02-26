@@ -203,4 +203,6 @@ class PartyBot(commands.Bot):
         elif isinstance(error, fortnitepy.ext.commands.errors.PrivateMessageOnly):
             pass
         else:
+            await ctx.send(f'When trying to process !{ctx.command.name}, an error occured: "{error}"\n'
+                           f'Please report this on Discord or GitHub.')
             raise error
