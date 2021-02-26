@@ -595,7 +595,9 @@ class CosmeticCommands(commands.Cog):
             )
         )
 
-        await self.bot.party.me.set_emote(asset=member.emote)
+        if member.emote is not None:
+            await self.bot.party.me.set_emote(asset=member.emote)
+
         await ctx.send(f'Copied the loadout of {member.display_name}.')
 
     @commands.dm_only()
