@@ -328,10 +328,10 @@ class CosmeticCommands(commands.Cog):
         if variant_id[1].lower() == 'particle':
             skin_variants = self.bot.party.me.create_variants(particle_config='Particle', particle=1)
         else:
-            skin_variants = self.bot.party.me.create_variants(**{vtid[1].lower(): int(vtid[2])})
+            skin_variants = self.bot.party.me.create_variants(**{variant_id[1].lower(): int(variant_id[2])})
 
-        await self.bot.party.me.set_outfit(asset=vtid[0], variants=skin_variants)
-        print(self.bot.message % f'Set variants of {vtid[0]} to {vtid[1]} {vtid[2]}.')
+        await self.bot.party.me.set_outfit(asset=variant_id[0], variants=skin_variants)
+        print(self.bot.message % f'Set variants of {variant_id[0]} to {variant_id[1]} {variant_id[2]}.')
         await ctx.send(f'Variants set to {variant_token}.\n'
                        '(Warning: This feature is not supported, please use !variants)')
 
@@ -450,6 +450,7 @@ class CosmeticCommands(commands.Cog):
     async def stop(self, ctx: fortnitepy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_emote()
         await ctx.send('Stopped emoting.')
+        print(self.bot.message % f'Stopped emoting.')
 
     @commands.dm_only()
     @commands.command(
@@ -463,6 +464,7 @@ class CosmeticCommands(commands.Cog):
         )
 
         await ctx.send(f'Backbling set to {backpack_id}!')
+        print(self.bot.message % f'Backbling set to {backpack_id}!')
 
     @commands.dm_only()
     @commands.command(
@@ -477,6 +479,7 @@ class CosmeticCommands(commands.Cog):
         )
 
         await ctx.send(f'Pickaxe set to {pickaxe_id_}')
+        print(self.bot.message % f'Pickaxe set to {pickaxe_id_}')
 
     @commands.dm_only()
     @commands.command(
@@ -490,6 +493,7 @@ class CosmeticCommands(commands.Cog):
         )
 
         await ctx.send(f'Pet set to {pet_carrier_id}!')
+        print(self.bot.message % f'Pet set to {pet_carrier_id}!')
 
     @commands.dm_only()
     @commands.command(
@@ -504,6 +508,7 @@ class CosmeticCommands(commands.Cog):
         )
 
         await ctx.send(f'Emoji set to {emoji_}!')
+        print(self.bot.message % f'Emoji set to {emoji_}!')
 
     @commands.dm_only()
     @commands.command(
@@ -517,6 +522,7 @@ class CosmeticCommands(commands.Cog):
         )
 
         await ctx.send(f'Contrail set to {trails}!')
+        print(self.bot.message % f'Contrail set to {trails}!')
 
     @commands.dm_only()
     @commands.command(
@@ -599,6 +605,7 @@ class CosmeticCommands(commands.Cog):
             await self.bot.party.me.set_emote(asset=member.emote)
 
         await ctx.send(f'Copied the loadout of {member.display_name}.')
+        print(self.bot.message % f'Copied the loadout of {member.display_name}.')
 
     @commands.dm_only()
     @commands.command(
