@@ -33,6 +33,7 @@ from typing import Optional, Union
 from fortnitepy.ext import commands
 
 import fortnitepy
+import aiohttp
 
 
 class ClientCommands(commands.Cog):
@@ -98,3 +99,27 @@ class ClientCommands(commands.Cog):
         )
 
         await ctx.send('Status set to away.')
+        print(self.bot.message % f'Status set to away.')
+
+    @commands.dm_only()
+    @commands.command(
+        aliases=['updates'],
+        description="[Client] Sends the most recent commit/s.",
+        help="Sends the most recent commit/s.\n"
+             "Example: !update"
+    )
+    async def update(self, ctx: fortnitepy.ext.commands.Context) -> None:
+        async with aiohttp.ClientSession() as session:
+            async with session.request(
+                method="GET",
+                url="https://api.github.com/repos/xMistt/fortnitepy-bot/commits/master"
+            ) as request:
+                data = await request.json()
+
+        date = fortnitepy.Client.from_iso(data['commit']['committer']['date'])
+        pretty_date = f'{date.day}/{date.month}/{date.year} @ {date.hour}:{date.minute}'
+
+        await ctx.send(f"Last commit by {data['committer']['login']} made on {pretty_date}:\n"
+                       f"[{data['sha'][0:7]}] {data['commit']['message']}")
+
+        print(self.bot.message % f'Sent last commit information.')
