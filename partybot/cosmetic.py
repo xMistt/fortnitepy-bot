@@ -1304,3 +1304,28 @@ class CosmeticCommands(commands.Cog):
         )
 
         await ctx.send(f'Skin set to Golden TNTina.')
+
+    @commands.dm_only()
+    @commands.command(
+        description="[Cosmetic] Equips a To-Be-Determined outfit.",
+        help="Equips a To-Be-Determined outfit.\n"
+             "Example: !tbd 2"
+    )
+    async def tbd(self, ctx: fortnitepy.ext.commands.Context, skin: int = 0) -> None:
+        cosmetics = await self.bot.fortnite_api.cosmetics.get_cosmetics(
+            lang="en",
+            searchLang="en",
+            matchMethod="full",
+            name="TBD",
+            backendType="AthenaCharacter"
+        )
+
+        await ctx.send(f'Found {len(cosmetics)} TBD outfits.')
+        if skin > len(cosmetics) - 1:
+            return await ctx.send('Invalid skin number.')
+
+        await self.bot.party.me.set_outfit(asset=cosmetics[skin].id)
+
+        await ctx.send(f'Skin set to {cosmetics[skin].id}.')
+        print(self.bot.message % f"Set skin to: {cosmetics[skin].id}.")
+
