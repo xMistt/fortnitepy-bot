@@ -118,8 +118,9 @@ class ClientCommands(commands.Cog):
 
         date = fortnitepy.Client.from_iso(data['commit']['committer']['date'])
         pretty_date = f'{date.day}/{date.month}/{date.year} @ {date.hour}:{date.minute}'
+        commit_title = data['commit']['message'].split('\n')[0]
 
         await ctx.send(f"Last commit by {data['committer']['login']} made on {pretty_date}:\n"
-                       f"[{data['sha'][0:7]}] {data['commit']['message']}")
+                       f"[{data['sha'][0:7]}] {commit_title}")
 
         print(self.bot.message % f'Sent last commit information.')
