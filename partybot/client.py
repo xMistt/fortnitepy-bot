@@ -29,6 +29,9 @@ License: Apache 2.0
 # System imports.
 from typing import Optional, Union
 
+import os
+import sys
+
 # Third party imports.
 from fortnitepy.ext import commands
 
