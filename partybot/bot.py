@@ -135,6 +135,9 @@ class PartyBot(commands.Bot):
 
     async def event_ready(self) -> None:
         print(crayons.green(self.message % f'Client ready as {self.user.display_name}.'))
+        
+        if self.party.me.leader:
+            await self.party.set_privacy(fortnitepy.PartyPrivacy.PUBLIC)
 
         # discord_exists = await self.loop.run_in_executor(None, HelperFunctions.check_if_process_running, 'Discord')
 
