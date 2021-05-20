@@ -70,11 +70,7 @@ class PartyBot(commands.Bot):
                 secret=account_device_auths.secret
             ),
             status=self.settings.status,
-            platform=fortnitepy.Platform(self.settings.platform),
-            avatar=fortnitepy.Avatar(
-                asset=self.settings.cid,
-                background_colors=fortnitepy.KairosBackgroundColorPreset.PINK.value
-            )
+            platform=fortnitepy.Platform(self.settings.platform)
         )
 
         self.message = f'[PartyBot] [{datetime.datetime.now().strftime("%H:%M:%S")}] %s'
