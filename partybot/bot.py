@@ -70,11 +70,7 @@ class PartyBot(commands.Bot):
                 secret=account_device_auths.secret
             ),
             status=self.settings.status,
-            platform=fortnitepy.Platform(self.settings.platform),
-            avatar=fortnitepy.Avatar(
-                asset=self.settings.cid,
-                background_colors=fortnitepy.KairosBackgroundColorPreset.PINK.value
-            )
+            platform=fortnitepy.Platform(self.settings.platform)
         )
 
         self.message = f'[PartyBot] [{datetime.datetime.now().strftime("%H:%M:%S")}] %s'
@@ -135,6 +131,9 @@ class PartyBot(commands.Bot):
 
     async def event_ready(self) -> None:
         print(crayons.green(self.message % f'Client ready as {self.user.display_name}.'))
+        
+        if self.party.me.leader:
+            await self.party.set_privacy(fortnitepy.PartyPrivacy.PUBLIC)
 
         # discord_exists = await self.loop.run_in_executor(None, HelperFunctions.check_if_process_running, 'Discord')
 
