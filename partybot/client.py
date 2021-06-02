@@ -57,22 +57,6 @@ class ClientCommands(commands.Cog):
 
     @commands.dm_only()
     @commands.command(
-        description="[Client] Sets the clients kairos/PartyHub avatar.",
-        help="Sets the clients kairos/PartyHub avatar.\n"
-             "Example: !avatar stw_soldier_f"
-    )
-    async def avatar(self, ctx: fortnitepy.ext.commands.Context, kairos_cid: str) -> None:
-        kairos_avatar = fortnitepy.Avatar(
-            asset=kairos_cid
-        )
-
-        self.bot.set_avatar(kairos_avatar)
-
-        await ctx.send(f'Kairos avatar set to {kairos_cid}.')
-        print(self.bot.message % f'Kairos avatar set to {kairos_cid}.')
-
-    @commands.dm_only()
-    @commands.command(
         aliases=['clear'],
         description="[Client] Clears command prompt/terminal.",
         help="Clears command prompt/terminal.\n"
