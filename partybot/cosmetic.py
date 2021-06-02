@@ -288,8 +288,9 @@ class CosmeticCommands(commands.Cog):
     )
     async def purpleportal(self, ctx: fortnitepy.ext.commands.Context) -> None:
         skin_variants = self.bot.party.me.create_variants(
-            item='AthenaBackpack',
-            particle_config='Particle',
+            config_overrides={
+                'particle': 'Particle{}'
+            },
             particle=1
         )
 
@@ -326,7 +327,7 @@ class CosmeticCommands(commands.Cog):
         variant_id = await self.set_vtid(variant_token)
 
         if variant_id[1].lower() == 'particle':
-            skin_variants = self.bot.party.me.create_variants(particle_config='Particle', particle=1)
+            skin_variants = self.bot.party.me.create_variants(config_overrides={'particle': 'Particle{}'}, particle=1)
         else:
             skin_variants = self.bot.party.me.create_variants(**{variant_id[1].lower(): int(variant_id[2])})
 
@@ -367,7 +368,6 @@ class CosmeticCommands(commands.Cog):
 
         elif 'bid' in cosmetic_id.lower():
             cosmetic_variants = self.bot.party.me.create_variants(
-                item='AthenaBackpack',
                 **{variant_type: int(variant_int) if variant_int.isdigit() else variant_int}
             )
 
@@ -377,7 +377,6 @@ class CosmeticCommands(commands.Cog):
             )
         elif 'pickaxe_id' in cosmetic_id.lower():
             cosmetic_variants = self.bot.party.me.create_variants(
-                item='AthenaPickaxe',
                 **{variant_type: int(variant_int) if variant_int.isdigit() else variant_int}
             )
 
