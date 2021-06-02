@@ -1,7 +1,7 @@
 <h1 align="center">PartyBot</h1>
 
 <p align="center">
-    <a href="https://pepy.tech/project/benbotasync" align="center">
+    <a href="https://pepy.tech/project/partybotpackage" align="center">
         <img alt="Downloads" src="https://pepy.tech/badge/partybotpackage">
     </a>
     <a href="https://www.python.org/downloads/release/python-361/" align="center">
