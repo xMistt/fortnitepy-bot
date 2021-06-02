@@ -49,7 +49,7 @@ class CosmeticCommands(commands.Cog):
         async with aiohttp.ClientSession() as session:
             request = await session.request(
                 method='GET',
-                url='https://benbotfn.tk/api/v1/assetProperties',
+                url='https://benbotfn.app/api/v1/assetProperties',
                 params={
                     'path': 'FortniteGame/Content/Athena/'
                             f'Items/CosmeticVariantTokens/{variant_token}.uasset'

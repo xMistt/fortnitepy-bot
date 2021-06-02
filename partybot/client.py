@@ -86,7 +86,7 @@ class ClientCommands(commands.Cog):
             away=fortnitepy.AwayStatus.AWAY
         )
 
-        await ctx.send('Status set to away.')
+        await ctx.send('Status set to away, you can use !status to revert.')
         print(self.bot.message % f'Status set to away.')
 
     @commands.dm_only()
