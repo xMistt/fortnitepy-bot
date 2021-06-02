@@ -37,6 +37,7 @@ from fortnitepy.ext import commands
 
 import fortnitepy
 import aiohttp
+import crayons
 
 
 class ClientCommands(commands.Cog):
