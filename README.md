@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="https://pepy.tech/project/benbotasync" align="center">
-        <img alt="Downloads" src="https://pepy.tech/badge/benbotasync">
+        <img alt="Downloads" src="https://pepy.tech/badge/partybotpackage">
     </a>
     <a href="https://www.python.org/downloads/release/python-361/" align="center">
         <img alt="Python" src="https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue">
