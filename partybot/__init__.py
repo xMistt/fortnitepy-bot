@@ -32,3 +32,5 @@ from .deviceauths import DeviceAuth, DeviceAuths
 from .cosmetic import CosmeticCommands
 from .party import PartyCommands
 from .client import ClientCommands
+from .errors import MissingDeviceAuth
+from .generator import EpicGenerator

@@ -32,6 +32,7 @@ try:
     import json
     import logging
     import sys
+    import datetime
 
     # Third party imports.
     import partybot
@@ -59,27 +60,57 @@ if sys.platform == 'win32':
 
 
 def enable_debug() -> None:
-    modules = ['fortnitepy.http', 'fortnitepy.xmpp']
+    modules = {
+        'fortnitepy.http': 6,
+        'fortnitepy.xmpp': 5
+    }
     
-    for module in module:
+    for module, colour in module.items():
         logger = logging.getLogger(module)
         logger.setLevel(level=logging.DEBUG)
         handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(logging.Formatter(f'\u001b[3{"6" if fortnitepy.http else "5"}m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'))
+        handler.setFormatter(logging.Formatter(f'\u001b[3{colour}m %(asctime)s:%(levelname)s:%(name)s: %(message)s'
+                                               ' \u001b[0m'))
         logger.addHandler(handler)
 
         
 async def main() -> None:
     settings = partybot.BotSettings()
+
+    await settings.load_settings_from_file('config.json')
+
+    if settings.debug:
+        enable_debug()
+
+    async with aiohttp.ClientSession() as session:
+        async with session.request(
+            method="GET",
+            url="https://partybot.net/api/discord"
+        ) as r:
+            invite = (await r.json())['invite'] if r.status == 200 else "8heARRB"
+
+    print(crayons.cyan(f"[PartyBot] [{datetime.datetime.now().strftime('%H:%M:%S')}] PartyBot made by xMistt. "
+                       'Massive credit to Terbau for creating the library.'))
+    print(crayons.cyan(f"[PartyBot] [{datetime.datetime.now().strftime('%H:%M:%S')}] Discord server: "
+                       f"https://discord.gg/{invite} - For support, questions, etc."))
+
     device_auths = partybot.DeviceAuths(
         filename='device_auths.json'
     )
 
-    await settings.load_settings_from_file('config.json')
-    await device_auths.load_device_auths()
+    try:
+        await device_auths.load_device_auths()
+    except partybot.errors.MissingDeviceAuth:
+        print(f"[PartyBot] [{datetime.datetime.now().strftime('%H:%M:%S')}] Automatically opening Epic Games login, "
+              f"please sign in.")
 
-    if settings.debug:
-        enable_debug()
+        gen = partybot.EpicGenerator()
+        new_device_auths = await gen.generate_device_auths()
+        device_auths.set_device_auth(
+            **new_device_auths
+        )
+
+        await device_auths.save_device_auths()
 
     client = partybot.PartyBot(
         settings=settings,
@@ -90,26 +121,10 @@ async def main() -> None:
     client.add_cog(partybot.PartyCommands(client))
     client.add_cog(partybot.ClientCommands(client))
 
-    async with aiohttp.ClientSession() as session:
-        async with session.request(
-            method="GET",
-            url="https://partybot.net/api/discord"
-        ) as r:
-            invite = (await r.json())['invite'] if r.status == 200 else "8heARRB"
-
-    print(crayons.cyan(client.message % 'PartyBot made by xMistt. '
-                       'Massive credit to Terbau for creating the library.'))
-    print(crayons.cyan(client.message % f'Discord server: https://discord.gg/{invite} - For support, questions, etc.'))
-
-    if (settings.email and settings.password) and \
-            (settings.email != 'email@email.com' and settings.password != 'password1'):
-        try:
-            await client.start()
-        except fortnitepy.errors.AuthException as e:
-            print(crayons.red(client.message % f"[ERROR] {e}"))
-    else:
-        print(crayons.red(client.message % f"[ERROR] Failed to login as no (or default) "
-                          "account details provided."))
+    try:
+        await client.start()
+    except fortnitepy.errors.AuthException as e:
+        print(crayons.red(client.message % f"[ERROR] {e}"))
 
     await client.http.close()
 

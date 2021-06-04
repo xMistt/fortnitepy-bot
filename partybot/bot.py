@@ -49,25 +49,17 @@ import pypresence
 
 class PartyBot(commands.Bot):
     def __init__(self, settings: BotSettings, device_auths: DeviceAuths) -> None:
-        self.device_auths = device_auths
+        self.device_auths = device_auths.get_device_auth()
         self.settings = settings
 
         self.fortnite_api = FortniteAPIAsync.APIClient()
 
-        account_device_auths = self.device_auths.get_device_auth(
-            email=settings.email
-        )
-
         super().__init__(
             command_prefix='!',
-            auth=fortnitepy.AdvancedAuth(
-                email=self.settings.email,
-                password=self.settings.password,
-                prompt_authorization_code=True,
-                delete_existing_device_auths=True,
-                device_id=account_device_auths.device_id,
-                account_id=account_device_auths.account_id,
-                secret=account_device_auths.secret
+            auth=fortnitepy.DeviceAuth(
+                device_id=self.device_auths.device_id,
+                account_id=self.device_auths.account_id,
+                secret=self.device_auths.secret
             ),
             status=self.settings.status,
             platform=fortnitepy.Platform(self.settings.platform)

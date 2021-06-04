@@ -26,23 +26,22 @@ Software: PartyBot (fortnitepy-bot)
 License: Apache 2.0
 """
 
-# System imports.
-from typing import Optional
+from .errors import MissingDeviceAuth
+
+from typing import Optional, Union
 
 import json
 
-# Third party imports.
 import aiofiles
 
 
 class DeviceAuth:
     def __init__(self,
-                 email: Optional[str] = None,
                  device_id: Optional[str] = None,
                  account_id: Optional[str] = None,
-                 secret: Optional[str] = None
+                 secret: Optional[str] = None,
+                 **kwargs
                  ) -> None:
-        self.email = email
         self.device_id = device_id
         self.account_id = account_id
         self.secret = secret
@@ -50,44 +49,44 @@ class DeviceAuth:
 
 class DeviceAuths:
     def __init__(self, filename: str) -> None:
-        self.device_auths = {}
+        self.device_auth = None
         self.filename = filename
 
     async def load_device_auths(self) -> None:
-        async with aiofiles.open(self.filename, mode='r') as f:
-            raw = await f.read()
+        try:
+            async with aiofiles.open(self.filename, mode='r') as fp:
+                data = await fp.read()
+                raw_device_auths = json.loads(data)
+        except (json.decoder.JSONDecodeError, FileNotFoundError):
+            raw_device_auths = {}
 
-        data = json.loads(raw)
+        if 'device_id' not in raw_device_auths or \
+            'account_id' not in raw_device_auths or \
+                'secret' not in raw_device_auths:
+            raise MissingDeviceAuth('Missing required device auth key.')
 
-        for key, value in data.items():
-            self.device_auths[key] = DeviceAuth(
-                email=key,
-                device_id=value['device_id'],
-                account_id=value['account_id'],
-                secret=value['secret']
-            )
-
-    async def save_device_auth(self, device_auth: DeviceAuth) -> None:
-        async with aiofiles.open(self.filename, mode='r+') as f:
-            raw_input = await f.read()
-
-        data = json.loads(raw_input)
-
-        data[device_auth.email] = {
-            "device_id": device_auth.device_id,
-            "account_id": device_auth.account_id,
-            "secret": device_auth.secret
-        }
-
-        parsed_output = json.dumps(
-            data,
-            sort_keys=False,
-            indent=4
+        self.device_auth = DeviceAuth(
+            device_id=raw_device_auths.get('device_id'),
+            account_id=raw_device_auths.get('account_id'),
+            secret=raw_device_auths.get('secret')
         )
 
-        async with aiofiles.open(self.filename, mode='w+') as f:
-            await f.write(parsed_output)
+    async def save_device_auths(self) -> None:
+        async with aiofiles.open(self.filename, mode='w') as fp:
+            await fp.write(json.dumps(
+                {
+                    "account_id": self.device_auth.account_id,
+                    "device_id": self.device_auth.device_id,
+                    "secret": self.device_auth.secret
+                },
+                sort_keys=False,
+                indent=4
+            ))
 
-    def get_device_auth(self, email: str) -> DeviceAuth:
-        return self.device_auths[email] if email in self.device_auths else DeviceAuth()
+    def set_device_auth(self, **kwargs) -> None:
+        self.device_auth = DeviceAuth(
+            **kwargs
+        )
 
+    def get_device_auth(self) -> Union[DeviceAuth, None]:
+        return self.device_auth
