@@ -1157,28 +1157,31 @@ class CosmeticCommands(commands.Cog):
 
     @commands.dm_only()
     @commands.command(
+        aliases=['henchmen'],
         description="[Cosmetic] Sets the outfit of the client to a random Henchman skin.",
         help="Sets the outfit of the client to a random Henchman skin.\n"
              "Example: !henchman"
     )
     async def henchman(self, ctx: fortnitepy.ext.commands.Context) -> None:
         random_henchman = py_random.choice(
-            "CID_794_Athena_Commando_M_HenchmanBadShorts_D",
-            "CID_NPC_Athena_Commando_F_HenchmanSpyDark",
-            "CID_791_Athena_Commando_M_HenchmanGoodShorts_D",
-            "CID_780_Athena_Commando_M_HenchmanBadShorts",
-            "CID_NPC_Athena_Commando_M_HenchmanGood",
-            "CID_692_Athena_Commando_M_HenchmanTough",
-            "CID_707_Athena_Commando_M_HenchmanGood",
-            "CID_792_Athena_Commando_M_HenchmanBadShorts_B",
-            "CID_793_Athena_Commando_M_HenchmanBadShorts_C",
-            "CID_NPC_Athena_Commando_M_HenchmanBad",
-            "CID_790_Athena_Commando_M_HenchmanGoodShorts_C",
-            "CID_779_Athena_Commando_M_HenchmanGoodShorts",
-            "CID_NPC_Athena_Commando_F_RebirthDefault_Henchman",
-            "CID_NPC_Athena_Commando_F_HenchmanSpyGood",
-            "CID_706_Athena_Commando_M_HenchmanBad",
-            "CID_789_Athena_Commando_M_HenchmanGoodShorts_B"
+            [
+                "CID_794_Athena_Commando_M_HenchmanBadShorts_D",
+                "CID_NPC_Athena_Commando_F_HenchmanSpyDark",
+                "CID_791_Athena_Commando_M_HenchmanGoodShorts_D",
+                "CID_780_Athena_Commando_M_HenchmanBadShorts",
+                "CID_NPC_Athena_Commando_M_HenchmanGood",
+                "CID_692_Athena_Commando_M_HenchmanTough",
+                "CID_707_Athena_Commando_M_HenchmanGood",
+                "CID_792_Athena_Commando_M_HenchmanBadShorts_B",
+                "CID_793_Athena_Commando_M_HenchmanBadShorts_C",
+                "CID_NPC_Athena_Commando_M_HenchmanBad",
+                "CID_790_Athena_Commando_M_HenchmanGoodShorts_C",
+                "CID_779_Athena_Commando_M_HenchmanGoodShorts",
+                "CID_NPC_Athena_Commando_F_RebirthDefault_Henchman",
+                "CID_NPC_Athena_Commando_F_HenchmanSpyGood",
+                "CID_706_Athena_Commando_M_HenchmanBad",
+                "CID_789_Athena_Commando_M_HenchmanGoodShorts_B"
+            ]
         )
 
         await self.bot.party.me.set_outfit(
@@ -1211,9 +1214,11 @@ class CosmeticCommands(commands.Cog):
     )
     async def marauder(self, ctx: fortnitepy.ext.commands.Context) -> None:
         random_marauder = py_random.choice(
-            "CID_NPC_Athena_Commando_M_MarauderHeavy",
-            "CID_NPC_Athena_Commando_M_MarauderElite",
-            "CID_NPC_Athena_Commando_M_MarauderGrunt"
+            [
+                "CID_NPC_Athena_Commando_M_MarauderHeavy",
+                "CID_NPC_Athena_Commando_M_MarauderElite",
+                "CID_NPC_Athena_Commando_M_MarauderGrunt"
+            ]
         )
 
         await self.bot.party.me.set_outfit(
