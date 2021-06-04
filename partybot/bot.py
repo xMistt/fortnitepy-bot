@@ -73,7 +73,9 @@ class PartyBot(commands.Bot):
             platform=fortnitepy.Platform(self.settings.platform)
         )
 
-        self.message = f'[PartyBot] [{datetime.datetime.now().strftime("%H:%M:%S")}] %s'
+    @property
+    def message(self) -> str:
+        return f'[PartyBot] [{datetime.datetime.now().strftime("%H:%M:%S")}] %s'
 
     async def start_discord_rich_presence(self) -> None:
         rpc = pypresence.AioPresence(
