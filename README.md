@@ -1,4 +1,5 @@
-<h1 align="center">PartyBot</h1>
+<img alt="PartyBot - Fortnite Lobby Bot" src="assets/fnl.png"> </img>
+
 
 <p align="center">
     <a href="https://pepy.tech/project/partybotpackage" align="center">
@@ -12,15 +13,25 @@
     </a>
 </p>
 
-<p align="center">A Fortnite HTTP/XMPP bot coded in Python with party capabilities.</p>
+<i>A Fortnite HTTP/XMPP bot coded in Python with party capabilities</i>
 
----
 
-## Offical Website
-[PartyBot.net](https://partybot.net)
 
 ## Discord Support
 <a href="https://discord.gg/8heARRB"><img src="https://discordapp.com/api/guilds/624635034225213440/widget.png?style=banner2"></a>
+
+</div>
+
+## Categories
+
+#### GitHub Actions 🤖
+- [🌐 Website](https://partybot.net/)
+- [✨ Change Variants](https://github.com/xMistt/fortnitepy-bot/wiki/Variants)
+- [🎁 Commands](https://github.com/xMistt/fortnitepy-bot/wiki/Commands)
+- [💱 Exchange Code](https://github.com/xMistt/fortnitepy-bot/wiki/Exchange-Code)
+- [🙋 Discord Server](https://discord.gg/fnpy)
+- [🎨 Installation](#Installation)
+- [📝 Licence](#License)
 
 ## Installation
 PartyBot requires Python 3.6.1 or greater. If you want Python 3.7 (the recommended version), you can get it from here: [Python 3.7.0 Download](https://www.python.org/ftp/python/3.7.0/python-3.7.0-amd64.exe "Python 3.6.1 Download").
@@ -45,3 +56,4 @@ PartyBot requires Python 3.6.1 or greater. If you want Python 3.7 (the recommend
 
 ## License
 By downloading this, you agree to the Commons Clause license and that you're not allowed to sell this repository or any code from this repository. For more info see https://commonsclause.com/.
+
