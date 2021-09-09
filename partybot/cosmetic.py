@@ -1147,7 +1147,11 @@ class CosmeticCommands(commands.Cog):
             10: "CID_484_Athena_Commando_M_KnightRemix",
             11: "CID_572_Athena_Commando_M_Viper",
             12: "CID_694_Athena_Commando_M_CatBurglar",
-            13: "CID_767_Athena_Commando_F_BlackKnight"
+            13: "CID_767_Athena_Commando_F_BlackKnight",
+            14: "CID_843_Athena_Commando_M_HightowerTomato_Casual",
+            15: "CID_967_Athena_Commando_M_AncientGladiator",
+            16: "CID_A_038_Athena_Commando_F_TowerSentinel",
+            17: "CID_A_112_Athena_Commando_M_Ruckus"
         }
 
         await self.bot.party.me.set_outfit(asset=max_tier_skins[br_season])
@@ -1332,4 +1336,3 @@ class CosmeticCommands(commands.Cog):
 
         await ctx.send(f'Skin set to {cosmetics[skin].id}.')
         print(self.bot.message % f"Set skin to: {cosmetics[skin].id}.")
-
