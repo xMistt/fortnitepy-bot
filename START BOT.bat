@@ -10,6 +10,7 @@ IF EXIST "python-3.6.0-amd64.exe" (
 
 cls
 @echo on
+title PartyBot Official ^| github.com/xMistt/fortnitepy-bot
 py fortnite.py
 cmd /k
 
@@ -17,7 +18,8 @@ cmd /k
 goto:eof
 
 :errorNoPython
-echo Error^: Python not installed or not added to PATH.
+title PartyBot^: Error
+echo Error^: Python not installed or has not been added to PATH.
 
 IF EXIST "python-3.7.0-amd64.exe" (
     echo Python Installer is already installed, install and/or add Python to PATH
