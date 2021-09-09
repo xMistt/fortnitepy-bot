@@ -22,6 +22,7 @@ PAUSE
 goto:eof
 
 :errorNoPython
+TITLE PartyBot^: Error
 echo Error^: Python not installed or not added to PATH.
 :: set mypath=%cd%
 :: bitsadmin.exe /transfer "InstallPython" https://www.python.org/ftp/python/3.7.0/python-3.7.0-amd64.exe %mypath%\python-3.7.0-amd64.exe
