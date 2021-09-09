@@ -1148,7 +1148,7 @@ class CosmeticCommands(commands.Cog):
             11: "CID_572_Athena_Commando_M_Viper",
             12: "CID_694_Athena_Commando_M_CatBurglar",
             13: "CID_767_Athena_Commando_F_BlackKnight",
-            14: "CID_843_Athena_Commando_M_HightowerTomato_Casual"
+            14: "CID_843_Athena_Commando_M_HightowerTomato_Casual",
             15: "CID_967_Athena_Commando_M_AncientGladiator",
             16: "CID_A_038_Athena_Commando_F_TowerSentinel",
             17: "CID_A_112_Athena_Commando_M_Ruckus"
