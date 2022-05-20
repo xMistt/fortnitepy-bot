@@ -92,7 +92,7 @@ class EpicGenerator:
                 url="https://account-public-service-prod.ol.epicgames.com/account/api/oauth/token",
                 headers={
                     "Content-Type": "application/x-www-form-urlencoded",
-                    "Authorization": f"basic {DAUNTLESS_TOKEN}"
+                    "Authorization": f"basic {SWITCH_TOKEN}"
                 },
                 data={
                     "grant_type": "client_credentials",
