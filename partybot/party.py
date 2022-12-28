@@ -256,7 +256,7 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the parties custom matchmaking code.",
         help="Sets the parties custom matchmaking code.\n"
-             "Example: !skin Nog Ops"
+             "Example: !matchmakingcode solo123"
     )
     async def matchmakingcode(self, ctx: fortnitepy.ext.commands.Context, *, custom_matchmaking_key: str) -> None:
         await self.bot.party.set_custom_key(
