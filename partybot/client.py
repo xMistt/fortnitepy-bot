@@ -69,7 +69,7 @@ class ClientCommands(commands.Cog):
         print(crayons.cyan(self.bot.message % f'PartyBot made by xMistt. '
                            'Massive credit to Terbau for creating the library.'))
         print(crayons.cyan(
-            self.bot.message % f'Discord server: https://discord.gg/fnpy - For support, questions, etc.'))
+            self.bot.message % f'Discord server: https://discord.gg/8heARRB - For support, questions, etc.'))
 
         await ctx.send('Command prompt/terminal cleared.')
         print(self.bot.message % f'Command prompt/terminal cleared.')
