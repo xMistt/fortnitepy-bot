@@ -42,7 +42,6 @@ from fortnitepy.ext import commands
 
 import fortnitepy
 import crayons
-import BenBotAsync
 import FortniteAPIAsync
 import pypresence
 
@@ -175,7 +174,7 @@ class PartyBot(commands.Bot):
             print(self.message % f"Declined friend request from: {request.display_name}.")
 
     async def event_party_member_join(self, member: fortnitepy.PartyMember) -> None:
-        await BenBotAsync.set_default_loadout(
+        await FortniteAPIAsync.set_default_loadout(
             self,
             self.settings.to_dict(),
             member
