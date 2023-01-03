@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019-2021
+Copyright Oli 2019-2023
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -26,6 +24,7 @@ Software: DeviceAuthGenerator
 License: Apache 2.0 Modified.
 """
 
+# System imports.
 import asyncio
 import webbrowser
 import json
@@ -33,7 +32,9 @@ import platform
 import os
 import sys
 
+# Third party imports.s
 import aiohttp
+
 
 # "Constants" ? I don't know.
 DAUNTLESS_TOKEN = "YjA3MGYyMDcyOWY4NDY5M2I1ZDYyMWM5MDRmYzViYzI6SEdAWEUmVEdDeEVKc2dUIyZfcDJdPWFSbyN+Pj0+K2M2UGhSKXpYUA=="

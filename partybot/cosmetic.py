@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019-2020
+Copyright Oli 2019-2023
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -27,18 +25,18 @@ License: Apache 2.0
 """
 
 # System imports.
-from typing import Optional, Union, Tuple
-
 import asyncio
 import functools
 
-# Third party imports.
-from fortnitepy.ext import commands
+from typing import Optional, Union, Tuple
 
+# Third party imports.
 import fortnitepy
 import aiohttp
 import FortniteAPIAsync
 import random as py_random
+
+from fortnitepy.ext import commands
 
 
 class CosmeticCommands(commands.Cog):

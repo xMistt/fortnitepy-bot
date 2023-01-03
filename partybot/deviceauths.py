@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019-2020
+Copyright Oli 2019-2023
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -26,13 +24,15 @@ Software: PartyBot (fortnitepy-bot)
 License: Apache 2.0
 """
 
-from .errors import MissingDeviceAuth
-
-from typing import Optional, Union
-
+# System imports.
 import json
 
+# Third party imports.
 import aiofiles
+
+# Local imports.
+from .errors import MissingDeviceAuth
+from typing import Optional, Union
 
 
 class DeviceAuth:

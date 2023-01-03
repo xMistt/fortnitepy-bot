@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 """
 “Commons Clause” License Condition v1.0
-Copyright Oli 2019-2020
+Copyright Oli 2019-2023
 
 The Software is provided to you by the Licensor under the
 License, as defined below, subject to the following condition.
@@ -26,10 +24,6 @@ Software: PartyBot (fortnitepy-bot)
 License: Apache 2.0
 """
 
-from .settings import BotSettings
-from .deviceauths import DeviceAuth, DeviceAuths
-# from .helper import HelperFunctions
-
 # System imports.
 from typing import Any
 
@@ -44,6 +38,11 @@ import fortnitepy
 import crayons
 import FortniteAPIAsync
 import pypresence
+
+# Local imports
+from .settings import BotSettings
+from .deviceauths import DeviceAuth, DeviceAuths
+# from .helper import HelperFunctions
 
 
 class PartyBot(commands.Bot):
