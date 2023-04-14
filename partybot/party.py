@@ -356,29 +356,6 @@ class PartyCommands(commands.Cog):
 
     @commands.dm_only()
     @commands.command(
-        description="[Party] Sends the defined user a friend request.",
-        help="Sends the defined user a friend request.\n"
-             "Example: !friend Ninja"
-    )
-    async def friend(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
-        if data['friend_accept']:
-            await ctx.send('All friend requests will be accepted so there is no need to add manually.')
-            print(self.bot.message % f'!friend command ignored as friend requests will be accepted '
-                  'so there is no need to add manually.')
-        else:
-            user = await self.bot.fetch_user(epic_username)
-
-            if user is not None:
-                await self.bot.add_friend(user.id)
-                await ctx.send(f'Sent/accepted friend request to/from {user.display_name}.')
-                print(self.bot.message % f'Sent/accepted friend request to/from {user.display_name}.')
-            else:
-                await ctx.send(f'Failed to find user with the name: {epic_username}.')
-                print(
-                    crayons.red(self.bot.message % f"[ERROR] Failed to find a user with the name {epic_username}."))
-
-    @commands.dm_only()
-    @commands.command(
         description="[Party] Sets the lobbies selected playlist using playlist name.",
         help="Sets the lobbies selected playlist using playlist name.\n"
              "Example: !playlist Food Fight"

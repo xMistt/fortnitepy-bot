@@ -110,3 +110,21 @@ class ClientCommands(commands.Cog):
                        f"[{data['sha'][0:7]}] {commit_title}")
 
         print(self.bot.message % f'Sent last commit information.')
+
+    @commands.dm_only()
+    @commands.command(
+        description="[Party] Sends the defined user a friend request.",
+        help="Sends the defined user a friend request.\n"
+             "Example: !friend Ninja"
+    )
+    async def friend(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
+        user = await self.bot.fetch_user(epic_username)
+
+        if user is not None:
+            await self.bot.add_friend(user.id)
+            await ctx.send(f'Sent/accepted friend request to/from {user.display_name}.')
+            print(self.bot.message % f'Sent/accepted friend request to/from {user.display_name}.')
+        else:
+            await ctx.send(f'Failed to find user with the name: {epic_username}.')
+            print(
+                crayons.red(self.bot.message % f"[ERROR] Failed to find a user with the name {epic_username}."))

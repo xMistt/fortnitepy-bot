@@ -82,12 +82,16 @@ async def main() -> None:
     if settings.debug:
         enable_debug()
 
-    async with aiohttp.ClientSession() as session:
-        async with session.request(
-            method="GET",
-            url="https://partybot.net/api/discord"
-        ) as r:
-            invite = (await r.json())['invite'] if r.status == 200 else "8heARRB"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.request(
+                method="GET",
+                url="https://partybot.net/api/discord",
+                timeout=3
+            ) as r:
+                invite = (await r.json())['invite'] if r.status == 200 else "8heARRB"
+    except asyncio.TimeoutError:
+        invite = "8heARRB"
 
     print(crayons.cyan(f"[PartyBot] [{datetime.datetime.now().strftime('%H:%M:%S')}] PartyBot made by xMistt. "
                        'Massive credit to Terbau for creating the library.'))
