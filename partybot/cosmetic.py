@@ -80,20 +80,23 @@ class CosmeticCommands(commands.Cog):
     async def skin(self, ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         try:
             cosmetic = await self.bot.fortnite_api.cosmetics.get_cosmetic(
-                lang="en",
-                searchLang="en",
                 matchMethod="contains",
                 name=content,
                 backendType="AthenaCharacter"
             )
+        except FortniteAPIAsync.exceptions.NotFound:
+            print(self.bot.message % f"Failed to find a skin with the name: {content}.")
+            return await ctx.send(f"Failed to find a skin with the name: {content}.")
 
-            await ctx.send(f'Skin set to {cosmetic.id}.')
-            print(self.bot.message % f"Set skin to: {cosmetic.id}.")
+        if "brcosmetics" in cosmetic.path.lower():
+            path = f"AthenaCharacterItemDefinition'/BRCosmetics/Athena/Items/Cosmetics/Characters/{cosmetic.id}.{cosmetic.id}'"
+            await self.bot.party.me.set_outfit(asset=path)
+        else:
             await self.bot.party.me.set_outfit(asset=cosmetic.id)
 
-        except FortniteAPIAsync.exceptions.NotFound:
-            await ctx.send(f"Failed to find a skin with the name: {content}.")
-            print(self.bot.message % f"Failed to find a skin with the name: {content}.")
+        await ctx.send(f'Skin set to {cosmetic.id}.')
+        print(self.bot.message % f"Set skin to: {cosmetic.id}.")
+
 
     @commands.dm_only()
     @commands.command(
@@ -104,20 +107,22 @@ class CosmeticCommands(commands.Cog):
     async def backpack(self, ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         try:
             cosmetic = await self.bot.fortnite_api.cosmetics.get_cosmetic(
-                lang="en",
-                searchLang="en",
                 matchMethod="contains",
                 name=content,
                 backendType="AthenaBackpack"
             )
-
-            await ctx.send(f'Backpack set to {cosmetic.id}.')
-            print(self.bot.message % f"Set backpack to: {cosmetic.id}.")
-            await self.bot.party.me.set_backpack(asset=cosmetic.id)
-
         except FortniteAPIAsync.exceptions.NotFound:
             await ctx.send(f"Failed to find a backpack with the name: {content}.")
             print(self.bot.message % f"Failed to find a backpack with the name: {content}.")
+
+        if "brcosmetics" in cosmetic.path.lower():
+            path = f"AthenaCharacterItemDefinition'/BRCosmetics/Athena/Items/Cosmetics/Backpacks/{cosmetic.id}.{cosmetic.id}'"
+            await self.bot.party.me.set_backpack(asset=path)
+        else:
+            await self.bot.party.me.set_outfit(asset=cosmetic.id)
+
+        await ctx.send(f'Backpack set to {cosmetic.id}.')
+        print(self.bot.message % f"Set backpack to: {cosmetic.id}.")
 
     @commands.dm_only()
     @commands.command(
@@ -128,21 +133,24 @@ class CosmeticCommands(commands.Cog):
     async def emote(self, ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
         try:
             cosmetic = await self.bot.fortnite_api.cosmetics.get_cosmetic(
-                lang="en",
-                searchLang="en",
                 matchMethod="contains",
                 name=content,
                 backendType="AthenaDance"
             )
-
-            await ctx.send(f'Emote set to {cosmetic.id}.')
-            print(self.bot.message % f"Set emote to: {cosmetic.id}.")
-            await self.bot.party.me.clear_emote()
-            await self.bot.party.me.set_emote(asset=cosmetic.id)
-
         except FortniteAPIAsync.exceptions.NotFound:
             await ctx.send(f"Failed to find an emote with the name: {content}.")
             print(self.bot.message % f"Failed to find an emote with the name: {content}.")
+
+        if "brcosmetics" in cosmetic.path.lower():
+            path = f"AthenaCharacterItemDefinition'/BRCosmetics/Athena/Items/Cosmetics/Dances/{cosmetic.id}.{cosmetic.id}'"
+            await self.bot.party.me.clear_emote()
+            await self.bot.party.me.set_emote(asset=path)
+        else:
+            await self.bot.party.me.clear_emote()
+            await self.bot.party.me.set_emote(asset=cosmetic.id)
+
+        await ctx.send(f'Emote set to {cosmetic.id}.')
+        print(self.bot.message % f"Set emote to: {cosmetic.id}.")
 
     @commands.dm_only()
     @commands.command(
