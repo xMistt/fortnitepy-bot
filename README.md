@@ -2,7 +2,7 @@
 
 <p align="center">
     <a href="https://pepy.tech/project/partybotpackage" align="center">
-        <img alt="Downloads" src="https://pepy.tech/badge/partybotpackage">
+        <img alt="Downloads" src="https://static.pepy.tech/badge/partybotpackage">
     </a>
     <a href="https://www.python.org/downloads/release/python-361/" align="center">
         <img alt="Python" src="https://img.shields.io/pypi/pyversions/fortnitepy">
