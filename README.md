@@ -16,7 +16,7 @@
 
 ---
 
-## Offical Website
+## official Website
 [PartyBot.net](https://partybot.net)
 
 ## Discord Support
