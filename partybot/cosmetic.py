@@ -1166,7 +1166,19 @@ class CosmeticCommands(commands.Cog):
             14: "CID_843_Athena_Commando_M_HightowerTomato_Casual",
             15: "CID_967_Athena_Commando_M_AncientGladiator",
             16: "CID_A_038_Athena_Commando_F_TowerSentinel",
-            17: "CID_A_112_Athena_Commando_M_Ruckus"
+            17: "CID_A_112_Athena_Commando_M_Ruckus",
+            18: "CID_A_197_Athena_Commando_M_Clash",
+            19: "CID_572_Athena_Commando_M_Viper",
+            20: "CID_A_367_Athena_Commando_M_Mystic",
+            21: "CID_A_422_Athena_Commando_M_Realm",
+            22: "Character_RoseDust",
+            23: "Character_Citadel",
+            24: "Character_NitroFlow",
+            25: "Character_LoudPhoenix",
+            26: "Character_LazarusLens",
+            27: "Character_HornedJudgment_Midgard",
+            28: "Character_ZebraScramble_Bacon",
+            29: "Character_DarkStance_Inferno"
         }
 
         await self.bot.party.me.set_outfit(asset=max_tier_skins[br_season])
