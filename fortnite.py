@@ -37,7 +37,7 @@ try:
     # Third party imports.
     import partybot
     import aiofiles
-    import fortnitepy
+    import rebootpy
     import crayons
     import aiohttp
 except ModuleNotFoundError as e:

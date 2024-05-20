@@ -32,11 +32,11 @@ import random
 from typing import Optional, Union
 
 # Third party imports.
-import fortnitepy
+import rebootpy
 import aiohttp
 import crayons
 
-from fortnitepy.ext import commands
+from rebootpy.ext import commands
 
 
 class PartyCommands(commands.Cog):
@@ -57,12 +57,17 @@ class PartyCommands(commands.Cog):
         return response['id'] if 'error' not in response else None
 
     @commands.dm_only()
+    @commands.command()
+    async def selfmeta(ctx):
+        print(json.dumps(bot.party.me.meta.schema, sort_keys=False, indent=4))
+
+    @commands.dm_only()
     @commands.command(
         description="[Party] Sets the banner of the self.bot.",
         help="Sets the banner of the self.bot.\n"
              "Example: !banner BRSeason01 defaultcolor15 100"
     )
-    async def banner(self, ctx: fortnitepy.ext.commands.Context,
+    async def banner(self, ctx: rebootpy.ext.commands.Context,
                      icon: Optional[str] = None,
                      colour: Optional[str] = None,
                      banner_level: Optional[int] = None
@@ -78,8 +83,8 @@ class PartyCommands(commands.Cog):
         help="Sets the readiness of the client to ready.\n"
              "Example: !ready"
     )
-    async def ready(self, ctx: fortnitepy.ext.commands.Context) -> None:
-        await self.bot.party.me.set_ready(fortnitepy.ReadyState.READY)
+    async def ready(self, ctx: rebootpy.ext.commands.Context) -> None:
+        await self.bot.party.me.set_ready(rebootpy.ReadyState.READY)
         await ctx.send('Ready!')
 
     @commands.dm_only()
@@ -89,8 +94,8 @@ class PartyCommands(commands.Cog):
         help="Sets the readiness of the client to unready.\n"
              "Example: !unready"
     )
-    async def unready(self, ctx: fortnitepy.ext.commands.Context) -> None:
-        await self.bot.party.me.set_ready(fortnitepy.ReadyState.NOT_READY)
+    async def unready(self, ctx: rebootpy.ext.commands.Context) -> None:
+        await self.bot.party.me.set_ready(rebootpy.ReadyState.NOT_READY)
         await ctx.send('Unready!')
 
     @commands.dm_only()
@@ -99,8 +104,8 @@ class PartyCommands(commands.Cog):
         help="Sets the readiness of the client to SittingOut.\n"
              "Example: !sitout"
     )
-    async def sitout(self, ctx: fortnitepy.ext.commands.Context) -> None:
-        await self.bot.party.me.set_ready(fortnitepy.ReadyState.SITTING_OUT)
+    async def sitout(self, ctx: rebootpy.ext.commands.Context) -> None:
+        await self.bot.party.me.set_ready(rebootpy.ReadyState.SITTING_OUT)
         await ctx.send('Sitting Out!')
 
     @commands.dm_only()
@@ -109,7 +114,7 @@ class PartyCommands(commands.Cog):
         help="Sets the battlepass info of the self.bot.\n"
              "Example: !bp 100"
     )
-    async def bp(self, ctx: fortnitepy.ext.commands.Context, tier: int) -> None:
+    async def bp(self, ctx: rebootpy.ext.commands.Context, tier: int) -> None:
         await self.bot.party.me.set_battlepass_info(
             has_purchased=True,
             level=tier,
@@ -123,7 +128,7 @@ class PartyCommands(commands.Cog):
         help="Sets the level of the self.bot.\n"
              "Example: !level 999"
     )
-    async def level(self, ctx: fortnitepy.ext.commands.Context, banner_level: int) -> None:
+    async def level(self, ctx: rebootpy.ext.commands.Context, banner_level: int) -> None:
         await self.bot.party.me.set_banner(
             season_level=banner_level
         )
@@ -136,7 +141,7 @@ class PartyCommands(commands.Cog):
         help="Sends message to party chat with the given content.\n"
              "Example: !echo i cant fix the fucking public lobby bots"
     )
-    async def echo(self, ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
+    async def echo(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         await self.bot.party.send(content)
         await ctx.send('Sent message to party chat.')
 
@@ -146,7 +151,7 @@ class PartyCommands(commands.Cog):
         help="Leaves the current party.\n"
              "Example: !leave"
     )
-    async def leave(self, ctx: fortnitepy.ext.commands.Context) -> None:
+    async def leave(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_emote('EID_Wave')
         await asyncio.sleep(2)
         await self.bot.party.me.leave()
@@ -160,7 +165,7 @@ class PartyCommands(commands.Cog):
         help="Kicks the inputted user.\n"
              "Example: !kick Cxnyaa"
     )
-    async def kick(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
+    async def kick(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
             user = await self.bot.fetch_user(ctx.author.display_name)
             member = self.bot.party.get_member(user.id)
@@ -175,7 +180,7 @@ class PartyCommands(commands.Cog):
                 await member.kick()
                 await ctx.send(f"Kicked user: {member.display_name}.")
                 print(self.bot.message % f"Kicked user: {member.display_name}")
-            except fortnitepy.errors.Forbidden:
+            except rebootpy.errors.Forbidden:
                 await ctx.send(f"Failed to kick {member.display_name}, as I'm not party leader.")
                 print(crayons.red(self.bot.message % f"[ERROR] "
                                   "Failed to kick member as I don't have the required permissions."))
@@ -188,7 +193,7 @@ class PartyCommands(commands.Cog):
         help="Promotes the defined user to party leader. If friend is left blank, the message author will be used.\n"
              "Example: !promote Terbau"
     )
-    async def promote(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
+    async def promote(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
             user = await self.bot.fetch_user(ctx.author.display_name)
             member = self.bot.party.get_member(user.id)
@@ -203,7 +208,7 @@ class PartyCommands(commands.Cog):
                 await member.promote()
                 await ctx.send(f"Promoted user: {member.display_name}.")
                 print(self.bot.message % f"Promoted user: {member.display_name}")
-            except fortnitepy.errors.Forbidden:
+            except rebootpy.errors.Forbidden:
                 await ctx.send(f"Failed topromote {member.display_name}, as I'm not party leader.")
                 print(crayons.red(self.bot.message % f"[ERROR] "
                                   "Failed to promote member as I don't have the required permissions."))
@@ -214,11 +219,11 @@ class PartyCommands(commands.Cog):
         help="Sets the lobbies selected playlist.\n"
              "Example: !playlist_id Playlist_Tank_Solo"
     )
-    async def playlist_id(self, ctx: fortnitepy.ext.commands.Context, playlist_: str) -> None:
+    async def playlist_id(self, ctx: rebootpy.ext.commands.Context, playlist_: str) -> None:
         try:
             await self.bot.party.set_playlist(playlist=playlist_)
             await ctx.send(f'Gamemode set to {playlist_}')
-        except fortnitepy.errors.Forbidden:
+        except rebootpy.errors.Forbidden:
             await ctx.send(f"Failed to set gamemode to {playlist_}, as I'm not party leader.")
             print(crayons.red(self.bot.message % f"[ERROR] "
                               "Failed to set gamemode as I don't have the required permissions."))
@@ -229,23 +234,23 @@ class PartyCommands(commands.Cog):
         help="Sets the parties current privacy.\n"
              "Example: !privacy private"
     )
-    async def privacy(self, ctx: fortnitepy.ext.commands.Context, privacy_type: str) -> None:
+    async def privacy(self, ctx: rebootpy.ext.commands.Context, privacy_type: str) -> None:
         try:
             if privacy_type.lower() == 'public':
-                await self.bot.party.set_privacy(fortnitepy.PartyPrivacy.PUBLIC)
+                await self.bot.party.set_privacy(rebootpy.PartyPrivacy.PUBLIC)
             elif privacy_type.lower() == 'private':
-                await self.bot.party.set_privacy(fortnitepy.PartyPrivacy.PRIVATE)
+                await self.bot.party.set_privacy(rebootpy.PartyPrivacy.PRIVATE)
             elif privacy_type.lower() == 'friends':
-                await self.bot.party.set_privacy(fortnitepy.PartyPrivacy.FRIENDS)
+                await self.bot.party.set_privacy(rebootpy.PartyPrivacy.FRIENDS)
             elif privacy_type.lower() == 'friends_allow_friends_of_friends':
-                await self.bot.party.set_privacy(fortnitepy.PartyPrivacy.FRIENDS_ALLOW_FRIENDS_OF_FRIENDS)
+                await self.bot.party.set_privacy(rebootpy.PartyPrivacy.FRIENDS_ALLOW_FRIENDS_OF_FRIENDS)
             elif privacy_type.lower() == 'private_allow_friends_of_friends':
-                await self.bot.party.set_privacy(fortnitepy.PartyPrivacy.PRIVATE_ALLOW_FRIENDS_OF_FRIENDS)
+                await self.bot.party.set_privacy(rebootpy.PartyPrivacy.PRIVATE_ALLOW_FRIENDS_OF_FRIENDS)
 
             await ctx.send(f'Party privacy set to {self.bot.party.privacy}.')
             print(self.bot.message % f'Party privacy set to {self.bot.party.privacy}.')
 
-        except fortnitepy.errors.Forbidden:
+        except rebootpy.errors.Forbidden:
             await ctx.send(f"Failed to set party privacy to {privacy_type}, as I'm not party leader.")
             print(crayons.red(self.bot.message % f"[ERROR] "
                               "Failed to set party privacy as I don't have the required permissions."))
@@ -256,7 +261,7 @@ class PartyCommands(commands.Cog):
         help="Sets the parties custom matchmaking code.\n"
              "Example: !matchmakingcode solo123"
     )
-    async def matchmakingcode(self, ctx: fortnitepy.ext.commands.Context, *, custom_matchmaking_key: str) -> None:
+    async def matchmakingcode(self, ctx: rebootpy.ext.commands.Context, *, custom_matchmaking_key: str) -> None:
         await self.bot.party.set_custom_key(
             key=custom_matchmaking_key
         )
@@ -270,7 +275,7 @@ class PartyCommands(commands.Cog):
         help="Sets the client to the \"In Match\" state.\n"
              "Example: !match 69 420"
     )
-    async def match(self, ctx: fortnitepy.ext.commands.Context, players: Union[str, int] = 0,
+    async def match(self, ctx: rebootpy.ext.commands.Context, players: Union[str, int] = 0,
                     match_time: int = 0) -> None:
         if players == 'progressive':
             match_time = datetime.datetime.utcnow()
@@ -304,9 +309,9 @@ class PartyCommands(commands.Cog):
         help="Sets the client to normal pre-game lobby state.\n"
              "Example: !lobby"
     )
-    async def lobby(self, ctx: fortnitepy.ext.commands.Context) -> None:
-        if self.bot.default_party_member_config.cls == fortnitepy.JustChattingClientPartyMember:
-            self.bot.default_party_member_config.cls = fortnitepy.ClientPartyMember
+    async def lobby(self, ctx: rebootpy.ext.commands.Context) -> None:
+        if self.bot.default_party_member_config.cls == rebootpy.JustChattingClientPartyMember:
+            self.bot.default_party_member_config.cls = rebootpy.ClientPartyMember
 
             party_id = self.bot.party.id
             await self.bot.party.me.leave()
@@ -315,9 +320,9 @@ class PartyCommands(commands.Cog):
 
             try:
                 await self.bot.join_party(party_id)
-            except fortnitepy.errors.Forbidden:
+            except rebootpy.errors.Forbidden:
                 await ctx.send('Failed to join back as party is set to private.')
-            except fortnitepy.errors.NotFound:
+            except rebootpy.errors.NotFound:
                 await ctx.send('Party not found, are you sure Fortnite is open?')
 
         await self.bot.party.me.clear_in_match()
@@ -331,7 +336,7 @@ class PartyCommands(commands.Cog):
         help="Joins the party of the defined friend.\n"
              "Example: !join Terbau"
     )
-    async def join(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
+    async def join(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
             epic_friend = self.bot.get_friend(ctx.author.id)
         else:
@@ -343,13 +348,13 @@ class PartyCommands(commands.Cog):
                 epic_friend = None
                 await ctx.send(f'Failed to find user with the name: {epic_username}.')
 
-        if isinstance(epic_friend, fortnitepy.Friend):
+        if isinstance(epic_friend, rebootpy.Friend):
             try:
                 await epic_friend.join_party()
                 await ctx.send(f'Joined the party of {epic_friend.display_name}.')
-            except fortnitepy.errors.Forbidden:
+            except rebootpy.errors.Forbidden:
                 await ctx.send('Failed to join party since it is private.')
-            except fortnitepy.errors.PartyError:
+            except rebootpy.errors.PartyError:
                 await ctx.send('Party not found, are you sure Fortnite is open?')
         else:
             await ctx.send('Cannot join party as the friend is not found.')
@@ -360,7 +365,7 @@ class PartyCommands(commands.Cog):
         help="Sets the lobbies selected playlist using playlist name.\n"
              "Example: !playlist Food Fight"
     )
-    async def playlist(self, ctx: fortnitepy.ext.commands.Context, *, playlist_name: str) -> None:
+    async def playlist(self, ctx: rebootpy.ext.commands.Context, *, playlist_name: str) -> None:
         try:
             scuffedapi_playlist_id = await self.get_playlist(playlist_name)
 
@@ -374,7 +379,7 @@ class PartyCommands(commands.Cog):
                 print(crayons.red(self.bot.message % f"[ERROR] "
                                   f"Failed to find a playlist with the name: {playlist_name}."))
 
-        except fortnitepy.errors.Forbidden:
+        except rebootpy.errors.Forbidden:
             await ctx.send(f"Failed to set playlist to {playlist_name}, as I'm not party leader.")
             print(crayons.red(self.bot.message % f"[ERROR] "
                               "Failed to set playlist as I don't have the required permissions."))
@@ -387,7 +392,7 @@ class PartyCommands(commands.Cog):
         help="Invites the defined friend to the party.\n"
              "Example: !invite Terbau"
     )
-    async def _invite(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
+    async def _invite(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
             epic_friend = self.bot.get_friend(ctx.author.id)
         else:
@@ -401,12 +406,12 @@ class PartyCommands(commands.Cog):
                 print(crayons.red(self.bot.message % f"[ERROR] "
                                   f"Failed to find user with the name: {epic_username}."))
 
-        if isinstance(epic_friend, fortnitepy.Friend):
+        if isinstance(epic_friend, rebootpy.Friend):
             try:
                 await epic_friend.invite()
                 await ctx.send(f'Invited {epic_friend.display_name} to the party.')
                 print(self.bot.message % f"[ERROR] Invited {epic_friend.display_name} to the party.")
-            except fortnitepy.errors.PartyError:
+            except rebootpy.errors.PartyError:
                 await ctx.send('Failed to invite friend as they are either already in the party or it is full.')
                 print(crayons.red(self.bot.message % f"[ERROR] "
                                   "Failed to invite to party as friend is already either in party or it is full."))
@@ -422,7 +427,7 @@ class PartyCommands(commands.Cog):
         help="Hides members of the party.\n"
              "Example: !hide"
     )
-    async def hide(self, ctx: fortnitepy.ext.commands.Context, party_member: Optional[str] = None) -> None:
+    async def hide(self, ctx: rebootpy.ext.commands.Context, party_member: Optional[str] = None) -> None:
         if self.bot.party.me.leader:
             if party_member is not None:
                 user = await self.bot.fetch_user(party_member)
@@ -467,8 +472,8 @@ class PartyCommands(commands.Cog):
         help="Sets the client to the \"Just Chattin'\" state.\n"
              "Example: !justchattin"
     )
-    async def justchattin(self, ctx: fortnitepy.ext.commands.Context) -> None:
-        self.bot.default_party_member_config.cls = fortnitepy.JustChattingClientPartyMember
+    async def justchattin(self, ctx: rebootpy.ext.commands.Context) -> None:
+        self.bot.default_party_member_config.cls = rebootpy.JustChattingClientPartyMember
 
         party_id = self.bot.party.id
         await self.bot.party.me.leave()
@@ -478,7 +483,7 @@ class PartyCommands(commands.Cog):
 
         try:
             await self.bot.join_party(party_id)
-        except fortnitepy.errors.Forbidden:
+        except rebootpy.errors.Forbidden:
             await ctx.send('Failed to join back as party is set to private.')
-        except fortnitepy.errors.NotFound:
+        except rebootpy.errors.NotFound:
             await ctx.send('Party not found, are you sure Fortnite is open?')
