@@ -37,7 +37,7 @@ try:
     # Third party imports.
     import partybot
     import aiofiles
-    import fortnitepy
+    import rebootpy
     import crayons
     import aiohttp
 except ModuleNotFoundError as e:
@@ -90,7 +90,7 @@ async def main() -> None:
                 timeout=3
             ) as r:
                 invite = (await r.json())['invite'] if r.status == 200 else "8heARRB"
-    except asyncio.TimeoutError:
+    except (asyncio.TimeoutError, aiohttp.client_exceptions.ContenTypeError):
         invite = "8heARRB"
 
     print(crayons.cyan(f"[PartyBot] [{datetime.datetime.now().strftime('%H:%M:%S')}] PartyBot made by xMistt. "

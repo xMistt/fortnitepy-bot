@@ -32,9 +32,9 @@ import datetime
 import asyncio
 
 # Third party imports.
-from fortnitepy.ext import commands
+from rebootpy.ext import commands
 
-import fortnitepy
+import rebootpy
 import crayons
 import FortniteAPIAsync
 import pypresence
@@ -54,13 +54,13 @@ class PartyBot(commands.Bot):
 
         super().__init__(
             command_prefix='!',
-            auth=fortnitepy.DeviceAuth(
+            auth=rebootpy.DeviceAuth(
                 device_id=self.device_auths.device_id,
                 account_id=self.device_auths.account_id,
                 secret=self.device_auths.secret
             ),
             status=self.settings.status,
-            platform=fortnitepy.Platform(self.settings.platform)
+            platform=rebootpy.Platform(self.settings.platform)
         )
 
     @property
@@ -125,7 +125,7 @@ class PartyBot(commands.Bot):
         print(crayons.green(self.message % f'Client ready as {self.user.display_name}.'))
         
         if self.party.me.leader:
-            await self.party.set_privacy(fortnitepy.PartyPrivacy.PUBLIC)
+            await self.party.set_privacy(rebootpy.PartyPrivacy.PUBLIC)
 
         # discord_exists = await self.loop.run_in_executor(None, HelperFunctions.check_if_process_running, 'Discord')
 
@@ -144,23 +144,23 @@ class PartyBot(commands.Bot):
         for pending in self.incoming_pending_friends:
             try:
                 epic_friend = await pending.accept() if self.settings.friend_accept else await pending.decline()
-                if isinstance(epic_friend, fortnitepy.Friend):
+                if isinstance(epic_friend, rebootpy.Friend):
                     print(self.message % f"Accepted friend request from: {epic_friend.display_name}.")
                 else:
                     print(self.message % f"Declined friend request from: {pending.display_name}.")
-            except fortnitepy.HTTPException as epic_error:
+            except rebootpy.HTTPException as epic_error:
                 if epic_error.message_code != 'errors.com.epicgames.common.throttled':
                     raise
 
                 await asyncio.sleep(int(epic_error.message_vars[0] + 1))
                 await pending.accept() if self.settings.friend_accept else await pending.decline()
 
-    async def event_party_invite(self, invite: fortnitepy.ReceivedPartyInvitation) -> None:
+    async def event_party_invite(self, invite: rebootpy.ReceivedPartyInvitation) -> None:
         await invite.accept()
         print(self.message % f'Accepted party invite from {invite.sender.display_name}.')
 
-    async def event_friend_request(self, request: fortnitepy.IncomingPendingFriend) -> None:
-        if isinstance(request, fortnitepy.OutgoingPendingFriend):
+    async def event_friend_request(self, request: rebootpy.IncomingPendingFriend) -> None:
+        if isinstance(request, rebootpy.OutgoingPendingFriend):
             return
 
         print(self.message % f"Received friend request from: {request.display_name}.")
@@ -172,26 +172,26 @@ class PartyBot(commands.Bot):
             await request.decline()
             print(self.message % f"Declined friend request from: {request.display_name}.")
 
-    async def event_party_member_join(self, member: fortnitepy.PartyMember) -> None:
+    async def event_party_member_join(self, member: rebootpy.PartyMember) -> None:
         await FortniteAPIAsync.set_default_loadout(
             self,
             self.settings.to_dict(),
             member
         )
 
-    async def event_friend_message(self, message: fortnitepy.FriendMessage) -> None:
+    async def event_friend_message(self, message: rebootpy.FriendMessage) -> None:
         print(self.message % f'{message.author.display_name}: {message.content}')
 
-    async def event_command_error(self, ctx: fortnitepy.ext.commands.Context,
-                                  error: fortnitepy.ext.commands.CommandError) -> None:
-        if isinstance(error, fortnitepy.ext.commands.errors.CommandNotFound):
-            if isinstance(ctx.message, fortnitepy.FriendMessage):
+    async def event_command_error(self, ctx: rebootpy.ext.commands.Context,
+                                  error: rebootpy.ext.commands.CommandError) -> None:
+        if isinstance(error, rebootpy.ext.commands.errors.CommandNotFound):
+            if isinstance(ctx.message, rebootpy.FriendMessage):
                 await ctx.send('Command not found, are you sure it exists?')
             else:
                 pass
-        elif isinstance(error, fortnitepy.ext.commands.errors.MissingRequiredArgument):
+        elif isinstance(error, rebootpy.ext.commands.errors.MissingRequiredArgument):
             await ctx.send('Failed to execute commands as there are missing requirements, please check usage.')
-        elif isinstance(error, fortnitepy.ext.commands.errors.PrivateMessageOnly):
+        elif isinstance(error, rebootpy.ext.commands.errors.PrivateMessageOnly):
             pass
         else:
             await ctx.send(f'When trying to process !{ctx.command.name}, an error occured: "{error}"\n'

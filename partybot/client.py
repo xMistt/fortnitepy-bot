@@ -31,11 +31,11 @@ import sys
 from typing import Optional, Union
 
 # Third party imports.
-import fortnitepy
+import rebootpy
 import aiohttp
 import crayons
 
-from fortnitepy.ext import commands
+from rebootpy.ext import commands
 
 
 class ClientCommands(commands.Cog):
@@ -48,7 +48,7 @@ class ClientCommands(commands.Cog):
         help="Sends and sets the status.\n"
              "Example: !status Presence Unknown"
     )
-    async def status(self, ctx: fortnitepy.ext.commands.Context, *, content: str) -> None:
+    async def status(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         await self.bot.set_presence(content)
 
         await ctx.send(f'Status set to {content}')
@@ -61,7 +61,7 @@ class ClientCommands(commands.Cog):
         help="Clears command prompt/terminal.\n"
              "Example: !clean"
     )
-    async def clean(self, ctx: fortnitepy.ext.commands.Context) -> None:
+    async def clean(self, ctx: rebootpy.ext.commands.Context) -> None:
         os.system('cls' if 'win' in sys.platform else 'clear')
 
         print(crayons.cyan(self.bot.message % f'PartyBot made by xMistt. '
@@ -78,10 +78,10 @@ class ClientCommands(commands.Cog):
         help="Sends and sets the status to away.\n"
              "Example: !away"
     )
-    async def away(self, ctx: fortnitepy.ext.commands.Context) -> None:
+    async def away(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.set_presence(
             status=self.bot.status,
-            away=fortnitepy.AwayStatus.AWAY
+            away=rebootpy.AwayStatus.AWAY
         )
 
         await ctx.send('Status set to away, you can use !status to revert.')
@@ -94,15 +94,15 @@ class ClientCommands(commands.Cog):
         help="Sends the most recent commit/s.\n"
              "Example: !update"
     )
-    async def update(self, ctx: fortnitepy.ext.commands.Context) -> None:
+    async def update(self, ctx: rebootpy.ext.commands.Context) -> None:
         async with aiohttp.ClientSession() as session:
             async with session.request(
                 method="GET",
-                url="https://api.github.com/repos/xMistt/fortnitepy-bot/commits/master"
+                url="https://api.github.com/repos/xMistt/rebootpy-bot/commits/master"
             ) as request:
                 data = await request.json()
 
-        date = fortnitepy.Client.from_iso(data['commit']['committer']['date'])
+        date = rebootpy.Client.from_iso(data['commit']['committer']['date'])
         pretty_date = f'{date.day}/{date.month}/{date.year} @ {date.hour}:{date.minute}'
         commit_title = data['commit']['message'].split('\n')[0]
 
@@ -117,7 +117,7 @@ class ClientCommands(commands.Cog):
         help="Sends the defined user a friend request.\n"
              "Example: !friend Ninja"
     )
-    async def friend(self, ctx: fortnitepy.ext.commands.Context, *, epic_username: str) -> None:
+    async def friend(self, ctx: rebootpy.ext.commands.Context, *, epic_username: str) -> None:
         user = await self.bot.fetch_user(epic_username)
 
         if user is not None:

@@ -139,6 +139,8 @@ class EpicGenerator:
                         pass
                     elif token['errorCode'] == 'errors.com.epicgames.not_found':
                         pass
+                    elif token["errorCode"] == "errors.com.epicgames.common.slow_down":
+                        pass
                     else:
                         print(json.dumps(token, sort_keys=False, indent=4))
 
