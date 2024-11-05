@@ -29,12 +29,15 @@ License: Apache 2.0 Modified.
 try:
     # System imports.
     import asyncio
+    import json
     import logging
     import sys
     import datetime
 
     # Third party imports.
     import partybot
+    import aiofiles
+    import rebootpy
     import crayons
     import aiohttp
 except ModuleNotFoundError as e:
@@ -44,13 +47,6 @@ except ModuleNotFoundError as e:
           'the support server.')
     sys.exit()
 
-# Imports uvloop and uses it if installed (Unix only).
-try:
-    import uvloop
-except ImportError:
-    pass
-else:
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
 if sys.platform == 'win32':
     asyncio.set_event_loop(asyncio.ProactorEventLoop())
@@ -124,7 +120,7 @@ async def main() -> None:
 
     try:
         await client.start()
-    except partybot.errors.AuthException as e:
+    except rebootpy.errors.AuthException as e:
         print(crayons.red(client.message % f"[ERROR] {e}"))
 
     await client.http.close()
