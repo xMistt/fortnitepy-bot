@@ -127,7 +127,7 @@ async def main() -> None:
 
     try:
         await client.start()
-    except fortnitepy.errors.AuthException as e:
+    except rebootpy.errors.AuthException as e:
         print(crayons.red(client.message % f"[ERROR] {e}"))
 
     await client.http.close()
