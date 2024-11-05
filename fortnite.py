@@ -29,15 +29,12 @@ License: Apache 2.0 Modified.
 try:
     # System imports.
     import asyncio
-    import json
     import logging
     import sys
     import datetime
 
     # Third party imports.
     import partybot
-    import aiofiles
-    import rebootpy
     import crayons
     import aiohttp
 except ModuleNotFoundError as e:
@@ -127,7 +124,7 @@ async def main() -> None:
 
     try:
         await client.start()
-    except fortnitepy.errors.AuthException as e:
+    except partybot.errors.AuthException as e:
         print(crayons.red(client.message % f"[ERROR] {e}"))
 
     await client.http.close()
