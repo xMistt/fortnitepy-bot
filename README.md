@@ -12,7 +12,7 @@
     </a>
 </p>
 
-<p align="center">A Fortnite HTTP/XMPP bot coded in Python with party capabilities.</p>
+<p align="center">A Fortnite HTTP/XMPP lobby bot coded in Python with party capabilities.</p>
 
 ---
 
