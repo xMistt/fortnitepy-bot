@@ -465,25 +465,3 @@ class PartyCommands(commands.Cog):
             await ctx.send("Failed to hide everyone, as I'm not party leader")
             print(crayons.red(self.bot.message % f"[ERROR] "
                               "Failed to hide everyone as I don't have the required permissions."))
-
-    @commands.dm_only()
-    @commands.command(
-        description="[Party] Sets the client to the \"Just Chattin'\" state.",
-        help="Sets the client to the \"Just Chattin'\" state.\n"
-             "Example: !justchattin"
-    )
-    async def justchattin(self, ctx: rebootpy.ext.commands.Context) -> None:
-        self.bot.default_party_member_config.cls = rebootpy.JustChattingClientPartyMember
-
-        party_id = self.bot.party.id
-        await self.bot.party.me.leave()
-
-        await ctx.send('Set state to Just Chattin\'. Now attempting to rejoin party.'
-                       '\nUse the command: !lobby to revert back to normal.')
-
-        try:
-            await self.bot.join_party(party_id)
-        except rebootpy.errors.Forbidden:
-            await ctx.send('Failed to join back as party is set to private.')
-        except rebootpy.errors.NotFound:
-            await ctx.send('Party not found, are you sure Fortnite is open?')

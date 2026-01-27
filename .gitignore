@@ -212,3 +212,6 @@ Temporary Items
 
 # Pycharm
 .idea
+
+# PartyBot
+device_auths.json
