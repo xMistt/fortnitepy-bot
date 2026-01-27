@@ -42,6 +42,7 @@ from rebootpy.ext import commands
 class PartyCommands(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        self.name = 'Party'
 
     async def get_playlist(self, display_name: str) -> str:
         async with aiohttp.ClientSession() as session:
@@ -57,15 +58,11 @@ class PartyCommands(commands.Cog):
         return response['id'] if 'error' not in response else None
 
     @commands.dm_only()
-    @commands.command()
-    async def selfmeta(ctx):
-        print(json.dumps(bot.party.me.meta.schema, sort_keys=False, indent=4))
-
-    @commands.dm_only()
     @commands.command(
         description="[Party] Sets the banner of the self.bot.",
         help="Sets the banner of the self.bot.\n"
-             "Example: !banner BRSeason01 defaultcolor15 100"
+             "Example: !banner BRSeason01 defaultcolor15 100",
+        usage="!banner <icon> <colour> <banner_level>"
     )
     async def banner(self, ctx: rebootpy.ext.commands.Context,
                      icon: Optional[str] = None,
@@ -81,7 +78,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the readiness of the client to ready.",
         help="Sets the readiness of the client to ready.\n"
-             "Example: !ready"
+             "Example: !ready",
+        usage="!ready"
     )
     async def ready(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_ready(rebootpy.ReadyState.READY)
@@ -92,7 +90,8 @@ class PartyCommands(commands.Cog):
         aliases=['sitin'],
         description="[Party] Sets the readiness of the client to unready.",
         help="Sets the readiness of the client to unready.\n"
-             "Example: !unready"
+             "Example: !unready",
+        usage="!unready"
     )
     async def unready(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_ready(rebootpy.ReadyState.NOT_READY)
@@ -102,7 +101,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the readiness of the client to SittingOut.",
         help="Sets the readiness of the client to SittingOut.\n"
-             "Example: !sitout"
+             "Example: !sitout",
+        usage="!sitout"
     )
     async def sitout(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_ready(rebootpy.ReadyState.SITTING_OUT)
@@ -112,7 +112,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the battlepass info of the self.bot.",
         help="Sets the battlepass info of the self.bot.\n"
-             "Example: !bp 100"
+             "Example: !bp 100",
+        usage="!bp <tier>"
     )
     async def bp(self, ctx: rebootpy.ext.commands.Context, tier: int) -> None:
         await self.bot.party.me.set_battlepass_info(
@@ -126,7 +127,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the level of the self.bot.",
         help="Sets the level of the self.bot.\n"
-             "Example: !level 999"
+             "Example: !level 999",
+        usage="!level <banner_level>"
     )
     async def level(self, ctx: rebootpy.ext.commands.Context, banner_level: int) -> None:
         await self.bot.party.me.set_banner(
@@ -139,7 +141,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sends message to party chat with the given content.",
         help="Sends message to party chat with the given content.\n"
-             "Example: !echo i cant fix the fucking public lobby bots"
+             "Example: !echo i cant fix the fucking public lobby bots",
+        usage="!echo <content>"
     )
     async def echo(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         await self.bot.party.send(content)
@@ -149,7 +152,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Leaves the current party.",
         help="Leaves the current party.\n"
-             "Example: !leave"
+             "Example: !leave",
+        usage="!leave"
     )
     async def leave(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_emote('EID_Wave')
@@ -163,7 +167,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Kicks the inputted user.",
         help="Kicks the inputted user.\n"
-             "Example: !kick Cxnyaa"
+             "Example: !kick Cxnyaa",
+        usage="!kick <epic_username>"
     )
     async def kick(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
@@ -191,7 +196,8 @@ class PartyCommands(commands.Cog):
         description="[Party] Promotes the defined user to party leader. If friend is left blank, "
                     "the message author will be used.",
         help="Promotes the defined user to party leader. If friend is left blank, the message author will be used.\n"
-             "Example: !promote Terbau"
+             "Example: !promote Terbau",
+        usage="!promote <epic_username>"
     )
     async def promote(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
@@ -217,7 +223,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the lobbies selected playlist.",
         help="Sets the lobbies selected playlist.\n"
-             "Example: !playlist_id Playlist_Tank_Solo"
+             "Example: !playlist_id Playlist_Tank_Solo",
+        usage="!playlist_id <playlist_>"
     )
     async def playlist_id(self, ctx: rebootpy.ext.commands.Context, playlist_: str) -> None:
         try:
@@ -232,7 +239,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the parties current privacy.",
         help="Sets the parties current privacy.\n"
-             "Example: !privacy private"
+             "Example: !privacy private",
+        usage="!privacy <privacy_type>"
     )
     async def privacy(self, ctx: rebootpy.ext.commands.Context, privacy_type: str) -> None:
         try:
@@ -259,7 +267,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the parties custom matchmaking code.",
         help="Sets the parties custom matchmaking code.\n"
-             "Example: !matchmakingcode solo123"
+             "Example: !matchmakingcode solo123",
+        usage="!matchmakingcode <custom_matchmaking_key>"
     )
     async def matchmakingcode(self, ctx: rebootpy.ext.commands.Context, *, custom_matchmaking_key: str) -> None:
         await self.bot.party.set_custom_key(
@@ -273,7 +282,8 @@ class PartyCommands(commands.Cog):
         description="[Party] Sets the client to the \"In Match\" state. If the first argument is 'progressive', "
                     "the players remaining will gradually drop to mimic a real game.",
         help="Sets the client to the \"In Match\" state.\n"
-             "Example: !match 69 420"
+             "Example: !match 69 420",
+        usage="!match <players> <match_time>"
     )
     async def match(self, ctx: rebootpy.ext.commands.Context, players: Union[str, int] = 0,
                     match_time: int = 0) -> None:
@@ -307,7 +317,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the client to normal pre-game lobby state.",
         help="Sets the client to normal pre-game lobby state.\n"
-             "Example: !lobby"
+             "Example: !lobby",
+        usage="!lobby"
     )
     async def lobby(self, ctx: rebootpy.ext.commands.Context) -> None:
         if self.bot.default_party_member_config.cls == rebootpy.JustChattingClientPartyMember:
@@ -334,7 +345,8 @@ class PartyCommands(commands.Cog):
         description="[Party] Joins the party of the defined friend. If friend is left blank, "
                     "the message author will be used.",
         help="Joins the party of the defined friend.\n"
-             "Example: !join Terbau"
+             "Example: !join Terbau",
+        usage="!join <epic_username>"
     )
     async def join(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
@@ -363,7 +375,8 @@ class PartyCommands(commands.Cog):
     @commands.command(
         description="[Party] Sets the lobbies selected playlist using playlist name.",
         help="Sets the lobbies selected playlist using playlist name.\n"
-             "Example: !playlist Food Fight"
+             "Example: !playlist Food Fight",
+        usage="!playlist <playlist_name>"
     )
     async def playlist(self, ctx: rebootpy.ext.commands.Context, *, playlist_name: str) -> None:
         try:
@@ -425,7 +438,8 @@ class PartyCommands(commands.Cog):
         description="[Party] Hides everyone in the party except for the bot but if a player is specified, "
                     "that specific player will be hidden.",
         help="Hides members of the party.\n"
-             "Example: !hide"
+             "Example: !hide",
+        usage="!hide <party_member>"
     )
     async def hide(self, ctx: rebootpy.ext.commands.Context, party_member: Optional[str] = None) -> None:
         if self.bot.party.me.leader:

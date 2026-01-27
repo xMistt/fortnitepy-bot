@@ -133,13 +133,49 @@ class PartyBot(commands.Bot):
         #     asyncio.get_event_loop().create_task(self.start_discord_rich_presence())
 
         # NOTE: Ignore this commented out code below, I use it to generate the "docs".
-        # command_names = []
+        # command_docs = [
+        #     (
+        #         "Contents:\n"
+        #         "* [Cosmetic Commands](https://github.com/xMistt/fortnitepy-bot/wiki/Commands#cosmetic-commands)\n"
+        #         "* [Party Commands](https://github.com/xMistt/fortnitepy-bot/wiki/Commands#party-commands)\n"
+        #         "* [Client Commands](https://github.com/xMistt/fortnitepy-bot/wiki/Commands#client-commands)\n"
+        #     )
+        # ]
         #
-        # for commands in self.commands:
-        #     command_names.append(commands.name)
+        # sorted_commands = {
+        #     "Cosmetic": [],
+        #     "Party": [],
+        #     "Client": []
+        # }
         #
-        # for command in command_names:
-        #     print(command)
+        # for command in self.commands:
+        #     if not command.help:
+        #         print(f'{command.name} is missing documentation')
+        #         continue
+        #
+        #     if not command.cog:
+        #         print(f'{command.name} is outside of a cog')
+        #         continue
+        #
+        #     description, example = command.help.rsplit('Example: ', 1)
+        #     sorted_commands[command.cog.name].append((
+        #         command.name,
+        #         f"* !{command.name} - {description.replace('\n', '<br>')}\n"
+        #         f"``Usage: {command.usage}``<br>\n"
+        #         f"``Example: {example}``\n"
+        #     ))
+        #
+        # for category in sorted_commands:
+        #     sorted_commands[category].sort(key=lambda command: command[0])
+        #
+        # for command_group, commands in sorted_commands.items():
+        #     command_docs.append(f"## {command_group} Commands")
+        #     for command in commands:
+        #         command_docs.append(command[1])
+        #
+        # import pyperclip
+        # pyperclip.copy("\n".join(command_docs))
+        # print("Copied commands documentation to clipboard")
 
         for pending in self.incoming_pending_friends:
             try:

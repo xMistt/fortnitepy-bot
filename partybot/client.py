@@ -41,12 +41,14 @@ from rebootpy.ext import commands
 class ClientCommands(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        self.name = 'Client'
 
     @commands.dm_only()
     @commands.command(
         description="[Client] Sends and sets the status.",
         help="Sends and sets the status.\n"
-             "Example: !status Presence Unknown"
+             "Example: !status Presence Unknown",
+        usage="!status <content>"
     )
     async def status(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         await self.bot.set_presence(content)
@@ -59,7 +61,8 @@ class ClientCommands(commands.Cog):
         aliases=['clear'],
         description="[Client] Clears command prompt/terminal.",
         help="Clears command prompt/terminal.\n"
-             "Example: !clean"
+             "Example: !clean",
+        usage="!clean"
     )
     async def clean(self, ctx: rebootpy.ext.commands.Context) -> None:
         os.system('cls' if 'win' in sys.platform else 'clear')
@@ -76,7 +79,8 @@ class ClientCommands(commands.Cog):
     @commands.command(
         description="[Client] Sends and sets the status to away.",
         help="Sends and sets the status to away.\n"
-             "Example: !away"
+             "Example: !away",
+        usage="!away"
     )
     async def away(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.set_presence(
@@ -92,7 +96,8 @@ class ClientCommands(commands.Cog):
         aliases=['updates'],
         description="[Client] Sends the most recent commit/s.",
         help="Sends the most recent commit/s.\n"
-             "Example: !update"
+             "Example: !update",
+        usage="!update"
     )
     async def update(self, ctx: rebootpy.ext.commands.Context) -> None:
         async with aiohttp.ClientSession() as session:
@@ -115,7 +120,8 @@ class ClientCommands(commands.Cog):
     @commands.command(
         description="[Party] Sends the defined user a friend request.",
         help="Sends the defined user a friend request.\n"
-             "Example: !friend Ninja"
+             "Example: !friend Ninja",
+        usage="!friend <epic_username>"
     )
     async def friend(self, ctx: rebootpy.ext.commands.Context, *, epic_username: str) -> None:
         user = await self.bot.fetch_user(epic_username)

@@ -42,6 +42,7 @@ from rebootpy.ext import commands
 class CosmeticCommands(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+        self.name = 'Cosmetic'
 
     # async def set_vtid(self, variant_token: str) -> Tuple[str, str, int]:
     #     async with aiohttp.ClientSession() as session:
@@ -75,7 +76,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client using the outfits name.",
         help="Sets the outfit of the client using the outfits name.\n"
-             "Example: !skin Nog Ops"
+             "Example: !skin Nog Ops",
+        usage="!skin <content>"
     )
     async def skin(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -98,7 +100,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the backpack of the client using the backpacks name.",
         help="Sets the backpack of the client using the backpacks name.\n"
-             "Example: !backpack Black Shield"
+             "Example: !backpack Black Shield",
+        usage="!backpack <content>"
     )
     async def backpack(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -124,7 +127,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the emote of the client using the emotes name.",
         help="Sets the emote of the client using the emotes name.\n"
-             "Example: !emote Windmill Floss"
+             "Example: !emote Windmill Floss",
+        usage="!emote <content>"
     )
     async def emote(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -151,7 +155,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the pickaxe of the client using the pickaxe name.",
         help="Sets the pickaxe of the client using the pickaxe name.\n"
-             "Example: !pickaxe Raider's Revenge"
+             "Example: !pickaxe Raider's Revenge",
+        usage="!pickaxe <content>"
     )
     async def pickaxe(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -177,7 +182,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the pet (backpack) of the client using the pets name.",
         help="Sets the pet (backpack) of the client using the pets name.\n"
-             "Example: !pet Bonesy"
+             "Example: !pet Bonesy",
+        usage="!pet <content>"
     )
     async def pet(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -203,7 +209,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the emoji of the client using the emojis name.",
         help="Sets the emoji of the client using the emojis name.\n"
-             "Example: !emoji Snowball"
+             "Example: !emoji Snowball",
+        usage="!emoji <content>"
     )
     async def emoji(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -230,7 +237,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the contrail of the client using the contrail name.",
         help="Sets the contrail of the client using the contrail name.\n"
-             "Example: !contrail Holly And Divey"
+             "Example: !contrail Holly And Divey",
+        usage="!contrail <content>"
     )
     async def contrail(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -256,7 +264,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client to Purple Skull Trooper.",
         help="Sets the outfit of the client to Purple Skull Trooper.\n"
-             "Example: !purpleskull"
+             "Example: !purpleskull",
+        usage="!purpleskull"
     )
     async def purpleskull(self, ctx: rebootpy.ext.commands.Context) -> None:
         skin_variants = self.bot.party.me.create_variants(
@@ -275,7 +284,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client to Pink Ghoul Trooper.",
         help="Sets the outfit of the client to Pink Ghoul Trooper.\n"
-             "Example: !pinkghoul"
+             "Example: !pinkghoul",
+        usage="!pinkghoul"
     )
     async def pinkghoul(self, ctx: rebootpy.ext.commands.Context) -> None:
         skin_variants = self.bot.party.me.create_variants(
@@ -294,7 +304,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the backpack of the client to Purple Ghost Portal.",
         help="Sets the backpack of the client to Purple Ghost Portal.\n"
-             "Example: !purpleportal"
+             "Example: !purpleportal",
+        usage="!purpleportal"
     )
     async def purpleportal(self, ctx: rebootpy.ext.commands.Context) -> None:
         skin_variants = self.bot.party.me.create_variants(
@@ -316,7 +327,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client using CID.",
         help="Sets the outfit of the client using CID.\n"
-             "Example: !cid CID_047_Athena_Commando_F_HolidayReindeer"
+             "Example: !cid CID_047_Athena_Commando_F_HolidayReindeer",
+        usage="!cid <character_id>"
     )
     async def cid(self, ctx: rebootpy.ext.commands.Context, character_id: str) -> None:
         await self.bot.party.me.set_outfit(
@@ -351,7 +363,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Creates the variants list by the variants you set.",
         help="Creates the variants list by the variants you set.\n"
-             "Example: !variants CID_030_Athena_Commando_M_Halloween clothing_color 1"
+             "Example: !variants CID_030_Athena_Commando_M_Halloween clothing_color 1",
+        usage="!variants <cosmetic_id> <variant_type> <variant_int>"
     )
     async def variants(self, ctx: rebootpy.ext.commands.Context, cosmetic_id: str, variant_type: str,
                        variant_int: str) -> None:
@@ -403,7 +416,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client to Checkered Renegade.",
         help="Sets the outfit of the client to Checkered Renegade.\n"
-             "Example: !checkeredrenegade"
+             "Example: !checkeredrenegade",
+        usage="!checkeredrenegade"
     )
     async def checkeredrenegade(self, ctx: rebootpy.ext.commands.Context) -> None:
         skin_variants = self.bot.party.me.create_variants(
@@ -422,7 +436,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client to Minty Elf.",
         help="Sets the outfit of the client to Minty Elf.\n"
-             "Example: !mintyelf"
+             "Example: !mintyelf",
+        usage="!mintyelf"
     )
     async def mintyelf(self, ctx: rebootpy.ext.commands.Context) -> None:
         skin_variants = self.bot.party.me.create_variants(
@@ -441,7 +456,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the emote of the client using EID.",
         help="Sets the emote of the client using EID.\n"
-             "Example: !eid EID_Floss"
+             "Example: !eid EID_Floss",
+        usage="!eid <emote_id>"
     )
     async def eid(self, ctx: rebootpy.ext.commands.Context, emote_id: str) -> None:
         await self.bot.party.me.clear_emote()
@@ -455,7 +471,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Clears/stops the emote currently playing.",
         help="Clears/stops the emote currently playing.\n"
-             "Example: !stop"
+             "Example: !stop",
+        usage="!stop"
     )
     async def stop(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_emote()
@@ -466,7 +483,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the backpack of the client using BID.",
         help="Sets the backpack of the client using BID.\n"
-             "Example: !bid BID_023_Pinkbear"
+             "Example: !bid BID_023_Pinkbear",
+        usage="!bid <backpack_id>"
     )
     async def bid(self, ctx: rebootpy.ext.commands.Context, backpack_id: str) -> None:
         await self.bot.party.me.set_backpack(
@@ -481,7 +499,8 @@ class CosmeticCommands(commands.Cog):
         aliases=['legacypickaxe'],
         description="[Cosmetic] Sets the pickaxe of the client using PICKAXE_ID",
         help="Sets the pickaxe of the client using PICKAXE_ID\n"
-             "Example: !pickaxe_id Pickaxe_ID_073_Balloon"
+             "Example: !pickaxe_id Pickaxe_ID_073_Balloon",
+        usage="!pickaxe_id <pickaxe_id_>"
     )
     async def pickaxe_id(self, ctx: rebootpy.ext.commands.Context, pickaxe_id_: str) -> None:
         await self.bot.party.me.set_pickaxe(
@@ -495,7 +514,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the pet of the client using PetCarrier_.",
         help="Sets the pet of the client using PetCarrier_.\n"
-             "Example: !pet_carrier PetCarrier_002_Chameleon"
+             "Example: !pet_carrier PetCarrier_002_Chameleon",
+        usage="!pet_carrier <pet_carrier_id>"
     )
     async def pet_carrier(self, ctx: rebootpy.ext.commands.Context, pet_carrier_id: str) -> None:
         await self.bot.party.me.set_pet(
@@ -509,7 +529,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the emoji of the client using Emoji_.",
         help="Sets the emoji of the client using Emoji_.\n"
-             "Example: !emoji_id Emoji_PeaceSign"
+             "Example: !emoji_id Emoji_PeaceSign",
+        usage="!emoji_id <emoji_>"
     )
     async def emoji_id(self, ctx: rebootpy.ext.commands.Context, emoji_: str) -> None:
         await self.bot.party.me.clear_emote()
@@ -524,7 +545,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the contrail of the client using Trails_.",
         help="Sets the contrail of the client using Trails_.\n"
-             "Example: !trails Trails_ID_075_Celestial"
+             "Example: !trails Trails_ID_075_Celestial",
+        usage="!trails <trails_>"
     )
     async def trails(self, ctx: rebootpy.ext.commands.Context, trails_: str) -> None:
         await self.bot.party.me.set_contrail(
@@ -540,7 +562,8 @@ class CosmeticCommands(commands.Cog):
                     "specified, only the emote will be played.",
         help="Sets pickaxe using PICKAXE_ID or display name & does 'Point it Out'. If no pickaxe is "
              "specified, only the emote will be played.\n"
-             "Example: !point Pickaxe_ID_029_Assassin"
+             "Example: !point Pickaxe_ID_029_Assassin",
+        usage="!point <content>"
     )
     async def point(self, ctx: rebootpy.ext.commands.Context, *, content: Optional[str] = None) -> None:
         if content is None:
@@ -580,7 +603,8 @@ class CosmeticCommands(commands.Cog):
                     "the message author will be used.",
         help="Copies the cosmetic loadout of the defined user. If user is left blank, "
              "the message author will be used.\n"
-             "Example: !copy Terbau"
+             "Example: !copy Terbau",
+        usage="!copy <epic_username>"
     )
     async def copy(self, ctx: rebootpy.ext.commands.Context, *, epic_username: Optional[str] = None) -> None:
         if epic_username is None:
@@ -628,7 +652,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Shortcut for equipping the skin CID_VIP_Athena_Commando_M_GalileoGondola_SG.",
         help="Shortcut for equipping the skin CID_VIP_Athena_Commando_M_GalileoGondola_SG.\n"
-             "Example: !hologram"
+             "Example: !hologram",
+        usage="!hologram"
     )
     async def hologram(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
@@ -642,7 +667,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Shortcut for equipping the skin CID_VIP_Athena_Commando_M_GalileoGondola_SG.",
         help="Shortcut for equipping the skin CID_VIP_Athena_Commando_M_GalileoGondola_SG.\n"
-             "Example: !gift is a joke command."
+             "Example: !gift is a joke command.",
+        usage="!gift"
     )
     async def gift(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_emote()
@@ -657,7 +683,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Shortcut for equipping the emote EID_TourBus.",
         help="Shortcut for equipping the emote EID_TourBus.\n"
-             "Example: !ponpon"
+             "Example: !ponpon",
+        usage="!ponpon"
     )
     async def ponpon(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_emote(
@@ -671,7 +698,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Sets the enlightened value of a skin "
                     "(used for skins such as glitched Scratch or Golden Peely).",
         help="Sets the enlightened value of a skin.\n"
-             "Example: !enlightened CID_701_Athena_Commando_M_BananaAgent 2 350"
+             "Example: !enlightened CID_701_Athena_Commando_M_BananaAgent 2 350",
+        usage="!enlightened <cosmetic_id> <br_season> <skin_level>"
     )
     async def enlightened(self, ctx: rebootpy.ext.commands.Context, cosmetic_id: str, br_season: int,
                           skin_level: int) -> None:
@@ -706,7 +734,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Shortcut for equipping the skin CID_605_Athena_Commando_M_TourBus.",
         help="Shortcut for equipping the skin CID_605_Athena_Commando_M_TourBus.\n"
-             "Example: !ninja"
+             "Example: !ninja",
+        usage="!ninja"
     )
     async def ninja(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
@@ -720,7 +749,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Equips all very rare skins.",
         help="Equips all very rare skins.\n"
-             "Example: !rareskins"
+             "Example: !rareskins",
+        usage="!rareskins"
     )
     async def rareskins(self, ctx: rebootpy.ext.commands.Context) -> None:
         await ctx.send('Showing all rare skins now.')
@@ -757,7 +787,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Sets the outfit of the client to Golden Peely "
                     "(shortcut for !enlightened CID_701_Athena_Commando_M_BananaAgent 2 350).",
         help="Sets the outfit of the client to Golden Peely.\n"
-             "Example: !goldenpeely"
+             "Example: !goldenpeely",
+        usage="!goldenpeely"
     )
     async def goldenpeely(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
@@ -774,7 +805,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Randomly finds & equips a skin. Types currently include skin, backpack, emote & all. "
                     "If type is left blank, a random skin will be equipped.",
         help="Randomly finds & equips a skin.\n"
-             "Example: !random skin"
+             "Example: !random skin",
+        usage="!random <cosmetic_type>"
     )
     async def random(self, ctx: rebootpy.ext.commands.Context, cosmetic_type: str = 'skin') -> None:
         if cosmetic_type == 'skin':
@@ -875,7 +907,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Clears the currently set backpack.",
         help="Clears the currently set backpack.\n"
-             "Example: !nobackpack"
+             "Example: !nobackpack",
+        usage="!nobackpack"
     )
     async def nobackpack(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_backpack()
@@ -885,7 +918,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Clears the currently set pet.",
         help="Clears the currently set pet.\n"
-             "Example: !nopet"
+             "Example: !nopet",
+        usage="!nopet"
     )
     async def nopet(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_pet()
@@ -895,7 +929,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Clears the currently set contrail.",
         help="Clears the currently set contrail.\n"
-             "Example: !nocontrail"
+             "Example: !nocontrail",
+        usage="!nocontrail"
     )
     async def nocontrail(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_contrail()
@@ -905,7 +940,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client using the outfits name with the ghost variant.",
         help="Sets the outfit of the client using the outfits name with the ghost variant.\n"
-             "Example: !ghost Meowscles"
+             "Example: !ghost Meowscles",
+        usage="!ghost <content>"
     )
     async def ghost(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -935,7 +971,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client using the outfits name with the shadow variant.",
         help="Sets the outfit of the client using the outfits name with the shadow variant.\n"
-             "Example: !shadow Midas"
+             "Example: !shadow Midas",
+        usage="!shadow <content>"
     )
     async def shadow(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         try:
@@ -1002,7 +1039,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Creates the variants list by the variants you set from skin name. "
                     "If you want to include spaces in the skin name, you need to enclose it in \"'s.",
         help="Creates the variants list by the variants you set from skin name.\n"
-             "Example: !style \"Skull Trooper\" clothing_color 1"
+             "Example: !style \"Skull Trooper\" clothing_color 1",
+        usage="!style <cosmetic_name> <variant_type> <variant_int>"
     )
     async def style(self, ctx: rebootpy.ext.commands.Context, cosmetic_name: str, variant_type: str,
                     variant_int: str) -> None:
@@ -1036,7 +1074,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Equips all new non encrypted cosmetics.",
         help="Equips all new non encrypted cosmetics.\n"
-             "Example: !new"
+             "Example: !new",
+        usage="!new"
     )
     async def new(self, ctx: rebootpy.ext.commands.Context, cosmetic_type: str = 'skins') -> None:
         cosmetic_types = {
@@ -1080,7 +1119,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Equips all skins currently in the item shop.",
         help="Equips all skins currently in the item shop.\n"
-             "Example: !shop"
+             "Example: !shop",
+        usage="!shop"
     )
     async def shop(self, ctx: rebootpy.ext.commands.Context) -> None:
         return ctx.send('Command is broken due to the new shop catalogs, will replace soon with Fortnite-API.')
@@ -1112,7 +1152,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Equips a random old default skin.",
         help="Equips a random old default skin.\n"
-             "Example: !olddefault"
+             "Example: !olddefault",
+        usage="!olddefault"
     )
     async def olddefault(self, ctx: rebootpy.ext.commands.Context) -> None:
         random_default = py_random.choice(
@@ -1130,7 +1171,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client to Hatless Recon Expert.",
         help="Sets the outfit of the client to Hatless Recon Expert.\n"
-             "Example: !hatlessrecon"
+             "Example: !hatlessrecon",
+        usage="!hatlessrecon"
     )
     async def hatlessrecon(self, ctx: rebootpy.ext.commands.Context) -> None:
         skin_variants = self.bot.party.me.create_variants(
@@ -1149,7 +1191,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the to the max tier skin in the defined season.",
         help="Sets the outfit of the to the max tier skin in the defined season.\n"
-             "Example: !season 2"
+             "Example: !season 2",
+        usage="!season <br_season>"
     )
     async def season(self, ctx: rebootpy.ext.commands.Context, br_season: int) -> None:
         max_tier_skins = {
@@ -1198,7 +1241,8 @@ class CosmeticCommands(commands.Cog):
         aliases=['henchmen'],
         description="[Cosmetic] Sets the outfit of the client to a random Henchman skin.",
         help="Sets the outfit of the client to a random Henchman skin.\n"
-             "Example: !henchman"
+             "Example: !henchman",
+        usage="!henchman"
     )
     async def henchman(self, ctx: rebootpy.ext.commands.Context) -> None:
         random_henchman = py_random.choice(
@@ -1233,7 +1277,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the emote of the client to Floss.",
         help="Sets the emote of the client to Floss.\n"
-             "Example: !floss"
+             "Example: !floss",
+        usage="!floss"
     )
     async def floss(self, ctx: rebootpy.ext.commands.Context) -> None:
         # // You caused this FunGames, you caused this...
@@ -1248,7 +1293,8 @@ class CosmeticCommands(commands.Cog):
     @commands.command(
         description="[Cosmetic] Sets the outfit of the client to a random marauder skin.",
         help="Sets the outfit of the client to a random marauder skin.\n"
-             "Example: !marauder"
+             "Example: !marauder",
+        usage="!marauder"
     )
     async def marauder(self, ctx: rebootpy.ext.commands.Context) -> None:
         random_marauder = py_random.choice(
@@ -1272,7 +1318,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Sets the outfit of the client to Golden Brutus "
                     "(shortcut for !enlightened CID_692_Athena_Commando_M_HenchmanTough 2 180).",
         help="Sets the outfit of the client to Golden Brutus.\n"
-             "Example: !goldenbrutus"
+             "Example: !goldenbrutus",
+        usage="!goldenbrutus"
     )
     async def goldenbrutus(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
@@ -1288,7 +1335,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Sets the outfit of the client to Golden Meowscles "
                     "(shortcut for !enlightened CID_693_Athena_Commando_M_BuffCat 2 220).",
         help="Sets the outfit of the client to Golden Meowscles.\n"
-             "Example: !goldenmeowscles"
+             "Example: !goldenmeowscles",
+        usage="!goldenmeowscles"
     )
     async def goldenmeowscles(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
@@ -1304,7 +1352,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Sets the outfit of the client to Golden Midas "
                     "(shortcut for !enlightened CID_694_Athena_Commando_M_CatBurglar 2 140).",
         help="Sets the outfit of the client to Golden Peely.\n"
-             "Example: !goldenmidas"
+             "Example: !goldenmidas",
+        usage="!goldenmidas"
     )
     async def goldenmidas(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
@@ -1320,7 +1369,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Sets the outfit of the client to Golden Skye "
                     "(shortcut for !enlightened CID_690_Athena_Commando_F_Photographer 2 300).",
         help="Sets the outfit of the client to Golden Skye.\n"
-             "Example: !goldenskye"
+             "Example: !goldenskye",
+        usage="!goldenskye"
     )
     async def goldenskye(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
@@ -1336,7 +1386,8 @@ class CosmeticCommands(commands.Cog):
         description="[Cosmetic] Sets the outfit of the client to Golden TNTina "
                     "(shortcut for !enlightened CID_691_Athena_Commando_F_TNTina 2 350).",
         help="Sets the outfit of the client to Golden TNTina.\n"
-             "Example: !goldentntina"
+             "Example: !goldentntina",
+        usage="!goldentntina"
     )
     async def goldentntina(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_outfit(
