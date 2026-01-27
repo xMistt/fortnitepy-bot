@@ -92,7 +92,7 @@ class PartyBot(commands.Bot):
                 details=f"Logged in as {self.user.display_name}.",
                 state=f"{self.party.leader.display_name}'s party.",
                 large_image="skull_trooper",
-                large_text="discord.gg/fnpy",
+                large_text="discord.gg/8heARRB",
                 small_image="outfit",
                 small_text=outfit,
                 start=int(start_time),
