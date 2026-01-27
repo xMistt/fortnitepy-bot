@@ -1181,7 +1181,11 @@ class CosmeticCommands(commands.Cog):
             26: "Character_LazarusLens",
             27: "Character_HornedJudgment_Midgard",
             28: "Character_ZebraScramble_Bacon",
-            29: "Character_DarkStance_Inferno"
+            29: "Character_DarkStance_Inferno",
+            30: "Character_MegaToof_Valve",
+            31: "Character_SnapFreeze_Hunt",
+            32: "Character_GoldCat_Claw",
+            33: "Character_RoseDepth_Seed"
         }
 
         await self.bot.party.me.set_outfit(asset=max_tier_skins[br_season])
