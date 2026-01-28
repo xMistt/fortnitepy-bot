@@ -279,39 +279,15 @@ class PartyCommands(commands.Cog):
 
     @commands.dm_only()
     @commands.command(
-        description="[Party] Sets the client to the \"In Match\" state. If the first argument is 'progressive', "
-                    "the players remaining will gradually drop to mimic a real game.",
+        description="[Party] Sets the client to the \"In Match\" state.",
         help="Sets the client to the \"In Match\" state.\n"
-             "Example: !match 69 420",
-        usage="!match <players> <match_time>"
+             "Example: !match",
+        usage="!match"
     )
     async def match(self, ctx: rebootpy.ext.commands.Context, players: Union[str, int] = 0,
                     match_time: int = 0) -> None:
-        if players == 'progressive':
-            match_time = datetime.datetime.utcnow()
-
-            await self.bot.party.me.set_in_match(
-                players_left=100,
-                started_at=match_time
-            )
-
-            while (100 >= self.bot.party.me.match_players_left > 0
-                   and self.bot.party.me.in_match()):
-                await self.bot.party.me.set_in_match(
-                    players_left=self.bot.party.me.match_players_left - random.randint(3, 6),
-                    started_at=match_time
-                )
-
-                await asyncio.sleep(random.randint(45, 65))
-
-        else:
-            await self.bot.party.me.set_in_match(
-                players_left=int(players),
-                started_at=datetime.datetime.utcnow() - datetime.timedelta(minutes=match_time)
-            )
-
-            await ctx.send(f'Set state to in-game in a match with {players} players.'
-                           '\nUse the command: !lobby to revert back to normal.')
+        await self.bot.party.me.set_in_match()
+        await ctx.send('Set state to in match.')
 
     @commands.dm_only()
     @commands.command(
@@ -321,21 +297,6 @@ class PartyCommands(commands.Cog):
         usage="!lobby"
     )
     async def lobby(self, ctx: rebootpy.ext.commands.Context) -> None:
-        if self.bot.default_party_member_config.cls == rebootpy.JustChattingClientPartyMember:
-            self.bot.default_party_member_config.cls = rebootpy.ClientPartyMember
-
-            party_id = self.bot.party.id
-            await self.bot.party.me.leave()
-
-            await ctx.send('Removed state of Just Chattin\'. Now attempting to rejoin party.')
-
-            try:
-                await self.bot.join_party(party_id)
-            except rebootpy.errors.Forbidden:
-                await ctx.send('Failed to join back as party is set to private.')
-            except rebootpy.errors.NotFound:
-                await ctx.send('Party not found, are you sure Fortnite is open?')
-
         await self.bot.party.me.clear_in_match()
 
         await ctx.send('Set state to the pre-game lobby.')
