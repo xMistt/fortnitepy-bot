@@ -131,13 +131,16 @@ class PartyCommands(commands.Cog):
              "Example: !level 999",
         usage="!level <banner_level>"
     )
-    async def level(self, ctx: rebootpy.ext.commands.Context, banner_level: int) -> None:
+    async def level(self,
+                    ctx: rebootpy.ext.commands.Context,
+                    banner_level: int
+                    ) -> None:
         await self.bot.party.me.set_banner(
             season_level=banner_level
         )
 
         await self.bot.message(
-            content=f'Set level to {level}',
+            content=f'Set level to {banner_level}',
             ctx=ctx
         )
 
