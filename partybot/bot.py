@@ -30,6 +30,7 @@ from typing import Any
 import uuid
 import datetime
 import asyncio
+import functools
 
 # Third party imports.
 from rebootpy.ext import commands
@@ -209,11 +210,46 @@ class PartyBot(commands.Bot):
             print(self.message % f"Declined friend request from: {request.display_name}.")
 
     async def event_party_member_join(self, member: rebootpy.PartyMember) -> None:
-        await FortniteAPIAsync.set_default_loadout(
-            self,
-            self.settings.to_dict(),
-            member
+        if self.user.id != member.id:
+            await self.party.send(
+                'Notice: Join discord.gg/8heARRB for a free lobby bot.'
+            )
+            print(
+                f"[PartyBot] [{datetime.datetime.now().strftime('%H:%M:%S')}] "
+                f"{member.display_name} has joined the lobby."
+            )
+
+        config = self.settings.to_dict()
+        await self.party.me.edit_and_keep(
+            functools.partial(
+                self.party.me.set_outfit,
+                config['cid']
+            ),
+            functools.partial(
+                self.party.me.set_backpack,
+                config['bid']
+            ),
+            functools.partial(
+                self.party.me.set_pickaxe,
+                config['pickaxe_id']
+            ),
+            functools.partial(
+                self.party.me.set_banner,
+                icon=config['banner'],
+                color=config['banner_colour'],
+                season_level=config['level']
+            ),
+            functools.partial(
+                self.party.me.set_battlepass_info,
+                has_purchased=True,
+                level=config['bp_tier']
+            )
         )
+
+        await asyncio.sleep(1)
+
+        await self.party.me.clear_emote()
+        await self.party.me.set_emote(asset=config['eid'])
 
     async def event_friend_message(self, message: rebootpy.FriendMessage) -> None:
         print(self.message % f'{message.author.display_name}: {message.content}')

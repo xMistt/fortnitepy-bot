@@ -1034,7 +1034,10 @@ class CosmeticCommands(commands.Cog):
              "Example: !new",
         usage="!new"
     )
-    async def new(self, ctx: rebootpy.ext.commands.Context, cosmetic_type: str = 'skins') -> None:
+    async def new(self,
+                  ctx: rebootpy.ext.commands.Context,
+                  cosmetic_type: str = 'skins'
+                  ) -> None:
         cosmetic_types = {
             'skins': {
                 'id': 'AthenaCharacter',
@@ -1051,27 +1054,31 @@ class CosmeticCommands(commands.Cog):
         }
 
         if cosmetic_type not in cosmetic_types:
-            return await ctx.send('Invalid cosmetic type, valid types include: skins, backpacks & emotes.')
+            return await ctx.send(
+                'Invalid cosmetic type, valid types include: '
+                'skins, backpacks & emotes.'
+            )
 
-        new_cosmetics = await self.bot.fortnite_api.cosmetics.get_new_cosmetics()
-
-        for new_id in new_cosmetics:
-            print(new_id.type)
+        new = await self.bot.fortnite_api.cosmetics.get_new_cosmetics()
 
         for new_cosmetic in [
-            new_id for new_id in new_cosmetics
-            if new_id.type['backendValue'] == cosmetic_types[cosmetic_type]['id']
+            new_id for new_id in new.br.items
+            if new_id.type.backend_value == cosmetic_types[cosmetic_type]['id']
         ]:
             await cosmetic_types[cosmetic_type]['function'](
                 asset=new_cosmetic.id
             )
 
-            await ctx.send(f"{cosmetic_type[:-1].capitalize()} set to {new_cosmetic.id}.")
-            print(self.bot.message % f"{cosmetic_type[:-1].capitalize()} set to: {new_cosmetic.id}.")
+            await ctx.send(
+                f"{cosmetic_type[:-1].capitalize()} set to {new_cosmetic.name}."
+            )
+            print(self.bot.message % f"{cosmetic_type[:-1].capitalize()} set to: {new_cosmetic.name}.")
 
             await asyncio.sleep(3)
 
-        await ctx.send(f'Finished equipping all new unencrypted {cosmetic_type}.')
+        await ctx.send(
+            f'Finished equipping all new unencrypted {cosmetic_type}.'
+        )
         print(self.bot.message % f'Finished equipping all new unencrypted {cosmetic_type}.')
 
     @commands.dm_only()
