@@ -1258,7 +1258,6 @@ class CosmeticCommands(commands.Cog):
         random_marauder = py_random.choice(
             [
                 "CID_NPC_Athena_Commando_M_MarauderHeavy",
-                "CID_NPC_Athena_Commando_M_MarauderElite",
                 "CID_NPC_Athena_Commando_M_MarauderGrunt"
             ]
         )
