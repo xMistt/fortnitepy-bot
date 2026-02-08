@@ -45,33 +45,55 @@ class CosmeticCommands(commands.Cog):
         self.bot = bot
         self.name = 'Cosmetic'
 
-    # async def set_vtid(self, variant_token: str) -> Tuple[str, str, int]:
-    #     async with aiohttp.ClientSession() as session:
-    #         request = await session.request(
-    #             method='GET',
-    #             url='https://benbot.app/api/v1/assetProperties',
-    #             params={
-    #                 'path': 'FortniteGame/Content/Athena/'
-    #                         f'Items/CosmeticVariantTokens/{variant_token}.uasset'
-    #             })
-    #
-    #         response = await request.json()
-    #
-    #     file_location = response['export_properties'][0]
-    #
-    #     skin_cid = file_location['cosmetic_item']
-    #     variant_channel_tag = file_location['VariantChanelTag']['TagName']
-    #     variant_name_tag = file_location['VariantNameTag']['TagName']
-    #
-    #     variant_type = variant_channel_tag.split(
-    #         'Cosmetics.Variant.Channel.'
-    #     )[1].split('.')[0]
-    #
-    #     variant_int = int("".join(filter(
-    #         lambda x: x.isnumeric(), variant_name_tag
-    #     )))
-    #
-    #     return skin_cid, variant_type if variant_type != 'ClothingColor' else 'clothing_color', variant_int
+    async def get_variants_from_vtid(self,
+                                     variant_token: str
+                                     ) -> ['BRCosmetic', list]:
+        async with aiohttp.ClientSession() as session:
+            async with session.request(
+                method='GET',
+                url='https://api.fortniteapi.com/v1/export',
+                params={
+                    'Path': f'FortniteGame/Plugins/GameFeatures/BRCosmetics/'
+                            f'Content/Athena/Items/CosmeticVariantTokens/'
+                            f'{variant_token}'
+                }
+            ) as request:
+                if request.status == 404:
+                    return None, None
+
+                data = await request.json()
+
+        properties = data['jsonOutput'][0]['Properties']
+        skin_cid = properties['cosmetic_item']['ObjectName'].split("'")[1]
+
+        variant_channel_tag = properties['VariantChannelTag']['TagName'].split(
+            'Cosmetics.Variant.Channel.'
+        )[1]
+        variant_name_tag = properties['VariantNameTag']['TagName'].split(
+            'Cosmetics.Variant.Property.'
+        )[1]
+
+        skin = await self.bot.fortnite_api.cosmetics.get_cosmetic_from_id(
+            fortnite_id=skin_cid
+        )
+
+        variants_meta = []
+        for variant_number, variant_data in enumerate(skin.variants):
+            if variant_data['channel'] != variant_channel_tag:
+                variants_meta.append(f'{variant_number}|0')
+            else:
+                option_index = next(
+                    (
+                        option_number
+                        for option_number, option_data in enumerate(variant_data['options'])
+                        if option_data['tag'] == variant_name_tag
+                    ),
+                    0
+                )
+
+                variants_meta.append(f'{variant_number}|{option_index}')
+
+        return skin, variants_meta
 
     @commands.dm_only()
     @commands.command(
@@ -338,25 +360,26 @@ class CosmeticCommands(commands.Cog):
             ctx=ctx
         )
 
-    # NOTE: Command is currently not possible due to no APIs allowing you to browse the files, hope to fix eventually.
-    # @commands.dm_only()
-    # @commands.command(
-    #     description="[Cosmetic] Creates the variants list by the variants you set using VTID.",
-    #     help="Creates the variants list by the variants you set using VTID.\n"
-    #          "Example: !vtid VTID_052_Skull_Trooper_RedFlames"
-    # )
-    # async def vtid(self, ctx: rebootpy.ext.commands.Context, variant_token: str) -> None:
-    #     variant_id = await self.set_vtid(variant_token)
-    #
-    #     if variant_id[1].lower() == 'particle':
-    #         skin_variants = self.bot.party.me.create_variants(config_overrides={'particle': 'Particle{}'}, particle=1)
-    #     else:
-    #         skin_variants = self.bot.party.me.create_variants(**{variant_id[1].lower(): int(variant_id[2])})
-    #
-    #     await self.bot.party.me.set_outfit(asset=variant_id[0], variants=skin_variants)
-    #     print(self.bot.message % f'Set variants of {variant_id[0]} to {variant_id[1]} {variant_id[2]}.')
-    #     await ctx.send(f'Variants set to {variant_token}.\n'
-    #                    '(Warning: This feature is not supported, please use !variants)')
+    @commands.dm_only()
+    @commands.command(
+        description="[Cosmetic] Sets a specific style for a skin by VTID.",
+        help="Sets a specific style for a skin by VTID.\n"
+             "Example: !vtid VTID_052_Skull_Trooper_RedFlames"
+    )
+    async def vtid(self,
+                   ctx: rebootpy.ext.commands.Context,
+                   variant_token: str
+                   ) -> None:
+        skin, variants = await self.get_variants_from_vtid(variant_token)
+
+        await self.bot.party.me.set_outfit(
+            asset=skin.id,
+            variants=variants
+        )
+        await self.bot.message(
+            content=f"Set variant of {skin.name} to {variant_token}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
