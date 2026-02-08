@@ -1035,7 +1035,8 @@ class CosmeticCommands(commands.Cog):
             cosmetic = await self.bot.fortnite_api.cosmetics.get_cosmetic(
                 matchMethod="contains",
                 name=content,
-                backendType="AthenaCharacter"
+                backendType="AthenaCharacter",
+                backendIntroduction=12
             )
 
             await self.bot.party.me.set_outfit(
@@ -1066,7 +1067,8 @@ class CosmeticCommands(commands.Cog):
             cosmetic = await self.bot.fortnite_api.cosmetics.get_cosmetic(
                 matchMethod="contains",
                 name=content,
-                backendType="AthenaCharacter"
+                backendType="AthenaCharacter",
+                backendIntroduction=12
             )
 
             await self.bot.party.me.set_outfit(

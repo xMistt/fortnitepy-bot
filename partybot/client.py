@@ -50,8 +50,11 @@ class ClientCommands(commands.Cog):
              "Example: !status Presence Unknown",
         usage="!status <content>"
     )
-    async def status(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
-        await self.bot.set_presence(content)
+    async def status(self,
+                     ctx: rebootpy.ext.commands.Context,
+                     *, content: str
+                     ) -> None:
+        self.bot.set_presence(content)
 
         await self.bot.message(
             content=f"Status set to {content}",
