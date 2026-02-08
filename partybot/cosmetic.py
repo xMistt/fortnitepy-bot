@@ -393,29 +393,23 @@ class CosmeticCommands(commands.Cog):
                        cosmetic_id: str,
                        *variant_choices: int
                        ) -> None:
-        if cosmetic_id.lower().startswith('cid_'):
-            cosmetic_variants = [
-                f"0|{variant_choice}" for variant_choice in variant_choices
-            ]
+        cosmetic_variants = [
+            f"{variant_number}|{variant_choice}"
+            for variant_number, variant_choice
+            in enumerate(variant_choices)
+        ]
 
+        if cosmetic_id.lower().startswith('cid_'):
             await self.bot.party.me.set_outfit(
                 asset=cosmetic_id,
                 variants=cosmetic_variants
             )
         elif cosmetic_id.lower().startswith('bid_'):
-            cosmetic_variants = [
-                f"0|{variant_choice}" for variant_choice in variant_choices
-            ]
-
             await self.bot.party.me.set_backpack(
                 asset=cosmetic_id,
                 variants=cosmetic_variants
             )
         elif cosmetic_id.lower().startswith('pickaxe_id_'):
-            cosmetic_variants = [
-                f"0|{variant_choice}" for variant_choice in variant_choices
-            ]
-
             await self.bot.party.me.set_pickaxe(
                 asset=cosmetic_id,
                 variants=cosmetic_variants
@@ -1176,7 +1170,9 @@ class CosmeticCommands(commands.Cog):
         )
 
         cosmetic_variants = [
-            f"0|{variant_choice}" for variant_choice in variant_choices
+            f"{variant_number}|{variant_choice}"
+            for variant_number, variant_choice
+            in enumerate(variant_choices)
         ]
 
         # await cosmetic_types[cosmetic.backend_type.value](
