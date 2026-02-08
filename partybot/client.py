@@ -53,8 +53,10 @@ class ClientCommands(commands.Cog):
     async def status(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         await self.bot.set_presence(content)
 
-        await ctx.send(f'Status set to {content}')
-        print(self.bot.message % f'Status set to {content}.')
+        await self.bot.message(
+            content=f"Status set to {content}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -67,13 +69,19 @@ class ClientCommands(commands.Cog):
     async def clean(self, ctx: rebootpy.ext.commands.Context) -> None:
         os.system('cls' if 'win' in sys.platform else 'clear')
 
-        print(crayons.cyan(self.bot.message % f'PartyBot made by xMistt. '
-                           'Massive credit to Terbau for creating the library.'))
-        print(crayons.cyan(
-            self.bot.message % f'Discord server: https://discord.gg/8heARRB - For support, questions, etc.'))
+        await self.bot.message(
+            content='PartyBot made by xMistt. Massive credit to Terbau for creating the library',
+            colour=crayons.cyan
+        )
+        await self.bot.message(
+            content='Discord server: https://discord.gg/8heARRB - For support, questions, etc',
+            colour=crayons.cyan
+        )
 
-        await ctx.send('Command prompt/terminal cleared.')
-        print(self.bot.message % f'Command prompt/terminal cleared.')
+        await self.bot.message(
+            content='Command prompt/terminal cleared',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -88,8 +96,10 @@ class ClientCommands(commands.Cog):
             away=rebootpy.AwayStatus.AWAY
         )
 
-        await ctx.send('Status set to away, you can use !status to revert.')
-        print(self.bot.message % f'Status set to away.')
+        await self.bot.message(
+            content='Status set to away',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -111,14 +121,21 @@ class ClientCommands(commands.Cog):
         pretty_date = f'{date.day}/{date.month}/{date.year} @ {date.hour}:{date.minute}'
         commit_title = data['commit']['message'].split('\n')[0]
 
-        await ctx.send(f"Last commit by {data['committer']['login']} made on {pretty_date}:\n"
-                       f"[{data['sha'][0:7]}] {commit_title}")
+        await self.bot.message(
+            content=(
+                f"Last commit by {data['committer']['login']} made on {pretty_date}:\n"
+                f"[{data['sha'][0:7]}] {commit_title}"
+            ),
+            ctx=ctx
+        )
 
-        print(self.bot.message % f'Sent last commit information.')
+        await self.bot.message(
+            content='Sent last commit information'
+        )
 
     @commands.dm_only()
     @commands.command(
-        description="[Party] Sends the defined user a friend request.",
+        description="[Client] Sends the defined user a friend request.",
         help="Sends the defined user a friend request.\n"
              "Example: !friend Ninja",
         usage="!friend <epic_username>"
@@ -128,9 +145,13 @@ class ClientCommands(commands.Cog):
 
         if user is not None:
             await self.bot.add_friend(user.id)
-            await ctx.send(f'Sent/accepted friend request to/from {user.display_name}.')
-            print(self.bot.message % f'Sent/accepted friend request to/from {user.display_name}.')
+
+            await self.bot.message(
+                content=f"Sent/accepted friend request to/from {user.display_name}",
+                ctx=ctx
+            )
         else:
-            await ctx.send(f'Failed to find user with the name: {epic_username}.')
-            print(
-                crayons.red(self.bot.message % f"[ERROR] Failed to find a user with the name {epic_username}."))
+            await self.bot.message(
+                content=f"[ERROR] Failed to find a user with the name {epic_username}",
+                colour=crayons.red
+            )

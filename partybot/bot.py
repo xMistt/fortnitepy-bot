@@ -46,6 +46,10 @@ from .deviceauths import DeviceAuth, DeviceAuths
 # from .helper import HelperFunctions
 
 
+def no_colour(input: str) -> str:
+    return input
+
+
 class PartyBot(commands.Bot):
     def __init__(self, settings: BotSettings, device_auths: DeviceAuths) -> None:
         self.device_auths = device_auths.get_device_auth()
@@ -65,8 +69,23 @@ class PartyBot(commands.Bot):
         )
 
     @property
-    def message(self) -> str:
-        return f'[PartyBot] [{datetime.datetime.now().strftime("%H:%M:%S")}] %s'
+    def message_prefix(self) -> str:
+        return f'[PartyBot] [{datetime.datetime.now().strftime("%H:%M:%S")}]'
+
+    async def message(
+        self,
+        content: str,
+        colour: 'function' = no_colour,
+        ctx: rebootpy.ext.commands.Context = None,
+        prefix: str = None
+    ) -> None:
+        if prefix is None:
+            prefix = self.message_prefix
+
+        print(colour(f"{prefix} {content}"))
+
+        if ctx:
+            await ctx.send(content)
 
     async def start_discord_rich_presence(self) -> None:
         rpc = pypresence.AioPresence(
@@ -123,7 +142,10 @@ class PartyBot(commands.Bot):
         await self.device_auths.save_device_auth(device_auth)
 
     async def event_ready(self) -> None:
-        print(crayons.green(self.message % f'Client ready as {self.user.display_name}.'))
+        await self.message(
+            content=f"Client ready as {self.user.display_name}",
+            colour=crayons.green
+        )
         
         if self.party.me.leader:
             await self.party.set_privacy(rebootpy.PartyPrivacy.PUBLIC)
@@ -182,9 +204,15 @@ class PartyBot(commands.Bot):
             try:
                 epic_friend = await pending.accept() if self.settings.friend_accept else await pending.decline()
                 if isinstance(epic_friend, rebootpy.Friend):
-                    print(self.message % f"Accepted friend request from: {epic_friend.display_name}.")
+                    await self.message(
+                        content="Accepted friend request from: "
+                                f"{epic_friend.display_name}"
+                    )
                 else:
-                    print(self.message % f"Declined friend request from: {pending.display_name}.")
+                    await self.message(
+                        content="Declined friend request from: "
+                                f"{epic_friend.display_name}"
+                    )
             except rebootpy.HTTPException as epic_error:
                 if epic_error.message_code != 'errors.com.epicgames.common.throttled':
                     raise
@@ -194,29 +222,36 @@ class PartyBot(commands.Bot):
 
     async def event_party_invite(self, invite: rebootpy.ReceivedPartyInvitation) -> None:
         await invite.accept()
-        print(self.message % f'Accepted party invite from {invite.sender.display_name}.')
+        await self.message(
+            content=f"Accepted party invite from: {invite.sender.display_name}"
+        )
 
     async def event_friend_request(self, request: rebootpy.IncomingPendingFriend) -> None:
         if isinstance(request, rebootpy.OutgoingPendingFriend):
             return
 
-        print(self.message % f"Received friend request from: {request.display_name}.")
+        await self.message(
+            content=f"Received friend request from: {request.display_name}"
+        )
 
         if self.settings.friend_accept:
             await request.accept()
-            print(self.message % f"Accepted friend request from: {request.display_name}.")
+            await self.message(
+                content=f"Accepted friend request from: {request.display_name}"
+            )
         else:
             await request.decline()
-            print(self.message % f"Declined friend request from: {request.display_name}.")
+            await self.message(
+                content=f"Declined friend request from: {request.display_name}"
+            )
 
     async def event_party_member_join(self, member: rebootpy.PartyMember) -> None:
         if self.user.id != member.id:
             await self.party.send(
                 'Notice: Join discord.gg/8heARRB for a free lobby bot.'
             )
-            print(
-                f"[PartyBot] [{datetime.datetime.now().strftime('%H:%M:%S')}] "
-                f"{member.display_name} has joined the lobby."
+            await self.message(
+                content=f"{member.display_name} has joined the lobby"
             )
 
         config = self.settings.to_dict()
@@ -252,7 +287,9 @@ class PartyBot(commands.Bot):
         await self.party.me.set_emote(asset=config['eid'])
 
     async def event_friend_message(self, message: rebootpy.FriendMessage) -> None:
-        print(self.message % f'{message.author.display_name}: {message.content}')
+        await self.message(
+            content=f"{message.author.display_name}: {message.content}"
+        )
 
     async def event_command_error(self, ctx: rebootpy.ext.commands.Context,
                                   error: rebootpy.ext.commands.CommandError) -> None:

@@ -35,6 +35,7 @@ import rebootpy
 import aiohttp
 import FortniteAPIAsync
 import random as py_random
+import crayons
 
 from rebootpy.ext import commands
 
@@ -87,14 +88,17 @@ class CosmeticCommands(commands.Cog):
                 backendType="AthenaCharacter"
             )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find a skin with the name: {content}.")
-            return await ctx.send(f"Failed to find a skin with the name: {content}.")
+            return await self.bot.message(
+                content=f"Failed to find a skin with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
         await self.bot.party.me.set_outfit(asset=cosmetic.id)
-
-        await ctx.send(f'Skin set to {cosmetic.id}.')
-        print(self.bot.message % f"Set skin to: {cosmetic.id}.")
-
+        await self.bot.message(
+            content=f"Skin set to {cosmetic.id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -111,13 +115,17 @@ class CosmeticCommands(commands.Cog):
                 backendType="AthenaBackpack"
             )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find a backpack with the name: {content}.")
-            return await ctx.send(f"Failed to find a backpack with the name: {content}.")
+            return await self.bot.message(
+                content=f"Failed to find a backpack with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
         await self.bot.party.me.set_backpack(asset=cosmetic.id)
-
-        await ctx.send(f'Backpack set to {cosmetic.id}.')
-        print(self.bot.message % f"Set backpack to: {cosmetic.id}.")
+        await self.bot.message(
+            content=f"Backpack set to {cosmetic.id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -134,14 +142,18 @@ class CosmeticCommands(commands.Cog):
                 backendType="AthenaDance"
             )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find an emote with the name: {content}.")
-            return await ctx.send(f"Failed to find an emote with the name: {content}.")
+            return await self.bot.message(
+                content=f"Failed to find an emote with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
         await self.bot.party.me.clear_emote()
         await self.bot.party.me.set_emote(asset=cosmetic.id)
-
-        await ctx.send(f'Emote set to {cosmetic.id}.')
-        print(self.bot.message % f"Set emote to: {cosmetic.id}.")
+        await self.bot.message(
+            content=f"Emote set to {cosmetic.id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -158,13 +170,17 @@ class CosmeticCommands(commands.Cog):
                 backendType="AthenaPickaxe"
             )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find a pickaxe with the name: {content}.")
-            return await ctx.send(f"Failed to find a pickaxe with the name: {content}.")
+            return await self.bot.message(
+                content=f"Failed to find a pickaxe with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
         await self.bot.party.me.set_pickaxe(asset=cosmetic.id)
-
-        await ctx.send(f'Pickaxe set to {cosmetic.id}.')
-        print(self.bot.message % f"Set pickaxe to: {cosmetic.id}.")
+        await self.bot.message(
+            content=f"Pickaxe set to {cosmetic.id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -181,13 +197,17 @@ class CosmeticCommands(commands.Cog):
                 backendType="AthenaPetCarrier"
             )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find a pet with the name: {content}.")
-            return await ctx.send(f"Failed to find a pet with the name: {content}.")
+            return await self.bot.message(
+                content=f"Failed to find a pet with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
         await self.bot.party.me.set_pet(asset=cosmetic.id)
-
-        await ctx.send(f'Pet set to {cosmetic.id}.')
-        print(self.bot.message % f"Set pet to: {cosmetic.id}.")
+        await self.bot.message(
+            content=f"Pet set to {cosmetic.id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -204,14 +224,18 @@ class CosmeticCommands(commands.Cog):
                 backendType="AthenaEmoji"
             )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find an emoji with the name: {content}.")
-            return await ctx.send(f"Failed to find an emoji with the name: {content}.")
+            return await self.bot.message(
+                content=f"Failed to find an emoji with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
         await self.bot.party.me.clear_emote()
         await self.bot.party.me.set_emoji(asset=cosmetic.id)
-
-        await ctx.send(f'Emoji set to {cosmetic.id}.')
-        print(self.bot.message % f"Set emoji to: {cosmetic.id}.")
+        await self.bot.message(
+            content=f"Emoji set to {cosmetic.id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -228,13 +252,17 @@ class CosmeticCommands(commands.Cog):
                 backendType="AthenaSkyDiveContrail"
             )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find an contrail with the name: {content}.")
-            return await ctx.send(f"Failed to find a contrail with the name: {content}.")
+            return await self.bot.message(
+                content=f"Failed to find an contrail with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
         await self.bot.party.me.set_contrail(asset=cosmetic.id)
-
-        await ctx.send(f'Contrail set to {cosmetic.id}.')
-        print(self.bot.message % f"Set contrail to: {cosmetic.id}.")
+        await self.bot.message(
+            content=f"Set contrail to: {cosmetic.id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -249,8 +277,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|1', '1|1']
         )
 
-        await ctx.send('Skin set to Purple Skull Trooper!')
-        print(self.bot.message % f"Skin set to Purple Skull Trooper.")
+        await self.bot.message(
+            content="Skin set to Purple Skull Trooper",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -265,8 +295,10 @@ class CosmeticCommands(commands.Cog):
             variants=["0|2"]
         )
 
-        await ctx.send('Skin set to Pink Ghoul Trooper!')
-        print(self.bot.message % f"Skin set to Pink Ghoul Trooper.")
+        await self.bot.message(
+            content="Skin set to Pink Ghoul Trooper",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -281,8 +313,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|1']
         )
 
-        await ctx.send('Backpack set to Purple Ghost Portal!')
-        print(self.bot.message % f"Backpack set to Purple Ghost Portal.")
+        await self.bot.message(
+            content="Backpack set to Purple Ghost Portal",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -294,11 +328,15 @@ class CosmeticCommands(commands.Cog):
     async def cid(self, ctx: rebootpy.ext.commands.Context, character_id: str) -> None:
         await self.bot.party.me.set_outfit(
             asset=character_id,
-            variants=self.bot.party.me.create_variants(profile_banner='ProfileBanner')
+            variants=self.bot.party.me.create_variants(
+                profile_banner='ProfileBanner'
+            )
         )
 
-        await ctx.send(f'Skin set to {character_id}.')
-        print(self.bot.message % f'Skin set to {character_id}.')
+        await self.bot.message(
+            content=f"Skin set to {character_id}",
+            ctx=ctx
+        )
 
     # NOTE: Command is currently not possible due to no APIs allowing you to browse the files, hope to fix eventually.
     # @commands.dm_only()
@@ -360,8 +398,10 @@ class CosmeticCommands(commands.Cog):
                 variants=cosmetic_variants
             )
 
-        await ctx.send(f'Set variants of {cosmetic_id} to {variant_choices}.')
-        print(self.bot.message % f'Set variants of {cosmetic_id} to {variant_choices}.')
+        await self.bot.message(
+            content=f"Set variants of {cosmetic_id} to {variant_choices}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -376,8 +416,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|2']
         )
 
-        await ctx.send('Skin set to OG Renegade Raider!')
-        print(self.bot.message % f'Skin set to OG Renegade Raider.')
+        await self.bot.message(
+            content=f"Skin set to OG Renegade Raider",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -392,8 +434,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|1']
         )
 
-        await ctx.send('Skin set to OG Aerial Assault Trooper!')
-        print(self.bot.message % f'Skin set to OG Aerial Assault Trooper.')
+        await self.bot.message(
+            content=f"Skin set to OG Aerial Assault Trooper",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -408,8 +452,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|1']
         )
 
-        await ctx.send('Skin set to Minty Elf!')
-        print(self.bot.message % f'Skin set to Minty Elf.')
+        await self.bot.message(
+            content=f"Skin set to Minty Elf",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -424,7 +470,10 @@ class CosmeticCommands(commands.Cog):
             asset=emote_id
         )
 
-        await ctx.send(f'Emote set to {emote_id}!')
+        await self.bot.message(
+            content=f"Emote set to {emote_id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -435,8 +484,10 @@ class CosmeticCommands(commands.Cog):
     )
     async def stop(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_emote()
-        await ctx.send('Stopped emoting.')
-        print(self.bot.message % f'Stopped emoting.')
+        await self.bot.message(
+            content="Stopped emoting",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -450,8 +501,11 @@ class CosmeticCommands(commands.Cog):
             asset=backpack_id
         )
 
-        await ctx.send(f'Backbling set to {backpack_id}!')
-        print(self.bot.message % f'Backbling set to {backpack_id}!')
+        await self.bot.message(
+            content=f"Backbling set to {backpack_id}",
+            ctx=ctx
+        )
+
 
     @commands.dm_only()
     @commands.command(
@@ -466,8 +520,10 @@ class CosmeticCommands(commands.Cog):
             asset=pickaxe_id_
         )
 
-        await ctx.send(f'Pickaxe set to {pickaxe_id_}')
-        print(self.bot.message % f'Pickaxe set to {pickaxe_id_}')
+        await self.bot.message(
+            content=f"Pickaxe set to {pickaxe_id_}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -481,8 +537,10 @@ class CosmeticCommands(commands.Cog):
             asset=pet_carrier_id
         )
 
-        await ctx.send(f'Pet set to {pet_carrier_id}!')
-        print(self.bot.message % f'Pet set to {pet_carrier_id}!')
+        await self.bot.message(
+            content=f"Pet set to {pet_carrier_id}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -497,8 +555,10 @@ class CosmeticCommands(commands.Cog):
             asset=emoji_
         )
 
-        await ctx.send(f'Emoji set to {emoji_}!')
-        print(self.bot.message % f'Emoji set to {emoji_}!')
+        await self.bot.message(
+            content=f"Emoji set to {emoji_}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -512,8 +572,10 @@ class CosmeticCommands(commands.Cog):
             asset=trails_
         )
 
-        await ctx.send(f'Contrail set to {trails_}!')
-        print(self.bot.message % f'Contrail set to {trails_}!')
+        await self.bot.message(
+            content=f"Contrail set to {trails_}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -528,12 +590,18 @@ class CosmeticCommands(commands.Cog):
         if content is None:
             await self.bot.party.me.set_emote(asset='EID_None')
             await self.bot.party.me.set_emote(asset='EID_IceKing')
-            await ctx.send(f'Point it Out played.')
+            await self.bot.message(
+                content=f"Point It Out played",
+                ctx=ctx
+            )
         elif 'pickaxe_id' in content.lower():
             await self.bot.party.me.set_pickaxe(asset=content)
             await self.bot.party.me.set_emote(asset='EID_None')
             await self.bot.party.me.set_emote(asset='EID_IceKing')
-            await ctx.send(f'Pickaxe set to {content} & Point it Out played.')
+            await self.bot.message(
+                content=f"Pickaxe set to {content} & Point it Out played",
+                ctx=ctx
+            )
         else:
             try:
                 cosmetic = await self.bot.fortnite_api.cosmetics.get_cosmetic(
@@ -542,15 +610,21 @@ class CosmeticCommands(commands.Cog):
                     backendType="AthenaPickaxe"
                 )
             except FortniteAPIAsync.exceptions.NotFound:
-                print(self.bot.message % f"Failed to find a pickaxe with the name: {content}.")
-                return await ctx.send(f"Failed to find a pickaxe with the name: {content}.")
+                return await self.bot.message(
+                    content=f"Failed to find a pickaxe with the name: {content}",
+                    colour=crayons.red,
+                    ctx=ctx
+                )
 
             await self.bot.party.me.set_pickaxe(asset=cosmetic.id)
 
             await self.bot.party.me.set_emote(asset='EID_None')
             await self.bot.party.me.set_emote(asset='EID_IceKing')
 
-            await ctx.send(f'Pickaxe set to {content} & Point it Out played.')
+            await self.bot.message(
+                content=f"Pickaxe set to {content} & Point it Out played",
+                ctx=ctx
+            )
 
     @commands.dm_only()
     @commands.command(
@@ -599,8 +673,10 @@ class CosmeticCommands(commands.Cog):
         if member.emote is not None:
             await self.bot.party.me.set_emote(asset=member.emote)
 
-        await ctx.send(f'Copied the loadout of {member.display_name}.')
-        print(self.bot.message % f'Copied the loadout of {member.display_name}.')
+        await self.bot.message(
+            content=f"Copied the loadout of {member.display_name}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -614,13 +690,15 @@ class CosmeticCommands(commands.Cog):
             asset='CID_VIP_Athena_Commando_M_GalileoGondola_SG'
         )
 
-        await ctx.send('Skin set to Star Wars Hologram!')
-        print(self.bot.message % f'Skin set to Star Wars Hologram.')
+        await self.bot.message(
+            content="Skin set to Star Wars Hologram",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
-        description="[Cosmetic] Shortcut for equipping the skin CID_VIP_Athena_Commando_M_GalileoGondola_SG.",
-        help="Shortcut for equipping the skin CID_VIP_Athena_Commando_M_GalileoGondola_SG.\n"
+        description="[Cosmetic] Gift yourself any item currently in the shop for free",
+        help="ift yourself any item currently in the shop for free\n"
              "Example: !gift is a joke command.",
         usage="!gift"
     )
@@ -631,7 +709,10 @@ class CosmeticCommands(commands.Cog):
             asset='EID_NeverGonna'
         )
 
-        await ctx.send('What did you think would happen?')
+        await self.bot.message(
+            content="Played Never Gonna emote, no gifts sorry..",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -645,7 +726,10 @@ class CosmeticCommands(commands.Cog):
             asset='EID_TourBus'
         )
 
-        await ctx.send('Emote set to Ninja Style!')
+        await self.bot.message(
+            content="Emote set to Ninja Style",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -673,19 +757,19 @@ class CosmeticCommands(commands.Cog):
                 variants=variant_types[br_season] if br_season in variant_types else variant_types[2],
                 enlightenment=(br_season, skin_level)
             )
-
-            await ctx.send(f'Skin set to {cosmetic_id} at level {skin_level} (for Season 1{br_season}).')
         elif 'bid' in cosmetic_id.lower():
             await self.bot.party.me.set_backpack(
                 asset=cosmetic_id,
                 variants=self.bot.party.me.create_variants(progressive=2),
                 enlightenment=(br_season, skin_level)
             )
-            await ctx.send(f'Backpack set to {cosmetic_id} at level {skin_level} (for Season 1{br_season}).')
 
-        print(
-            self.bot.message % f'Enlightenment for {cosmetic_id} set to level {skin_level} '
-            f'(for Season 1{br_season}).'
+        await self.bot.message(
+            content=(
+                f"Enlightenment for {cosmetic_id} set to level {skin_level} "
+                f"(for C2S{br_season})"
+            ),
+            ctx=ctx
         )
 
     @commands.dm_only()
@@ -700,8 +784,10 @@ class CosmeticCommands(commands.Cog):
             asset='CID_605_Athena_Commando_M_TourBus'
         )
 
-        await ctx.send('Skin set to Ninja!')
-        print(self.bot.message % f'Skin set to Ninja.')
+        await self.bot.message(
+            content="Skin set to Ninja",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -711,15 +797,20 @@ class CosmeticCommands(commands.Cog):
         usage="!rareskins"
     )
     async def rareskins(self, ctx: rebootpy.ext.commands.Context) -> None:
-        await ctx.send('Showing all rare skins now.')
+        await self.bot.message(
+            content="Showing all rare skins...",
+            ctx=ctx
+        )
 
         await self.bot.party.me.set_outfit(
             asset='CID_030_Athena_Commando_M_Halloween',
             variants=['0|1', '1|1']
         )
 
-        await ctx.send('Skin set to Purple Skull Trooper!')
-        print(self.bot.message % f"Skin set to Purple Skull Trooper.")
+        await self.bot.message(
+            content="Skin set to Purple Skull Trooper",
+            ctx=ctx
+        )
         await asyncio.sleep(2)
 
         await self.bot.party.me.set_outfit(
@@ -727,8 +818,10 @@ class CosmeticCommands(commands.Cog):
             variants=["0|2"]
         )
 
-        await ctx.send('Skin set to Pink Ghoul Trooper!')
-        print(self.bot.message % f"Skin set to Pink Ghoul Trooper.")
+        await self.bot.message(
+            content="Skin set to Pink Ghoul Trooper",
+            ctx=ctx
+        )
         await asyncio.sleep(2)
 
         await self.bot.party.me.set_outfit(
@@ -736,8 +829,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|2']
         )
 
-        await ctx.send('Skin set to OG Renegade Raider!')
-        print(self.bot.message % f"Skin set to OG Renegade Raider.")
+        await self.bot.message(
+            content="Skin set to OG Renegade Raider",
+            ctx=ctx
+        )
         await asyncio.sleep(2)
 
         await self.bot.party.me.set_outfit(
@@ -745,8 +840,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|1']
         )
 
-        await ctx.send('Skin set to OG Aerial Assault Trooper!')
-        print(self.bot.message % f"Skin set to OG Aerial Assault Trooper.")
+        await self.bot.message(
+            content="Skin set to OG Aerial Assault Trooper",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -763,7 +860,10 @@ class CosmeticCommands(commands.Cog):
             enlightenment=(2, 350)
         )
 
-        await ctx.send(f'Skin set to Golden Peely.')
+        await self.bot.message(
+            content="Skin set to Golden Peely",
+            ctx=ctx
+        )
 
     # to fix
     @commands.dm_only()
@@ -789,8 +889,10 @@ class CosmeticCommands(commands.Cog):
                 variants=self.bot.party.me.create_variants(profile_banner='ProfileBanner')
             )
 
-            await ctx.send(f'Skin randomly set to {random_skin}.')
-            print(self.bot.message % f"Set skin randomly to: {random_skin}.")
+            await self.bot.message(
+                content=f"Skin randomly set to: {random_skin}",
+                ctx=ctx
+            )
 
         elif cosmetic_type == 'backpack':
             all_backpacks = await self.bot.fortnite_api.cosmetics.get_cosmetics(
@@ -806,8 +908,10 @@ class CosmeticCommands(commands.Cog):
                 variants=self.bot.party.me.create_variants(profile_banner='ProfileBanner')
             )
 
-            await ctx.send(f'Backpack randomly set to {random_backpack}.')
-            print(self.bot.message % f"Set backpack randomly to: {random_backpack}.")
+            await self.bot.message(
+                content=f"Backpack randomly set to: {random_backpack}",
+                ctx=ctx
+            )
 
         elif cosmetic_type == 'emote':
             all_emotes = await self.bot.fortnite_api.cosmetics.get_cosmetics(
@@ -822,8 +926,10 @@ class CosmeticCommands(commands.Cog):
                 asset=random_emote
             )
 
-            await ctx.send(f'Emote randomly set to {random_emote}.')
-            print(self.bot.message % f"Set emote randomly to: {random_emote}.")
+            await self.bot.message(
+                content=f"Emote randomly set to: {random_emote}",
+                ctx=ctx
+            )
 
         elif cosmetic_type == 'all':
             all_outfits = await self.bot.fortnite_api.cosmetics.get_cosmetics(
@@ -852,22 +958,28 @@ class CosmeticCommands(commands.Cog):
                 asset=random_outfit
             )
 
-            await ctx.send(f'Skin randomly set to {random_outfit}.')
-            print(self.bot.message % f"Set skin randomly to: {random_outfit}.")
+            await self.bot.message(
+                content=f"Skin randomly set to: {random_outfit}",
+                ctx=ctx
+            )
 
             await self.bot.party.me.set_backpack(
                 asset=random_backpack
             )
 
-            await ctx.send(f'Backpack randomly set to {random_backpack}.')
-            print(self.bot.message % f"Set backpack randomly to: {random_backpack}.")
+            await self.bot.message(
+                content=f"Backpack randomly set to: {random_backpack}",
+                ctx=ctx
+            )
 
             await self.bot.party.me.set_emote(
                 asset=random_emote
             )
 
-            await ctx.send(f'Emote randomly set to {random_emote}.')
-            print(self.bot.message % f"Set emote randomly to: {random_emote}.")
+            await self.bot.message(
+                content=f"Emote randomly set to: {random_emote}",
+                ctx=ctx
+            )
 
     @commands.dm_only()
     @commands.command(
@@ -878,7 +990,10 @@ class CosmeticCommands(commands.Cog):
     )
     async def nobackpack(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_backpack()
-        await ctx.send('Removed backpack.')
+        await self.bot.message(
+            content=f"Removed backpack",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -889,7 +1004,10 @@ class CosmeticCommands(commands.Cog):
     )
     async def nopet(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_pet()
-        await ctx.send('Removed pet.')
+        await self.bot.message(
+            content="Removed pet",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -900,7 +1018,10 @@ class CosmeticCommands(commands.Cog):
     )
     async def nocontrail(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_contrail()
-        await ctx.send('Removed contrail.')
+        await self.bot.message(
+            content="Removed contrail",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -922,11 +1043,16 @@ class CosmeticCommands(commands.Cog):
                 variants=['0|1']
             )
 
-            await ctx.send(f'Skin set to Ghost {cosmetic.name}!')
-            print(self.bot.message % f'Skin set to Ghost {cosmetic.name}.')
+            await self.bot.message(
+                content=f"Skin set to Ghost {cosmetic.name}",
+                ctx=ctx
+            )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find a skin with the name: {content}.")
-            return await ctx.send(f"Failed to find a skin with the name: {content}.")
+            await self.bot.message(
+                content=f"Failed to find a skin with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
     @commands.dm_only()
     @commands.command(
@@ -948,13 +1074,17 @@ class CosmeticCommands(commands.Cog):
                 variants=['0|2']
             )
 
-            await ctx.send(f'Skin set to Shadow {cosmetic.name}!')
-            print(self.bot.message % f'Skin set to Ghost {cosmetic.name}.')
+            await self.bot.message(
+                content=f"Skin set to Ghost {cosmetic.name}",
+                ctx=ctx
+            )
         except FortniteAPIAsync.exceptions.NotFound:
-            print(self.bot.message % f"Failed to find a skin with the name: {content}.")
-            return await ctx.send(f"Failed to find a skin with the name: {content}.")
+            await self.bot.message(
+                content=f"Failed to find a skin with the name: {content}",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
-    # to fix
     @commands.dm_only()
     @commands.command(
         name="set",
@@ -975,20 +1105,26 @@ class CosmeticCommands(commands.Cog):
             set=content
         )
 
-        await ctx.send(f'Equipping all cosmetics from the {set_items[0].set["value"]} set.')
-        print(self.bot.message % f'Equipping all cosmetics from the {set_items[0].set["value"]} set.')
+        await self.bot.message(
+            content=f"Equipping all cosmetics from the {set_items[0].set['value']} set",
+            ctx=ctx
+        )
 
         for cosmetic in set_items:
             if cosmetic.type['backendValue'] in cosmetic_types:
                 await cosmetic_types[cosmetic.type['backendValue']](asset=cosmetic.id)
 
-                await ctx.send(f'{cosmetic.type["value"].capitalize()} set to {cosmetic.name}!')
-                print(self.bot.message % f'{cosmetic.type["value"].capitalize()} set to {cosmetic.name}.')
+                await self.bot.message(
+                    content=f"{cosmetic.type['value'].capitalize()} set to {cosmetic.name}",
+                    ctx=ctx
+                )
 
                 await asyncio.sleep(3)
 
-        await ctx.send(f'Finished equipping all cosmetics from the {set_items[0].set["value"]} set.')
-        print(self.bot.message % f'Fishing equipping  all cosmetics from the {set_items[0].set["value"]} set.')
+        await self.bot.message(
+            content=f"Fishing equipping  all cosmetics from the {set_items[0].set['value']} set",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1024,8 +1160,10 @@ class CosmeticCommands(commands.Cog):
             variants=cosmetic_variants
         )
 
-        await ctx.send(f'Set variants of {cosmetic.id} to {cosmetic_variants}.')
-        print(self.bot.message % f'Set variants of {cosmetic.id} to {cosmetic_variants}.')
+        await self.bot.message(
+            content=f"Set variants of {cosmetic.id} to {cosmetic_variants}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1054,9 +1192,10 @@ class CosmeticCommands(commands.Cog):
         }
 
         if cosmetic_type not in cosmetic_types:
-            return await ctx.send(
-                'Invalid cosmetic type, valid types include: '
-                'skins, backpacks & emotes.'
+            return await self.bot.message(
+                content="Invalid cosmetic type, valid types include: "
+                        "skins, backpacks & emotes.",
+                ctx=ctx
             )
 
         new = await self.bot.fortnite_api.cosmetics.get_new_cosmetics()
@@ -1069,17 +1208,17 @@ class CosmeticCommands(commands.Cog):
                 asset=new_cosmetic.id
             )
 
-            await ctx.send(
-                f"{cosmetic_type[:-1].capitalize()} set to {new_cosmetic.name}."
+            await self.bot.message(
+                content=f"{cosmetic_type[:-1].capitalize()} set to {new_cosmetic.name}",
+                ctx=ctx
             )
-            print(self.bot.message % f"{cosmetic_type[:-1].capitalize()} set to: {new_cosmetic.name}.")
 
             await asyncio.sleep(3)
 
-        await ctx.send(
-            f'Finished equipping all new unencrypted {cosmetic_type}.'
+        await self.bot.message(
+            content=f"Finished equipping all new unencrypted {cosmetic_type}",
+            ctx=ctx
         )
-        print(self.bot.message % f'Finished equipping all new unencrypted {cosmetic_type}.')
 
     @commands.dm_only()
     @commands.command(
@@ -1091,8 +1230,10 @@ class CosmeticCommands(commands.Cog):
     async def shop(self, ctx: rebootpy.ext.commands.Context) -> None:
         store = await self.bot.fetch_item_shop()
 
-        await ctx.send(f"Equipping all skins in today's item shop.")
-        print(self.bot.message % f"Equipping all skins in today's item shop.")
+        await self.bot.message(
+            content="Equipping all skins in today's item shop",
+            ctx=ctx
+        )
 
         assets = list(set([
             grant['asset']
@@ -1103,13 +1244,17 @@ class CosmeticCommands(commands.Cog):
 
         for asset in assets:
             await self.bot.party.me.set_outfit(asset)
-            await ctx.send(f"Skin set to {asset}!")
-            print(self.bot.message % f"Skin set to: {asset}!")
+            await self.bot.message(
+                content=f"Skin set to: {asset}",
+                ctx=ctx
+            )
 
             await asyncio.sleep(3)
 
-        await ctx.send(f'Finished equipping all skins in the item shop.')
-        print(self.bot.message % f'Finished equipping all skins in the item shop.')
+        await self.bot.message(
+            content="Finished equipping all skins in the item shop",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1127,8 +1272,11 @@ class CosmeticCommands(commands.Cog):
             asset=random_default
         )
 
-        await ctx.send(f'Skin set to {random_default}!')
-        print(self.bot.message % f"Skin set to {random_default}.")
+        await self.bot.message(
+            content=f"Skin set to {random_default}",
+            ctx=ctx
+        )
+
 
     @commands.dm_only()
     @commands.command(
@@ -1143,8 +1291,10 @@ class CosmeticCommands(commands.Cog):
             variants=['0|1']
         )
 
-        await ctx.send('Skin set to Hatless Recon Expert!')
-        print(self.bot.message % f'Skin set to Hatless Recon Expert.')
+        await self.bot.message(
+            content="Skin set to Hatless Recon Expert",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1192,8 +1342,10 @@ class CosmeticCommands(commands.Cog):
 
         await self.bot.party.me.set_outfit(asset=max_tier_skins[br_season])
 
-        await ctx.send(f'Skin set to {max_tier_skins[br_season]}!')
-        print(self.bot.message % f"Skin set to {max_tier_skins[br_season]}.")
+        await self.bot.message(
+            content=f"Skin set to {max_tier_skins[br_season]}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1229,8 +1381,10 @@ class CosmeticCommands(commands.Cog):
             asset=random_henchman
         )
 
-        await ctx.send(f'Skin set to {random_henchman}!')
-        print(self.bot.message % f"Skin set to {random_henchman}.")
+        await self.bot.message(
+            content=f"Skin set to {random_henchman}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1244,8 +1398,10 @@ class CosmeticCommands(commands.Cog):
             asset='EID_Floss'
         )
 
-        await ctx.send('Emote set to Floss!')
-        print(self.bot.message % f"Emote set to Floss.")
+        await self.bot.message(
+            content="Emote set to Floss",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1266,8 +1422,10 @@ class CosmeticCommands(commands.Cog):
             asset=random_marauder
         )
 
-        await ctx.send(f'Skin set to {random_marauder}!')
-        print(self.bot.message % f"Skin set to {random_marauder}.")
+        await self.bot.message(
+            content=f"Skin set to {random_marauder}",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.dm_only()
@@ -1285,7 +1443,10 @@ class CosmeticCommands(commands.Cog):
             enlightenment=(2, 180)
         )
 
-        await ctx.send(f'Skin set to Golden Brutus.')
+        await self.bot.message(
+            content="Skin set to Golden Brutus",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1302,7 +1463,10 @@ class CosmeticCommands(commands.Cog):
             enlightenment=(2, 220)
         )
 
-        await ctx.send(f'Skin set to Golden Meowscles.')
+        await self.bot.message(
+            content="Skin set to Golden Meowscles",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1319,7 +1483,10 @@ class CosmeticCommands(commands.Cog):
             enlightenment=(2, 140)
         )
 
-        await ctx.send(f'Skin set to Golden Midas.')
+        await self.bot.message(
+            content="Skin set to Golden Midas",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1336,7 +1503,10 @@ class CosmeticCommands(commands.Cog):
             enlightenment=(2, 350)
         )
 
-        await ctx.send(f'Skin set to Golden Skye.')
+        await self.bot.message(
+            content="Skin set to Golden Skye",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1353,7 +1523,10 @@ class CosmeticCommands(commands.Cog):
             enlightenment=(2, 260)
         )
 
-        await ctx.send(f'Skin set to Golden TNTina.')
+        await self.bot.message(
+            content="Skin set to Golden TNTina",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1369,14 +1542,24 @@ class CosmeticCommands(commands.Cog):
         )
 
         if not skin or skin > len(cosmetics):
-            return await ctx.send(f'Invalid skin number, there is only {len(cosmetics)} TBD outfits.')
+            return await self.bot.message(
+                content="Invalid skin number, there is only "
+                        f"{len(cosmetics)} TBD outfits.",
+                ctx=ctx
+            )
 
-        await ctx.send(f'Found {len(cosmetics)} TBD outfits.')
+        await self.bot.message(
+            content=f"Found {len(cosmetics)} TBD outfits",
+            ctx=ctx
+        )
 
         await self.bot.party.me.set_outfit(asset=cosmetics[skin - 1].id)
 
-        await ctx.send(f'Skin set to {cosmetics[skin - 1].id}\nUse !tbd <1 to {len(cosmetics)}> to equip another.')
-        print(self.bot.message % f"Set skin to: {cosmetics[skin - 1].id}.")
+        await self.bot.message(
+            content=f"Skin set to {cosmetics[skin - 1].id}\n"
+                    f"Use !tbd <1 to {len(cosmetics)}> to equip another",
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -1392,5 +1575,7 @@ class CosmeticCommands(commands.Cog):
             asset='EID_HandstandLegDab'
         )
 
-        await ctx.send('Emote set to Dab Stand!')
-        print(self.bot.message % f"Emote set to Dab Stand.")
+        await self.bot.message(
+            content="Emote set to Dab Stand",
+            ctx=ctx
+        )

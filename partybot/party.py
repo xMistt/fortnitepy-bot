@@ -58,8 +58,10 @@ class PartyCommands(commands.Cog):
                      ) -> None:
         await self.bot.party.me.set_banner(icon=icon, color=colour, season_level=banner_level)
 
-        await ctx.send(f'Banner set to: {icon} with {colour} at level {banner_level}.')
-        print(self.bot.message % f"Banner set to: {icon} with {colour} at level {banner_level}.")
+        await self.bot.message(
+            content=f'Banner set to: {icon} with {colour} at level {banner_level}',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -70,7 +72,10 @@ class PartyCommands(commands.Cog):
     )
     async def ready(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_ready(rebootpy.ReadyState.READY)
-        await ctx.send('Ready!')
+        await self.bot.message(
+            content='Ready!',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -82,7 +87,10 @@ class PartyCommands(commands.Cog):
     )
     async def unready(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_ready(rebootpy.ReadyState.NOT_READY)
-        await ctx.send('Unready!')
+        await self.bot.message(
+            content='Unready!',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -93,7 +101,10 @@ class PartyCommands(commands.Cog):
     )
     async def sitout(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_ready(rebootpy.ReadyState.SITTING_OUT)
-        await ctx.send('Sitting Out!')
+        await self.bot.message(
+            content='Sitting Out!',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -108,7 +119,10 @@ class PartyCommands(commands.Cog):
             level=tier,
         )
 
-        await ctx.send(f'Set battle pass tier to {tier}.')
+        await self.bot.message(
+            content=f'Set battle pass tier to {tier}',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -122,7 +136,10 @@ class PartyCommands(commands.Cog):
             season_level=banner_level
         )
 
-        await ctx.send(f'Set level to {level}.')
+        await self.bot.message(
+            content=f'Set level to {level}',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -133,7 +150,10 @@ class PartyCommands(commands.Cog):
     )
     async def echo(self, ctx: rebootpy.ext.commands.Context, *, content: str) -> None:
         await self.bot.party.send(content)
-        await ctx.send('Sent message to party chat.')
+        await self.bot.message(
+            content='Sent message to party chat',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -144,11 +164,13 @@ class PartyCommands(commands.Cog):
     )
     async def leave(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_emote('EID_Wave')
+        await ctx.send(content='Bye!')
         await asyncio.sleep(2)
         await self.bot.party.me.leave()
-        await ctx.send('Bye!')
 
-        print(self.bot.message % f'Left the party as I was requested.')
+        await self.bot.message(
+            content='Left the party as I was requested'
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -166,16 +188,24 @@ class PartyCommands(commands.Cog):
             member = self.bot.party.get_member(user.id)
 
         if member is None:
-            await ctx.send("Failed to find that user, are you sure they're in the party?")
+            await self.bot.message(
+                content="Failed to find that user, are you sure they're in the party?",
+                ctx=ctx
+            )
         else:
             try:
                 await member.kick()
-                await ctx.send(f"Kicked user: {member.display_name}.")
-                print(self.bot.message % f"Kicked user: {member.display_name}")
+                await self.bot.message(
+                    content=f'Kicked user: {member.display_name}',
+                    ctx=ctx
+                )
             except rebootpy.errors.Forbidden:
-                await ctx.send(f"Failed to kick {member.display_name}, as I'm not party leader.")
-                print(crayons.red(self.bot.message % f"[ERROR] "
-                                  "Failed to kick member as I don't have the required permissions."))
+                await self.bot.message(
+                    content="[ERROR] Failed to kick member as I don't "
+                            "have the required permissions",
+                    colour=crayons.red,
+                    ctx=ctx
+                )
 
     @commands.dm_only()
     @commands.command(
@@ -195,16 +225,24 @@ class PartyCommands(commands.Cog):
             member = self.bot.party.get_member(user.id)
 
         if member is None:
-            await ctx.send("Failed to find that user, are you sure they're in the party?")
+            await self.bot.message(
+                content="Failed to find that user, are you sure they're in the party?",
+                ctx=ctx
+            )
         else:
             try:
                 await member.promote()
-                await ctx.send(f"Promoted user: {member.display_name}.")
-                print(self.bot.message % f"Promoted user: {member.display_name}")
+                await self.bot.message(
+                    content=f'Promoted user: {member.display_name}',
+                    ctx=ctx
+                )
             except rebootpy.errors.Forbidden:
-                await ctx.send(f"Failed topromote {member.display_name}, as I'm not party leader.")
-                print(crayons.red(self.bot.message % f"[ERROR] "
-                                  "Failed to promote member as I don't have the required permissions."))
+                await self.bot.message(
+                    content="[ERROR] Failed to promote member as I'm not "
+                            "party leader",
+                    colour=crayons.red,
+                    ctx=ctx
+                )
 
     @commands.dm_only()
     @commands.command(
@@ -219,16 +257,15 @@ class PartyCommands(commands.Cog):
                           ) -> None:
         try:
             await self.bot.party.set_playlist(playlist=playlist_)
-            await ctx.send(f'Gamemode set to {playlist_}')
-        except rebootpy.errors.Forbidden:
-            await ctx.send(
-                f"Failed to set gamemode to {playlist_}, as I'm not party leader."
+            await self.bot.message(
+                content=f'Gamemode set to {playlist_}',
+                ctx=ctx
             )
-            print(
-                crayons.red(
-                    self.bot.message % f"[ERROR] "
-                    "Failed to set gamemode as I don't have the required permissions."
-                )
+        except rebootpy.errors.Forbidden:
+            await self.bot.message(
+                content=f"Failed to set gamemode to {playlist_}, as I'm not party leader",
+                colour=crayons.red,
+                ctx=ctx
             )
 
     @commands.dm_only()
@@ -251,13 +288,17 @@ class PartyCommands(commands.Cog):
             elif privacy_type.lower() == 'private_allow_friends_of_friends':
                 await self.bot.party.set_privacy(rebootpy.PartyPrivacy.PRIVATE_ALLOW_FRIENDS_OF_FRIENDS)
 
-            await ctx.send(f'Party privacy set to {self.bot.party.privacy}.')
-            print(self.bot.message % f'Party privacy set to {self.bot.party.privacy}.')
+            await self.bot.message(
+                content=f'Party privacy set to {self.bot.party.privacy}',
+                ctx=ctx
+            )
 
         except rebootpy.errors.Forbidden:
-            await ctx.send(f"Failed to set party privacy to {privacy_type}, as I'm not party leader.")
-            print(crayons.red(self.bot.message % f"[ERROR] "
-                              "Failed to set party privacy as I don't have the required permissions."))
+            await self.bot.message(
+                content="[ERROR] Failed to set party privacy as I'm not party leader",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
     @commands.dm_only()
     @commands.command(
@@ -271,7 +312,10 @@ class PartyCommands(commands.Cog):
             key=custom_matchmaking_key
         )
 
-        await ctx.send(f'Custom matchmaking code set to: {custom_matchmaking_key}')
+        await self.bot.message(
+            content=f'Custom matchmaking code set to: {custom_matchmaking_key}',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -280,10 +324,12 @@ class PartyCommands(commands.Cog):
              "Example: !match",
         usage="!match"
     )
-    async def match(self, ctx: rebootpy.ext.commands.Context, players: Union[str, int] = 0,
-                    match_time: int = 0) -> None:
+    async def match(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.set_in_match()
-        await ctx.send('Set state to in match.')
+        await self.bot.message(
+            content='Set state to in match',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -295,7 +341,10 @@ class PartyCommands(commands.Cog):
     async def lobby(self, ctx: rebootpy.ext.commands.Context) -> None:
         await self.bot.party.me.clear_in_match()
 
-        await ctx.send('Set state to the pre-game lobby.')
+        await self.bot.message(
+            content='Set state to the pre-game lobby',
+            ctx=ctx
+        )
 
     @commands.dm_only()
     @commands.command(
@@ -315,18 +364,33 @@ class PartyCommands(commands.Cog):
                 epic_friend = self.bot.get_friend(user.id)
             else:
                 epic_friend = None
-                await ctx.send(f'Failed to find user with the name: {epic_username}.')
+                await self.bot.message(
+                    content=f'Failed to find user with the name: {epic_username}',
+                    ctx=ctx
+                )
 
         if isinstance(epic_friend, rebootpy.Friend):
             try:
                 await epic_friend.join_party()
-                await ctx.send(f'Joined the party of {epic_friend.display_name}.')
+                await self.bot.message(
+                    content=f'Joined the party of {epic_friend.display_name}',
+                    ctx=ctx
+                )
             except rebootpy.errors.Forbidden:
-                await ctx.send('Failed to join party since it is private.')
+                await self.bot.message(
+                    content='Failed to join party since it is private',
+                    ctx=ctx
+                )
             except rebootpy.errors.PartyError:
-                await ctx.send('Party not found, are you sure Fortnite is open?')
+                await self.bot.message(
+                    content='Party not found, are you sure Fortnite is open?',
+                    ctx=ctx
+                )
         else:
-            await ctx.send('Cannot join party as the friend is not found.')
+            await self.bot.message(
+                content='Cannot join party as the friend is not found',
+                ctx=ctx
+            )
 
     @commands.dm_only()
     @commands.command(
@@ -348,21 +412,24 @@ class PartyCommands(commands.Cog):
 
             if playlist:
                 await self.bot.party.set_playlist(playlist=playlist.id)
-                await ctx.send(f'Playlist set to {playlist.id}')
-                print(self.bot.message % f'Playlist set to {playlist.id}')
+                await self.bot.message(
+                    content=f'Playlist set to {playlist.id}',
+                    ctx=ctx
+                )
             else:
-                await ctx.send('Failed to find playlist.')
-                print(self.bot.message % 'Failed to find playlist.')
+                await self.bot.message(
+                    content='Failed to find playlist',
+                    ctx=ctx
+                )
 
         except rebootpy.errors.Forbidden:
-            await ctx.send(
-                f"Failed to set playlist to {playlist_name}, as I'm not party leader."
+            await self.bot.message(
+                content=f"Failed to set playlist to {playlist_name}, as I'm not party leader",
+                ctx=ctx
             )
-            print(
-                crayons.red(
-                    self.bot.message % f"[ERROR] "
-                    "Failed to set playlist as I don't have the required permissions."
-                )
+            await self.bot.message(
+                content="[ERROR] Failed to set playlist as I don't have the required permissions",
+                colour=crayons.red
             )
 
     @commands.dm_only()
@@ -383,23 +450,31 @@ class PartyCommands(commands.Cog):
                 epic_friend = self.bot.get_friend(user.id)
             else:
                 epic_friend = None
-                await ctx.send(f'Failed to find user with the name: {epic_username}.')
-                print(crayons.red(self.bot.message % f"[ERROR] "
-                                  f"Failed to find user with the name: {epic_username}."))
+                await self.bot.message(
+                    content=f"[ERROR] Failed to find user with the name: {epic_username}",
+                    colour=crayons.red,
+                    ctx=ctx
+                )
 
         if isinstance(epic_friend, rebootpy.Friend):
             try:
                 await epic_friend.invite()
-                await ctx.send(f'Invited {epic_friend.display_name} to the party.')
-                print(self.bot.message % f"[ERROR] Invited {epic_friend.display_name} to the party.")
+                await self.bot.message(
+                    content=f'Invited {epic_friend.display_name} to the party',
+                    ctx=ctx
+                )
             except rebootpy.errors.PartyError:
-                await ctx.send('Failed to invite friend as they are either already in the party or it is full.')
-                print(crayons.red(self.bot.message % f"[ERROR] "
-                                  "Failed to invite to party as friend is already either in party or it is full."))
+                await self.bot.message(
+                    content="[ERROR] Failed to invite to party as friend is already either in party or it is full",
+                    colour=crayons.red,
+                    ctx=ctx
+                )
         else:
-            await ctx.send('Cannot invite to party as the friend is not found.')
-            print(crayons.red(self.bot.message % f"[ERROR] "
-                              "Failed to invite to party as the friend is not found."))
+            await self.bot.message(
+                content="[ERROR] Failed to invite to party as the friend is not found",
+                colour=crayons.red,
+                ctx=ctx
+            )
 
     @commands.dm_only()
     @commands.command(
@@ -409,7 +484,10 @@ class PartyCommands(commands.Cog):
              "Example: !hide",
         usage="!hide <party_member>"
     )
-    async def hide(self, ctx: rebootpy.ext.commands.Context, party_member: Optional[str] = None) -> None:
+    async def hide(self,
+                   ctx: rebootpy.ext.commands.Context,
+                   party_member: Optional[str] = None
+                   ) -> None:
         if self.bot.party.me.leader:
             if party_member is not None:
                 user = await self.bot.fetch_user(party_member)
@@ -430,9 +508,11 @@ class PartyCommands(commands.Cog):
                         }
                     )
                 else:
-                    await ctx.send(f'Failed to find user with the name: {party_member}.')
-                    print(crayons.red(self.bot.message % f"[ERROR] "
-                                      f"Failed to find user with the name: {party_member}."))
+                    await self.bot.message(
+                        content=f"[ERROR] Failed to find user with the name: {party_member}",
+                        colour=crayons.red,
+                        ctx=ctx
+                    )
             else:
                 await self.bot.set_and_update_party_prop(
                     'Default:RawSquadAssignments_j', {
@@ -440,10 +520,15 @@ class PartyCommands(commands.Cog):
                     }
                 )
 
-                await ctx.send('Hid everyone in the party. Use !unhide if you want to unhide everyone.'
-                               '\nReminder: Crashing lobbies is bannable offense which will result in a permanent ban.')
-                print(self.bot.message % f'Hid everyone in the party.')
+                await self.bot.message(
+                    content='Hid everyone in the party. '
+                            'Use !unhide if you want to unhide everyone',
+                    ctx=ctx
+                )
         else:
-            await ctx.send("Failed to hide everyone, as I'm not party leader")
-            print(crayons.red(self.bot.message % f"[ERROR] "
-                              "Failed to hide everyone as I don't have the required permissions."))
+            await self.bot.message(
+                content="Failed to hide everyone, as I'm not party leader",
+                colour=crayons.red,
+                ctx=ctx
+            )
+
