@@ -486,45 +486,45 @@ class PartyCommands(commands.Cog):
     )
     async def hide(self,
                    ctx: rebootpy.ext.commands.Context,
-                   party_member: Optional[str] = None
-                   ) -> None:
+                   party_member_to_hide: Optional[str] = None) -> None:
         if self.bot.party.me.leader:
-            if party_member is not None:
-                user = await self.bot.fetch_user(party_member)
-                member = self.bot.party.get_member(user.id)
+            assignments_value = {}
+            if party_member_to_hide is not None:
+                member = next(
+                    (
+                        party_member
+                        for party_member in self.bot.party.members
+                        if party_member_to_hide.lower() in party_member.display_name.lower()
+                    ),
+                    None
+                )
 
                 if member is not None:
-                    raw_squad_assignments = self.bot.party.meta.get_prop(
-                        'Default:RawSquadAssignments_j'
-                    )["RawSquadAssignments"]
-
-                    for player in raw_squad_assignments:
-                        if player['memberId'] == member.id:
-                            raw_squad_assignments.remove(player)
-
-                    await self.bot.set_and_update_party_prop(
-                        'Default:RawSquadAssignments_j', {
-                            'RawSquadAssignments': raw_squad_assignments
-                        }
+                    assignments_value[member] = rebootpy.SquadAssignment(
+                        hidden=True
                     )
                 else:
                     await self.bot.message(
-                        content=f"[ERROR] Failed to find user with the name: {party_member}",
+                        content="[ERROR] Failed to find user with the name: "
+                                f"{party_member_to_hide}",
                         colour=crayons.red,
                         ctx=ctx
                     )
             else:
-                await self.bot.set_and_update_party_prop(
-                    'Default:RawSquadAssignments_j', {
-                        'RawSquadAssignments': [{'memberId': self.bot.user.id, 'absoluteMemberIdx': 1}]
-                    }
-                )
+                assignments_value = {
+                    party_member: rebootpy.SquadAssignment(hidden=True)
+                    for party_member in self.bot.party.members
+                    if party_member.id != self.bot.user.id
+                }
 
                 await self.bot.message(
                     content='Hid everyone in the party. '
                             'Use !unhide if you want to unhide everyone',
                     ctx=ctx
                 )
+            await self.bot.party.set_squad_assignments(
+                assignments=assignments_value
+            )
         else:
             await self.bot.message(
                 content="Failed to hide everyone, as I'm not party leader",
