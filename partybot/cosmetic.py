@@ -1240,7 +1240,6 @@ class CosmeticCommands(commands.Cog):
         usage="!floss"
     )
     async def floss(self, ctx: rebootpy.ext.commands.Context) -> None:
-        # // You caused this FunGames, you caused this...
         await self.bot.party.me.set_emote(
             asset='EID_Floss'
         )

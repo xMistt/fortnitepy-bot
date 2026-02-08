@@ -44,19 +44,6 @@ class PartyCommands(commands.Cog):
         self.bot = bot
         self.name = 'Party'
 
-    async def get_playlist(self, display_name: str) -> str:
-        async with aiohttp.ClientSession() as session:
-            request = await session.request(
-                method='GET',
-                url='http://scuffedapi.xyz/api/playlists/search',
-                params={
-                    'displayName': display_name
-                })
-
-            response = await request.json()
-
-        return response['id'] if 'error' not in response else None
-
     @commands.dm_only()
     @commands.command(
         description="[Party] Sets the banner of the self.bot.",
@@ -226,14 +213,23 @@ class PartyCommands(commands.Cog):
              "Example: !playlist_id Playlist_Tank_Solo",
         usage="!playlist_id <playlist_>"
     )
-    async def playlist_id(self, ctx: rebootpy.ext.commands.Context, playlist_: str) -> None:
+    async def playlist_id(self,
+                          ctx: rebootpy.ext.commands.Context,
+                          playlist_: str
+                          ) -> None:
         try:
             await self.bot.party.set_playlist(playlist=playlist_)
             await ctx.send(f'Gamemode set to {playlist_}')
         except rebootpy.errors.Forbidden:
-            await ctx.send(f"Failed to set gamemode to {playlist_}, as I'm not party leader.")
-            print(crayons.red(self.bot.message % f"[ERROR] "
-                              "Failed to set gamemode as I don't have the required permissions."))
+            await ctx.send(
+                f"Failed to set gamemode to {playlist_}, as I'm not party leader."
+            )
+            print(
+                crayons.red(
+                    self.bot.message % f"[ERROR] "
+                    "Failed to set gamemode as I don't have the required permissions."
+                )
+            )
 
     @commands.dm_only()
     @commands.command(
@@ -334,29 +330,40 @@ class PartyCommands(commands.Cog):
 
     @commands.dm_only()
     @commands.command(
-        description="[Party] Sets the lobbies selected playlist using playlist name.",
-        help="Sets the lobbies selected playlist using playlist name.\n"
-             "Example: !playlist Food Fight",
+        description="[Party] Changes the current playlist by playlist name.",
+        help="Changes the current playlist by playlist name.\n"
+             "Example: !playlist Blitz",
         usage="!playlist <playlist_name>"
     )
     async def playlist(self, ctx: rebootpy.ext.commands.Context, *, playlist_name: str) -> None:
         try:
-            scuffedapi_playlist_id = await self.get_playlist(playlist_name)
+            playlists = await self.bot.fortnite_api.get_playlists()
+            playlist = next(
+                (
+                    p for p in playlists if
+                    playlist_name.lower() in p.name.lower()
+                ),
+                None
+            )
 
-            if scuffedapi_playlist_id is not None:
-                await self.bot.party.set_playlist(playlist=scuffedapi_playlist_id)
-                await ctx.send(f'Playlist set to {scuffedapi_playlist_id}.')
-                print(self.bot.message % f'Playlist set to {scuffedapi_playlist_id}.')
-
+            if playlist:
+                await self.bot.party.set_playlist(playlist=playlist.id)
+                await ctx.send(f'Playlist set to {playlist.id}')
+                print(self.bot.message % f'Playlist set to {playlist.id}')
             else:
-                await ctx.send(f'Failed to find a playlist with the name: {playlist_name}.')
-                print(crayons.red(self.bot.message % f"[ERROR] "
-                                  f"Failed to find a playlist with the name: {playlist_name}."))
+                await ctx.send('Failed to find playlist.')
+                print(self.bot.message % 'Failed to find playlist.')
 
         except rebootpy.errors.Forbidden:
-            await ctx.send(f"Failed to set playlist to {playlist_name}, as I'm not party leader.")
-            print(crayons.red(self.bot.message % f"[ERROR] "
-                              "Failed to set playlist as I don't have the required permissions."))
+            await ctx.send(
+                f"Failed to set playlist to {playlist_name}, as I'm not party leader."
+            )
+            print(
+                crayons.red(
+                    self.bot.message % f"[ERROR] "
+                    "Failed to set playlist as I don't have the required permissions."
+                )
+            )
 
     @commands.dm_only()
     @commands.command(
