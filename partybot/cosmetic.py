@@ -1143,7 +1143,7 @@ class CosmeticCommands(commands.Cog):
                 await asyncio.sleep(3)
 
         await self.bot.message(
-            content=f"Fishing equipping  all cosmetics from the {set_items[0].set['value']} set",
+            content=f"Fishing equipping  all cosmetics from the {set_items[0].set.value} set",
             ctx=ctx
         )
 
