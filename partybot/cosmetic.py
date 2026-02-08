@@ -1125,16 +1125,18 @@ class CosmeticCommands(commands.Cog):
         )
 
         await self.bot.message(
-            content=f"Equipping all cosmetics from the {set_items[0].set['value']} set",
+            content=f"Equipping all cosmetics from the "
+                    f"{set_items[0].set.value} set",
             ctx=ctx
         )
 
         for cosmetic in set_items:
-            if cosmetic.type['backendValue'] in cosmetic_types:
-                await cosmetic_types[cosmetic.type['backendValue']](asset=cosmetic.id)
+            if cosmetic.type.backend_value in cosmetic_types:
+                await cosmetic_types[cosmetic.type.backend_value](asset=cosmetic.id)
 
                 await self.bot.message(
-                    content=f"{cosmetic.type['value'].capitalize()} set to {cosmetic.name}",
+                    content=f"{cosmetic.type.display_value.capitalize()} "
+                            f"set to {cosmetic.name}",
                     ctx=ctx
                 )
 
