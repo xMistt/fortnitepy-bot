@@ -61,16 +61,18 @@ if sys.platform == 'win32':
 
 def enable_debug() -> None:
     modules = {
-        'fortnitepy.http': 6,
-        'fortnitepy.xmpp': 5
+        'rebootpy.http': 6,
+        'rebootpy.xmpp': 5,
+        'rebootpy.websocket': 4,
+        'rebootpy.client': 3
     }
-    
-    for module, colour in module.items():
+    for module, colour in modules.items():
         logger = logging.getLogger(module)
         logger.setLevel(level=logging.DEBUG)
         handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(logging.Formatter(f'\u001b[3{colour}m %(asctime)s:%(levelname)s:%(name)s: %(message)s'
-                                               ' \u001b[0m'))
+        handler.setFormatter(logging.Formatter(
+            f'\u001b[3{colour}m %(asctime)s:%(levelname)s:%(name)s: %(message)s \u001b[0m'
+        ))
         logger.addHandler(handler)
 
         
@@ -133,5 +135,4 @@ async def main() -> None:
     await client.http.close()
 
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+asyncio.run(main())
